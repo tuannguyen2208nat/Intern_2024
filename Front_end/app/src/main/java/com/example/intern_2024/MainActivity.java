@@ -1,52 +1,36 @@
 package com.example.intern_2024;
 
 import android.os.Bundle;
+import android.view.View;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
-import com.example.intern_2024.databinding.ActivityMainBinding;
-import com.example.intern_2024.fragment.Accessories;
-import com.example.intern_2024.fragment.Automation;
-import com.example.intern_2024.fragment.Home;
-import com.example.intern_2024.fragment.Profile;
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-
-    ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        replaceFragment(new Home(), "HOME");
+        setContentView(R.layout.activity_main);
 
-        binding.bottomNav.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_home) {
-                replaceFragment(new Home(), "HOME");
-            } else if (item.getItemId() == R.id.nav_accessories) {
-                replaceFragment(new Accessories(), "Accessories");
-            } else if (item.getItemId() == R.id.nav_automation) {
-                replaceFragment(new Automation(), "Automation");
-            } else if (item.getItemId() == R.id.nav_profile) {
-                replaceFragment(new Profile(), "Profile");
+        final DrawerLayout drawerLayout=findViewById(R.id.drawerLayout);
+        findViewById(R.id.menuIcon).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
             }
-            return true;
         });
-    }
+        NavigationView navigationView=findViewById(R.id.navigationView);
+        navigationView.setItemIconTintList(null);
 
-    private void replaceFragment(Fragment fragment, String tag) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content_layout, fragment, tag);
-        fragmentTransaction.commit();
+        NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
+        NavigationUI.setupWithNavController(navigationView, navController);
+
     }
 }

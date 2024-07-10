@@ -35,19 +35,22 @@
 
             <EditText
                 android:id="@+id/username"
+                android:inputType="textEmailAddress"
                 android:layout_width="200dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/box_form_login"
                 android:drawableLeft="@drawable/ic_username"
                 android:drawablePadding="8dp"
-                android:hint="User name"
+                android:hint="Email"
+                android:maxLength="100"
                 android:padding="8dp"
                 android:textColor="@color/black"
                 android:textColorHighlight="@color/cardview_dark_background" />
 
             <EditText
                 android:id="@+id/password"
+                android:inputType="textPassword"
                 android:layout_width="200dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
@@ -55,6 +58,7 @@
                 android:drawableLeft="@drawable/ic_password"
                 android:drawablePadding="8dp"
                 android:hint="Password"
+                android:maxLength="100"
                 android:padding="8dp"
                 android:textColor="@color/black"
                 android:textColorHighlight="@color/cardview_dark_background" />

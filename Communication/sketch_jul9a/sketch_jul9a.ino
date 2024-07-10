@@ -1,45 +1,40 @@
 #include <AdafruitIO.h>
 #include <AdafruitIO_WiFi.h>
-#include <SoftwareSerial.h>
 #include "RelayStatus.h"
 
-#define IO_USERNAME  "tuannguyen2208nat"
-#define IO_KEY       "aio_ZMAD70yk9WBlfvJMFK1MgWjUCj4K"
-
-#define WIFI_SSID "ACLAB"
-#define WIFI_PASS "ACLAB2023"
+#define LED_PIN 2
+#define TXD 8
+#define RXD 9
+#define BAUD_RATE 9600
 
 AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 
-#define LED_PIN 2
-#define RS485_RX_PIN 21
-#define RS485_TX_PIN 18
-
 AdafruitIO_Feed *status = io.feed("status");
-SoftwareSerial rs485(RS485_RX_PIN, RS485_TX_PIN);
-
-// Function to send Modbus command via RS485
-void sendModbusCommand(const uint8_t command[], size_t length) {
-  for (size_t i = 0; i < length; i++) {
-    rs485.write(command[i]);
+void sendModbusCommand(const uint8_t command[], size_t length)
+{
+  for (size_t i = 0; i < length; i++)
+  {
+    Serial2.write(command[i]);
   }
 }
 
-void setup() {
+void setup()
+{
   pinMode(LED_PIN, OUTPUT);
   Serial.begin(115200);
-  rs485.begin(9600);
+  Serial2.begin(BAUD_RATE, SERIAL_8N1, TXD, RXD);
 
-  // Initialize all relays to OFF
-  // sendModbusCommand(relay_OFF[relay_OFF.size() - 1], sizeof(relay_OFF[0]));
+  sendModbusCommand(relay_OFF[32], 32);
 
-  while (!Serial);
+  while (!Serial)
+    ;
 
   Serial.println("Connecting to Adafruit IO");
   io.connect();
   status->onMessage(handleMessage);
 
-  while (io.status() < AIO_CONNECTED) {
+  while (io.status() < AIO_CONNECTED)
+  {
     Serial.println("Can't connect to Adafruit IO");
     delay(500);
   }
@@ -50,14 +45,17 @@ void setup() {
   status->get();
 }
 
-void loop() {
+void loop()
+{
   io.run();
 }
 
-void handleMessage(AdafruitIO_Data *data) {
+void handleMessage(AdafruitIO_Data *data)
+{
   String message = data->value();
 
-  if (message.startsWith("!RELAY") && message.endsWith("#")) {
+  if (message.startsWith("!RELAY") && message.endsWith("#"))
+  {
     int indexStart = message.indexOf('!') + 6;
     int indexEnd = message.indexOf(':');
     String indexStr = message.substring(indexStart, indexEnd);
@@ -78,13 +76,18 @@ void handleMessage(AdafruitIO_Data *data) {
     Serial.println(statusStr);
 
     // Send the Modbus command for the specific relay
-    if (statusStr == "ON" && index < sizeof(relay_ON) / sizeof(relay_ON[0])) {
+    if (statusStr == "ON" && index < sizeof(relay_ON) / sizeof(relay_ON[0]))
+    {
       sendModbusCommand(relay_ON[index], sizeof(relay_ON[index]));
       Serial.println("Relay " + String(index) + " turned ON");
-    } else if (statusStr == "OFF" && index < sizeof(relay_OFF) / sizeof(relay_OFF[0])) {
+    }
+    else if (statusStr == "OFF" && index < sizeof(relay_OFF) / sizeof(relay_OFF[0]))
+    {
       sendModbusCommand(relay_OFF[index], sizeof(relay_OFF[index]));
       Serial.println("Relay " + String(index) + " turned OFF");
-    } else {
+    }
+    else
+    {
       Serial.println("Invalid command");
     }
 

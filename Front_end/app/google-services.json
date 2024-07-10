@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "952139232032",
-    "project_id": "intern-2024-36130",
-    "storage_bucket": "intern-2024-36130.appspot.com"
+    "project_number": "556255786530",
+    "project_id": "intern-2024-7b2c9",
+    "storage_bucket": "intern-2024-7b2c9.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:952139232032:android:85ba7226af19bb51591d45",
+        "mobilesdk_app_id": "1:556255786530:android:2b51c6a46a6bf3673dbc7b",
         "android_client_info": {
           "package_name": "com.example.intern_2024"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAElI2dyrxOJeDfhDgYvd9esYTeqI_ugiM"
+          "current_key": "AIzaSyDuPa54S9ardt7IbxHKiQTak_0fTAVG2bE"
         }
       ],
       "services": {

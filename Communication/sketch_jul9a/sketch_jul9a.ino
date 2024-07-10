@@ -2,6 +2,12 @@
 #include <AdafruitIO_WiFi.h>
 #include "RelayStatus.h"
 
+#define IO_USERNAME "tuannguyen2208nat"
+#define IO_KEY "aio_ZMAD70yk9WBlfvJMFK1MgWjUCj4K"
+
+#define WIFI_SSID "ACLAB"
+#define WIFI_PASS "ACLAB2023"
+
 #define LED_PIN 2
 #define TXD 8
 #define RXD 9

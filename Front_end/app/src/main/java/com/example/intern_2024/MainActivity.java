@@ -1,5 +1,6 @@
 package com.example.intern_2024;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -33,13 +34,18 @@ import com.bumptech.glide.Glide;
 import com.example.intern_2024.fragment.Home;
 import com.example.intern_2024.fragment.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     View headerView;
     ImageView image_user, back_login;
     FirebaseUser user;
+    FirebaseFirestore db;
     private final Profile mProfile=new Profile();
     final ActivityResultLauncher<Intent> mActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -195,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
                                     user = auth.getCurrentUser();
                                     dialog.dismiss();
                                     updateUI(user);
+                                    updloadData(user);
                                 } else {
                                     Toast.makeText(MainActivity.this, "Email or password is incorrect",
                                             Toast.LENGTH_SHORT).show();
@@ -252,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
                                     dialog.dismiss();
                                     user = auth.getCurrentUser();
                                     updateUI(user);
+                                    updloadData(user);
                                 } else {
                                     Toast.makeText(MainActivity.this, "Registration failed.", Toast.LENGTH_SHORT).show();
                                 }
@@ -278,5 +287,40 @@ public class MainActivity extends AppCompatActivity {
                 openGallery();
             }
         }
+    }
+
+    public void updloadData(FirebaseUser user)
+    {
+        if (user.getDisplayName() == null) {
+            showAlert("Bạn hãy vào profile để cập nhật nick name");
+        }
+        else {
+            db= FirebaseFirestore.getInstance();
+            String id=user.getUid();
+            Map<String,Object> doc=new HashMap<>();
+            doc.put("id",id);
+            doc.put("channel", Arrays.asList(1, 2, 3));
+            db.collection("User").document(id).set(doc)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+        }
+    }
+
+    private void showAlert(String message) {
+        new AlertDialog.Builder(this)
+                .setTitle("Chú ý")
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 }

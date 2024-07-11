@@ -40,8 +40,8 @@ public class Profile extends Fragment {
 
     Button btn_sign_out, btn_update_profile;
     LinearLayout formlogin_none, formlogin_done;
-    TextView sign_in, sign_up,edit_email, edit_password;
-    EditText edit_nick_name ;
+    TextView sign_in, sign_up, edit_email, edit_password;
+    EditText edit_nick_name;
     ImageView img_avatar;
     FirebaseUser user;
     private Uri mUri;
@@ -105,7 +105,7 @@ public class Profile extends Fragment {
                 FirebaseAuth.getInstance().signOut();
                 formlogin_none.setVisibility(View.VISIBLE);
                 formlogin_done.setVisibility(View.GONE);
-                Navigation.findNavController(view).navigate(R.id.menuHome);
+                Navigation.findNavController(view).navigate(R.id.menuProfile);
                 if (getActivity() instanceof MainActivity) {
                     ((MainActivity) getActivity()).updateUI(null);
                 }
@@ -177,6 +177,7 @@ public class Profile extends Fragment {
                                     navController.navigate(R.id.menuProfile);
                                     refresh_activity();
                                     dialog.dismiss();
+                                    uploadData_to_Activity();
                                     formlogin_none.setVisibility(View.GONE);
                                     formlogin_done.setVisibility(View.VISIBLE);
                                 } else {
@@ -198,7 +199,7 @@ public class Profile extends Fragment {
         EditText password_1 = dialog.findViewById(R.id.password_1);
         EditText password_2 = dialog.findViewById(R.id.password_2);
         Button registerButton = dialog.findViewById(R.id.register_button);
-        TextView signin_text=dialog.findViewById(R.id.signin_text);
+        TextView signin_text = dialog.findViewById(R.id.signin_text);
 
         signin_text.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -236,6 +237,7 @@ public class Profile extends Fragment {
                                     navController.navigate(R.id.menuProfile);
                                     refresh_activity();
                                     dialog.dismiss();
+                                    uploadData_to_Activity();
                                     formlogin_none.setVisibility(View.GONE);
                                     formlogin_done.setVisibility(View.VISIBLE);
                                 } else {
@@ -244,7 +246,6 @@ public class Profile extends Fragment {
                             }
                         });
             }
-
         });
     }
 
@@ -295,6 +296,7 @@ public class Profile extends Fragment {
                         if (task.isSuccessful()) {
                             Toast.makeText(getActivity(), "Update Profile Success", Toast.LENGTH_SHORT).show();
                             refresh_activity();
+                            uploadData_to_Activity();
                         }
                     }
                 });
@@ -354,6 +356,12 @@ public class Profile extends Fragment {
     private void refresh_activity() {
         if (getActivity() instanceof MainActivity) {
             ((MainActivity) getActivity()).updateUI(user);
+        }
+    }
+
+    private void uploadData_to_Activity() {
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).updloadData(user);
         }
     }
 }

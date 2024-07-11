@@ -40,6 +40,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
@@ -54,9 +59,10 @@ public class MainActivity extends AppCompatActivity {
     TextView name_user, email_user;
     ConstraintLayout constraintLayout_1, constraintLayout_2;
     View headerView;
-    ImageView image_user, back_login;
+    ImageView image_user, back_login,close_button;
     FirebaseUser user;
-    FirebaseFirestore db;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
     private final Profile mProfile=new Profile();
     final ActivityResultLauncher<Intent> mActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -105,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
+        database= FirebaseDatabase.getInstance();
 
         findViewById(R.id.menuIcon).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateUI(FirebaseUser user) {
         if (user != null) {
+            updloadData(user);
             constraintLayout_1.setVisibility(View.GONE);
             constraintLayout_2.setVisibility(View.VISIBLE);
             email_user.setText(user.getEmail());
@@ -169,6 +177,13 @@ public class MainActivity extends AppCompatActivity {
         EditText password = dialog.findViewById(R.id.password);
         TextView forgot_password_text = dialog.findViewById(R.id.forgot_password_text);
         TextView signup_text = dialog.findViewById(R.id.signup_text);
+        close_button=dialog.findViewById(R.id.close_button);
+
+        close_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();}
+            });
 
         forgot_password_text.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,10 +215,8 @@ public class MainActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(MainActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
                                     user = auth.getCurrentUser();
-                                    dialog.dismiss();
                                     updateUI(user);
-                                    updloadData(user);
-
+                                    dialog.dismiss();
                                 } else {
                                     Toast.makeText(MainActivity.this, "Email or password is incorrect",
                                             Toast.LENGTH_SHORT).show();
@@ -222,7 +235,14 @@ public class MainActivity extends AppCompatActivity {
         EditText username = dialog.findViewById(R.id.username);
         EditText password_1 = dialog.findViewById(R.id.password_1);
         EditText password_2 = dialog.findViewById(R.id.password_2);
+        close_button=dialog.findViewById(R.id.close_button);
         Button registerButton = dialog.findViewById(R.id.register_button);
+
+        close_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();}
+        });
 
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,7 +281,6 @@ public class MainActivity extends AppCompatActivity {
                                     dialog.dismiss();
                                     user = auth.getCurrentUser();
                                     updateUI(user);
-                                    updloadData(user);
                                 } else {
                                     Toast.makeText(MainActivity.this, "Registration failed.", Toast.LENGTH_SHORT).show();
                                 }
@@ -271,10 +290,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void openGallery(){
-            Intent intent =new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            mActivityResultLauncher.launch(Intent.createChooser(intent,"Select Picture"));
+        Intent intent =new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        mActivityResultLauncher.launch(Intent.createChooser(intent,"Select Picture"));
     }
 
 
@@ -293,28 +312,28 @@ public class MainActivity extends AppCompatActivity {
     public void updloadData(FirebaseUser user)
     {
         if (user.getDisplayName() == null) {
-            showAlert("Bạn hãy vào profile để cập nhật nick name");
+            showAlert("Please go to Profile to update your nickname");
         }
         else {
-            db = FirebaseFirestore.getInstance();
-            String id = user.getUid();
-            Map<String, Object> doc = new HashMap<>();
-            doc.put("id", id);
-            doc.put("channel", Arrays.asList(1, 2, 3));
-            db.collection("User").document(id).set(doc)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
+            String uid = user.getUid();
+            myRef= database.getReference("id");
 
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                        }
-                    });
+            myRef.setValue(uid);
         }
+    }
+
+    public void readData(){
+        myRef= database.getReference("id");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue(String.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
     private void showAlert(String message) {

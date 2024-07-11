@@ -49,7 +49,7 @@ public class Profile extends Fragment {
     LinearLayout formlogin_none, formlogin_done;
     TextView sign_in, sign_up, edit_email, edit_password;
     EditText edit_nick_name;
-    ImageView img_avatar;
+    ImageView img_avatar,close_button;
     FirebaseUser user;
     FirebaseFirestore db;
     private Uri mUri;
@@ -151,6 +151,12 @@ public class Profile extends Fragment {
         EditText password = dialog.findViewById(R.id.password);
         TextView forgot_password_text = dialog.findViewById(R.id.forgot_password_text);
         TextView signup_text = dialog.findViewById(R.id.signup_text);
+        close_button=dialog.findViewById(R.id.close_button);
+        close_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();}
+        });
 
         forgot_password_text.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,6 +215,12 @@ public class Profile extends Fragment {
         EditText password_2 = dialog.findViewById(R.id.password_2);
         Button registerButton = dialog.findViewById(R.id.register_button);
         TextView signin_text = dialog.findViewById(R.id.signin_text);
+        close_button=dialog.findViewById(R.id.close_button);
+        close_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();}
+        });
 
         signin_text.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -336,6 +348,12 @@ public class Profile extends Fragment {
         EditText password_1 = dialog.findViewById(R.id.password_1);
         EditText password_2 = dialog.findViewById(R.id.password_2);
         String email = edit_email.getText().toString().trim();
+        close_button=dialog.findViewById(R.id.close_button);
+        close_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();}
+        });
 
         Button change_button = dialog.findViewById(R.id.change_button);
         change_button.setOnClickListener(new View.OnClickListener() {

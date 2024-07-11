@@ -193,12 +193,11 @@ public class Profile extends Fragment {
                                     refresh_activity();
                                     formlogin_none.setVisibility(View.GONE);
                                     formlogin_done.setVisibility(View.VISIBLE);
-                                    updloadData_to_Activity();
+                                    dialog.dismiss();
                                 } else {
                                     Toast.makeText(getActivity(), "Email or password is incorrect",
                                             Toast.LENGTH_SHORT).show();
                                 }
-                                dialog.dismiss();
                             }
                         });
             }
@@ -260,11 +259,10 @@ public class Profile extends Fragment {
                                     refresh_activity();
                                     formlogin_none.setVisibility(View.GONE);
                                     formlogin_done.setVisibility(View.VISIBLE);
-                                    updloadData_to_Activity();
+                                    dialog.dismiss();
                                 } else {
                                     Toast.makeText(getActivity(), "Registration failed.", Toast.LENGTH_SHORT).show();
                                 }
-                                dialog.dismiss();
                             }
                         });
             }
@@ -332,7 +330,6 @@ public class Profile extends Fragment {
                         if (task.isSuccessful()) {
                             Toast.makeText(getActivity(), "Update Profile Success", Toast.LENGTH_SHORT).show();
                             refresh_activity();
-                            updloadData_to_Activity();
                         } else {
                             Toast.makeText(getActivity(), "Failed to update profile", Toast.LENGTH_SHORT).show();
                         }
@@ -409,19 +406,6 @@ public class Profile extends Fragment {
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
-    }
-    private void updloadData_to_Activity(){
-        if(user.getDisplayName()==null)
-        {
-            showAlert("Please update your nickname in profile");
-        }
-        else {
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).updateUI(user);
-            }
-        }
-
-
     }
 
 }

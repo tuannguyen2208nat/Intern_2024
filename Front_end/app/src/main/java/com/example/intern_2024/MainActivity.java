@@ -33,6 +33,8 @@ import androidx.navigation.ui.NavigationUI;
 import com.bumptech.glide.Glide;
 import com.example.intern_2024.fragment.Home;
 import com.example.intern_2024.fragment.Profile;
+import com.example.intern_2024.model.User;
+import com.example.intern_2024.model.list_relay;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -183,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();}
-            });
+        });
 
         forgot_password_text.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -278,9 +280,9 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(MainActivity.this, "Registered successfully.", Toast.LENGTH_SHORT).show();
-                                    dialog.dismiss();
                                     user = auth.getCurrentUser();
                                     updateUI(user);
+                                    dialog.dismiss();
                                 } else {
                                     Toast.makeText(MainActivity.this, "Registration failed.", Toast.LENGTH_SHORT).show();
                                 }
@@ -315,15 +317,20 @@ public class MainActivity extends AppCompatActivity {
             showAlert("Please go to Profile to update your nickname");
         }
         else {
+            myRef= database.getReference("user_inform");
             String uid = user.getUid();
-            myRef= database.getReference("id");
+            String email=user.getEmail();
+            String userName = user.getDisplayName();
+            String name_file= email.substring(0, email.indexOf("@"));
+            String file=name_file+".db";
 
-            myRef.setValue(uid);
+            User user_info = new User( userName, email,file,new list_relay(1,2,3,4,5,6,7,8));
+            myRef.child(uid).setValue(user_info);
         }
     }
 
     public void readData(){
-        myRef= database.getReference("id");
+        myRef= database.getReference("user_inform");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

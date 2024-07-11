@@ -1,6 +1,7 @@
 package com.example.intern_2024.fragment;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -27,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.example.intern_2024.MainActivity;
 import com.example.intern_2024.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthCredential;
@@ -35,6 +37,11 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Profile extends Fragment {
 
@@ -44,6 +51,7 @@ public class Profile extends Fragment {
     EditText edit_nick_name;
     ImageView img_avatar;
     FirebaseUser user;
+    FirebaseFirestore db;
     private Uri mUri;
     private View view;
     private static final int MY_REQUEST_CODE = 101;
@@ -175,15 +183,16 @@ public class Profile extends Fragment {
                                     Toast.makeText(getActivity(), "Login Success", Toast.LENGTH_SHORT).show();
                                     NavController navController = Navigation.findNavController(view);
                                     navController.navigate(R.id.menuProfile);
+                                    user = auth.getCurrentUser();
                                     refresh_activity();
-                                    dialog.dismiss();
-                                    uploadData_to_Activity();
                                     formlogin_none.setVisibility(View.GONE);
                                     formlogin_done.setVisibility(View.VISIBLE);
+                                    updloadData_to_Activity();
                                 } else {
                                     Toast.makeText(getActivity(), "Email or password is incorrect",
                                             Toast.LENGTH_SHORT).show();
                                 }
+                                dialog.dismiss();
                             }
                         });
             }
@@ -235,14 +244,15 @@ public class Profile extends Fragment {
                                     Toast.makeText(getActivity(), "Registered successfully.", Toast.LENGTH_SHORT).show();
                                     NavController navController = Navigation.findNavController(view);
                                     navController.navigate(R.id.menuProfile);
+                                    user = auth.getCurrentUser();
                                     refresh_activity();
-                                    dialog.dismiss();
-                                    uploadData_to_Activity();
                                     formlogin_none.setVisibility(View.GONE);
                                     formlogin_done.setVisibility(View.VISIBLE);
+                                    updloadData_to_Activity();
                                 } else {
                                     Toast.makeText(getActivity(), "Registration failed.", Toast.LENGTH_SHORT).show();
                                 }
+                                dialog.dismiss();
                             }
                         });
             }
@@ -263,6 +273,20 @@ public class Profile extends Fragment {
         } else {
             String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
             requireActivity().requestPermissions(permissions, MY_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, proceed with gallery opening
+                ((MainActivity) requireActivity()).openGallery();
+            } else {
+                // Permission denied, show a message or handle gracefully
+                Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -296,7 +320,9 @@ public class Profile extends Fragment {
                         if (task.isSuccessful()) {
                             Toast.makeText(getActivity(), "Update Profile Success", Toast.LENGTH_SHORT).show();
                             refresh_activity();
-                            uploadData_to_Activity();
+                            updloadData_to_Activity();
+                        } else {
+                            Toast.makeText(getActivity(), "Failed to update profile", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -359,9 +385,25 @@ public class Profile extends Fragment {
         }
     }
 
-    private void uploadData_to_Activity() {
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).updloadData(user);
-        }
+    private void showAlert(String message) {
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Attention")
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
+    private void updloadData_to_Activity(){
+        if(user.getDisplayName()==null)
+        {
+            showAlert("Please update your nickname in profile");
+        }
+        else {
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).updateUI(user);
+            }
+        }
+
+
+    }
+
 }

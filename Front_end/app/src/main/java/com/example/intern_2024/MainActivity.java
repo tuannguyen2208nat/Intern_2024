@@ -203,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
                                     dialog.dismiss();
                                     updateUI(user);
                                     updloadData(user);
+
                                 } else {
                                     Toast.makeText(MainActivity.this, "Email or password is incorrect",
                                             Toast.LENGTH_SHORT).show();
@@ -295,10 +296,10 @@ public class MainActivity extends AppCompatActivity {
             showAlert("Bạn hãy vào profile để cập nhật nick name");
         }
         else {
-            db= FirebaseFirestore.getInstance();
-            String id=user.getUid();
-            Map<String,Object> doc=new HashMap<>();
-            doc.put("id",id);
+            db = FirebaseFirestore.getInstance();
+            String id = user.getUid();
+            Map<String, Object> doc = new HashMap<>();
+            doc.put("id", id);
             doc.put("channel", Arrays.asList(1, 2, 3));
             db.collection("User").document(id).set(doc)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -318,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showAlert(String message) {
         new AlertDialog.Builder(this)
-                .setTitle("Chú ý")
+                .setTitle("Attension")
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, null)
                 .show();

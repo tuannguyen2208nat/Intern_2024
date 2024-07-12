@@ -245,6 +245,9 @@ public class Profile extends Fragment {
                     Toast.makeText(getActivity(), "Passwords do not match", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if (!isValidEmailFormat(usernameStr)) {
+                    Toast.makeText(getContext(), "Invalid email format", Toast.LENGTH_SHORT).show();
+                }
 
                 FirebaseAuth auth = FirebaseAuth.getInstance();
                 auth.createUserWithEmailAndPassword(usernameStr, password1Str)
@@ -261,7 +264,7 @@ public class Profile extends Fragment {
                                     formlogin_done.setVisibility(View.VISIBLE);
                                     dialog.dismiss();
                                 } else {
-                                    Toast.makeText(getActivity(), "Registration failed.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), "Your email has been registered", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -406,6 +409,12 @@ public class Profile extends Fragment {
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
+    }
+
+    private boolean isValidEmailFormat(String email) {
+        // Regular expression to check the email format xx@abc.xyz
+        String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+        return email.matches(emailPattern);
     }
 
 }

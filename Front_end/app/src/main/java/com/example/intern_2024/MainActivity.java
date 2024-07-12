@@ -31,12 +31,10 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
-import com.example.intern_2024.fragment.Home;
 import com.example.intern_2024.fragment.Profile;
 import com.example.intern_2024.model.User;
 import com.example.intern_2024.model.list_relay;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthResult;
@@ -47,10 +45,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -154,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateUI(FirebaseUser user) {
         if (user != null) {
-            updloadData(user);
+            uploadData(user);
             constraintLayout_1.setVisibility(View.GONE);
             constraintLayout_2.setVisibility(View.VISIBLE);
             email_user.setText(user.getEmail());
@@ -311,23 +307,41 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void updloadData(FirebaseUser user)
-    {
+    public void uploadData(FirebaseUser user) {
         if (user.getDisplayName() == null) {
             showAlert("Please go to Profile to update your nickname");
-        }
-        else {
-            myRef= database.getReference("user_inform");
+        } else {
+            // Initialize Firebase database and user reference
+            myRef = database.getReference("user_inform");
             String uid = user.getUid();
-            String email=user.getEmail();
-            String userName = user.getDisplayName();
-            String name_file= email.substring(0, email.indexOf("@"));
-            String file=name_file+".db";
+            String name = user.getDisplayName();
+            String mail = user.getEmail();
 
-            User user_info = new User( userName, email,file,new list_relay(1,2,3,4,5,6,7,8));
-            myRef.child(uid).setValue(user_info);
+            // Create User object
+            User user1 = new User(uid, name, mail);
+
+            // Create a map to store user data
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("email", mail);
+            userMap.put("file", name);
+
+            // Create a map to store listRelay data
+            Map<String, Object> relayMap = new HashMap<>();
+
+            // Create 8 relay objects and add them to relayMap
+            for (int i = 1; i <= 8; i++) {
+                list_relay relay = new list_relay(i, 0, "relay_" + i); // Assuming default value as 0
+                relayMap.put("relay" + i, relay);
+            }
+
+            // Add listRelay map to user map
+            userMap.put("listRelay", relayMap);
+
+            // Upload user data to Firebase
+            myRef.child(uid).setValue(userMap);
         }
     }
+
 
     public void readData(){
         myRef= database.getReference("user_inform");

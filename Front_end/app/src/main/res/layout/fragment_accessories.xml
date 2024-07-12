@@ -10,31 +10,20 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcv_relay"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginTop="20dp">
-        <EditText
-            android:id="@+id/index_relay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1" />
-    </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginTop="20dp">
-            <Button
-                android:id="@+id/button_relay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
+        android:layout_height="wrap_content"/>
 
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/relay_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="19dp"
+        android:src="@drawable/ic_add" />
+
 
 </FrameLayout>

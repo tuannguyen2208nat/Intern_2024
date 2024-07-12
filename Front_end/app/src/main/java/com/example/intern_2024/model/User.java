@@ -12,12 +12,23 @@ public class User {
     public User() {
     }
 
-    public User( String name, String email,String file, list_relay list_relay) {
+    public User(com.example.intern_2024.model.list_relay list_relay) {
+        this.list_relay = list_relay;
+    }
+
+    public User(String name, String email, String file) {
+        this.name = name;
+        this.email = email;
+        this.file = file;
+    }
+
+    public User(String name, String email, String file, list_relay list_relay) {
         this.name = name;
         this.email = email;
         this.file = file;
         this.list_relay = list_relay;
     }
+
 
     public String getName() {
         return name;

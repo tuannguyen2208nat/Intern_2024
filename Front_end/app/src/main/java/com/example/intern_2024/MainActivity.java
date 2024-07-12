@@ -39,6 +39,7 @@ import com.example.intern_2024.model.User;
 import com.example.intern_2024.model.list_relay;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -324,10 +325,6 @@ public class MainActivity extends AppCompatActivity {
             myRef = database.getReference("user_inform");
             String uid = user.getUid();
             String mail = user.getEmail();
-            if (mail == null || !mail.contains("@")) {
-                showAlert("Invalid email format");
-                return;
-            }
 
             String[] parts = mail.split("@");
             String filename = parts[0] + ".db";
@@ -336,14 +333,6 @@ public class MainActivity extends AppCompatActivity {
             userMap.put("email", mail);
             userMap.put("name", name);
             userMap.put("file", filename);
-
-            Map<String, Object> relayMap = new HashMap<>();
-
-            for (int i = 1; i <= 8; i++) {
-                list_relay relay = new list_relay(i, 0, "relay_" + i);
-                relayMap.put("relay" + i, relay.toMap());
-            }
-            userMap.put("listRelay", relayMap);
 
             myRef.child(uid).setValue(userMap);
         }

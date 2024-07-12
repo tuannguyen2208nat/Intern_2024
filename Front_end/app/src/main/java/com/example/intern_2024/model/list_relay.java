@@ -5,22 +5,22 @@ import java.util.Map;
 
 public class list_relay {
     private int index;
-    private int value;
+    private int relay_id;
     private String name;
 
     public list_relay() {
     }
 
-    public list_relay(int index, int value) {
+    public list_relay(int index, int relay_id) {
         String setName = "relay_" + index;
         this.index = index;
-        this.value = value;
+        this.relay_id = relay_id;
         this.name = setName;
     }
 
-    public list_relay(int index, int value, String name) {
+    public list_relay(int index, int relay_id, String name) {
         this.index = index;
-        this.value = value;
+        this.relay_id = relay_id;
         this.name = name;
     }
 
@@ -32,12 +32,12 @@ public class list_relay {
         this.index = index;
     }
 
-    public int getValue() {
-        return value;
+    public int getRelay_id() {
+        return relay_id;
     }
 
-    public void setValue(int value) {
-        this.value = value;
+    public void setRelay_id(int relay_id) {
+        this.relay_id = relay_id;
     }
 
     public String getName() {
@@ -51,7 +51,7 @@ public class list_relay {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("index", index);
         hashMap.put("name", name);
-        hashMap.put("value", value);
+        hashMap.put("relay_id", relay_id);
         return hashMap;
     }
 }

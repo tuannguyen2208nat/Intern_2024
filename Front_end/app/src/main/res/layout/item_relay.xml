@@ -10,38 +10,62 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
+
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1.5">
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/relay_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/change_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_change_name"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="?android:attr/listDivider" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3"
+            android:layout_marginLeft="10dp">
+
             <TextView
                 android:id="@+id/relay_index"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:layout_marginLeft="10dp"
                 android:text="Relay_1"
-                android:textSize="10sp"/>
+                android:textSize="10sp" />
 
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
 
-            <TextView
-                android:id="@+id/relay_name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:textSize="12sp"/>
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
+        <View
+            android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:background="?android:attr/listDivider" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:layout_marginLeft="10dp">
 
             <com.github.angads25.toggle.widget.LabeledSwitch
                 android:id="@+id/relay_btn"
@@ -49,7 +73,11 @@
                 android:layout_height="match_parent"
                 android:textSize="10sp" />
         </LinearLayout>
+
+
+
         <ImageView
+            android:layout_marginLeft="10dp"
             android:id="@+id/delete_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -57,8 +85,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
     </LinearLayout>
-
 
 </androidx.cardview.widget.CardView>

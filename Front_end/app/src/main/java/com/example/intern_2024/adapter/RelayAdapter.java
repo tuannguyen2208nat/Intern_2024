@@ -44,12 +44,11 @@ public class RelayAdapter extends RecyclerView.Adapter<RelayAdapter.UserViewHold
         if (listRelayItem == null) {
             return;
         }
-        holder.relayIndex.setText(String.valueOf(listRelayItem.getIndex()));
+        holder.relayIndex.setText(String.valueOf("Relay_"+listRelayItem.getRelay_id()));
         holder.relayName.setText(listRelayItem.getName());
-        holder.relayName.setOnClickListener(new View.OnClickListener() {
+        holder.change_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 mIClickListener.onClickupdateRelay(listRelayItem);
             }
         });
@@ -82,12 +81,13 @@ public class RelayAdapter extends RecyclerView.Adapter<RelayAdapter.UserViewHold
     public class UserViewHolder extends RecyclerView.ViewHolder {
         private TextView relayIndex, relayName;
         private LabeledSwitch labeledSwitch;
-        private ImageView deleteButton;
+        private ImageView deleteButton,change_name;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
             relayIndex = itemView.findViewById(R.id.relay_index);
             relayName = itemView.findViewById(R.id.relay_name);
+            change_name=itemView.findViewById(R.id.change_name);
             labeledSwitch = itemView.findViewById(R.id.relay_btn);
             deleteButton = itemView.findViewById(R.id.delete_button);
         }

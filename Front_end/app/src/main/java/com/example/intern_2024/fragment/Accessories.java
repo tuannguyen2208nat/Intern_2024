@@ -1,5 +1,7 @@
 package com.example.intern_2024.fragment;
 
+import android.app.Dialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,11 +14,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.intern_2024.R;
 import com.example.intern_2024.adapter.RelayAdapter;
 import com.example.intern_2024.model.list_relay;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,16 +45,35 @@ public class Accessories extends Fragment {
     FirebaseUser user;
     FirebaseDatabase database;
     DatabaseReference myRef;
+    FloatingActionButton relay_add;
+    ImageView close_button;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_accessories, container, false);
         rcvRelay=view.findViewById(R.id.rcv_relay);
+        relay_add=view.findViewById(R.id.relay_add);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rcvRelay.setLayoutManager(linearLayoutManager);
 
         mListRelay=new ArrayList<>();
-        mRelayAdapter = new RelayAdapter(mListRelay);
+        mRelayAdapter = new RelayAdapter(mListRelay, new RelayAdapter.IClickListener() {
+            @Override
+            public void onClickupdateRelay(list_relay relay) {
+                openDialogupdateRelay(relay);
+            }
+
+            @Override
+            public void onClickdeleteRelay(list_relay relay) {
+
+            }
+
+            @Override
+            public void onClickuseRelay(list_relay relay) {
+
+            }
+        });
         rcvRelay.setAdapter(mRelayAdapter);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -96,6 +122,26 @@ public class Accessories extends Fragment {
                 Toast.makeText(getContext(), "Get list relay failed", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void openDialogupdateRelay(list_relay relay) {
+        Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_dialog_box_change_name_relay);
+        Window window=dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.show();
+        close_button=dialog.findViewById(R.id.close_button);
+        close_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();}
+        });
+
+        EditText change_name_device = dialog.findViewById(R.id.change_name_device);
+
     }
 
 

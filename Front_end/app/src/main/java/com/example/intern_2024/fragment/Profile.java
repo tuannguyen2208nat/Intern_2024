@@ -273,6 +273,7 @@ public class Profile extends Fragment {
                                     navController.navigate(R.id.menuProfile);
                                     user = auth.getCurrentUser();
                                     refresh_activity();
+                                    refresh_uploaddata();
                                     formlogin_none.setVisibility(View.GONE);
                                     formlogin_done.setVisibility(View.VISIBLE);
                                     dialog.dismiss();
@@ -345,6 +346,8 @@ public class Profile extends Fragment {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(getActivity(), "Update Profile Success", Toast.LENGTH_SHORT).show();
+                            user=FirebaseAuth.getInstance().getCurrentUser();
+                            refresh_uploaddata();
                             refresh_activity();
                         } else {
                             Toast.makeText(getActivity(), "Failed to update profile", Toast.LENGTH_SHORT).show();
@@ -418,6 +421,12 @@ public class Profile extends Fragment {
     private void refresh_activity() {
         if (getActivity() instanceof MainActivity) {
             ((MainActivity) getActivity()).updateUI(user);
+        }
+    }
+
+    private void refresh_uploaddata() {
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).uploadDataRegister(user);
         }
     }
 

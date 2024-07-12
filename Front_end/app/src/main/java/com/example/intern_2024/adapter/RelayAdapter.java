@@ -49,18 +49,21 @@ public class RelayAdapter extends RecyclerView.Adapter<RelayAdapter.UserViewHold
         holder.relayName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              mIClickListener.onClickupdateRelay(listRelayItem);
+
+                mIClickListener.onClickupdateRelay(listRelayItem);
             }
         });
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 mIClickListener.onClickdeleteRelay(listRelayItem);
             }
         });
         holder.labeledSwitch.setOnToggledListener(new OnToggledListener() {
             @Override
             public void onSwitched(ToggleableView toggleableView, boolean isOn) {
+
                    mIClickListener.onClickuseRelay(listRelayItem);
             }
         });

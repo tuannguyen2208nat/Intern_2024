@@ -66,9 +66,7 @@ public class Accessories extends Fragment {
             }
 
             @Override
-            public void onClickdeleteRelay(list_relay relay) {
-
-            }
+            public void onClickdeleteRelay(list_relay relay) {deleteRelay(relay);}
 
             @Override
             public void onClickuseRelay(list_relay relay) {
@@ -86,55 +84,15 @@ public class Accessories extends Fragment {
         return view;
     }
 
-    public void deleteRelay(int id){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String uid=user.getUid();
-        myRef = database.getReference("user_inform");
-        Map<String,Object> map = new HashMap<>();
-        String index=uid+"/listRelay/"+"relay"+id;
-        map.put(index,-1);
-        myRef.updateChildren(map, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                Toast.makeText(getContext(), "Delete Relay_"+id+" successfully", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
     private void getlistRelay() {
         String uid = user.getUid();
         String index = "user_inform/" + uid + "/listRelay";
         myRef = database.getReference(index);
-
-//        myRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if(mListRelay!=null)
-//                {
-//                    mListRelay.clear();
-//                }
-//
-//                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-//                    list_relay listRelay = dataSnapshot.getValue(list_relay.class);
-//                    if (listRelay != null) {
-//                        mListRelay.add(listRelay);
-//                    }
-//                }
-//                mRelayAdapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Toast.makeText(getContext(), "Get list relay failed", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
-
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
                 list_relay listRelay = dataSnapshot.getValue(list_relay.class);
-                if(listRelay!=null)
-                {
+                if (listRelay != null && listRelay.getValue()==1 ) {
                     mListRelay.add(listRelay);
                     mRelayAdapter.notifyDataSetChanged();
                 }
@@ -149,7 +107,7 @@ public class Accessories extends Fragment {
                 for (int i = 0; i < mListRelay.size(); i++) {
                     if (mListRelay.get(i).getIndex() == listRelay.getIndex()) {
                         mListRelay.get(i).setName(listRelay.getName());
-                        mRelayAdapter.notifyItemChanged(i); // Cập nhật chỉ mục cụ thể thay vì toàn bộ danh sách
+                        mRelayAdapter.notifyItemChanged(i);
                         break;
                     }
                 }
@@ -206,13 +164,52 @@ public class Accessories extends Fragment {
                 Map<String, Object> relayUpdates = new HashMap<>();
                 relayUpdates.put("name", newName);
                 myRef.updateChildren(relayUpdates);
-                Toast.makeText(getContext(), "Update Relay successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Update relay successfully", Toast.LENGTH_SHORT).show();
+                getlistRelay();
+                dialog.dismiss();
+            }
+        });
+    }
+
+    public void deleteRelay(list_relay list_relay){
+        Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_dialog_box_delete_relay);
+        Window window=dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.show();
+        close_button=dialog.findViewById(R.id.close_button);
+        close_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();}
+        });
+
+        Button button_no=dialog.findViewById(R.id.button_no);
+        button_no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 dialog.dismiss();
             }
         });
 
-
+        Button button_yes=dialog.findViewById(R.id.button_yes);
+        button_yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String uid = user.getUid();
+                String index = "user_inform/" + uid + "/listRelay/relay" + list_relay.getIndex();
+                myRef = database.getReference(index);
+                Map<String, Object> relayUpdates = new HashMap<>();
+                relayUpdates.put("value", 0);
+                myRef.updateChildren(relayUpdates);
+                Toast.makeText(getContext(), "Delete relay successfully", Toast.LENGTH_SHORT).show();
+                getlistRelay();
+                dialog.dismiss();
+            }
+        });
     }
-
 
 }

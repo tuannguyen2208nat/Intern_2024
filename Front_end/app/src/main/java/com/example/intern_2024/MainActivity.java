@@ -153,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateUI(FirebaseUser user) {
         if (user != null) {
-            uploadData(user);
             constraintLayout_1.setVisibility(View.GONE);
             constraintLayout_2.setVisibility(View.VISIBLE);
             email_user.setText(user.getEmail());
@@ -286,6 +285,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(MainActivity.this, "Registered successfully.", Toast.LENGTH_SHORT).show();
                                     user = auth.getCurrentUser();
+                                    uploadDataRegister(user);
                                     updateUI(user);
                                     dialog.dismiss();
                                 } else {
@@ -316,15 +316,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void uploadData(FirebaseUser user) {
+    public void uploadDataRegister(FirebaseUser user) {
+        String name="";
         if (user.getDisplayName() == null) {
             showAlert("Please go to Profile to update your nickname");
-        } else {
+        } else { name = user.getDisplayName();}
             myRef = database.getReference("user_inform");
             String uid = user.getUid();
-            String name = user.getDisplayName();
             String mail = user.getEmail();
-
             if (mail == null || !mail.contains("@")) {
                 showAlert("Invalid email format");
                 return;
@@ -348,23 +347,6 @@ public class MainActivity extends AppCompatActivity {
 
             myRef.child(uid).setValue(userMap);
         }
-    }
-
-
-
-    public void readData(){
-        myRef= database.getReference("user_inform");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String value = dataSnapshot.getValue(String.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-    }
 
     private void showAlert(String message) {
         new AlertDialog.Builder(this)

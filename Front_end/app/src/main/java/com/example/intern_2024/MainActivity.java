@@ -157,11 +157,7 @@ public class MainActivity extends AppCompatActivity {
             constraintLayout_1.setVisibility(View.GONE);
             constraintLayout_2.setVisibility(View.VISIBLE);
             email_user.setText(user.getEmail());
-            if (user.getDisplayName() == null) {
-                name_user.setVisibility(View.GONE);
-            } else {
-                name_user.setText(user.getDisplayName());
-            }
+            name_user.setText(user.getDisplayName());
             Uri photoUrl = user.getPhotoUrl();
             Glide.with(this).load(photoUrl).error(R.drawable.ic_avatar_default).into(image_user);
         } else {
@@ -324,36 +320,36 @@ public class MainActivity extends AppCompatActivity {
         if (user.getDisplayName() == null) {
             showAlert("Please go to Profile to update your nickname");
         } else {
-            // Initialize Firebase database and user reference
             myRef = database.getReference("user_inform");
             String uid = user.getUid();
             String name = user.getDisplayName();
             String mail = user.getEmail();
 
-            // Create User object
-            User user1 = new User(uid, name, mail);
-
-            // Create a map to store user data
-            Map<String, Object> userMap = new HashMap<>();
-            userMap.put("email", mail);
-            userMap.put("file", name);
-
-            // Create a map to store listRelay data
-            Map<String, Object> relayMap = new HashMap<>();
-
-            // Create 8 relay objects and add them to relayMap
-            for (int i = 1; i <= 8; i++) {
-                list_relay relay = new list_relay(i, 0, "relay_" + i); // Assuming default value as 0
-                relayMap.put("relay" + i, relay);
+            if (mail == null || !mail.contains("@")) {
+                showAlert("Invalid email format");
+                return;
             }
 
-            // Add listRelay map to user map
+            String[] parts = mail.split("@");
+            String filename = parts[0] + ".db";
+
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("email", mail);
+            userMap.put("name", name);
+            userMap.put("file", filename);
+
+            Map<String, Object> relayMap = new HashMap<>();
+
+            for (int i = 1; i <= 8; i++) {
+                list_relay relay = new list_relay(i, 0, "relay_" + i);
+                relayMap.put("relay" + i, relay.toMap());
+            }
             userMap.put("listRelay", relayMap);
 
-            // Upload user data to Firebase
             myRef.child(uid).setValue(userMap);
         }
     }
+
 
 
     public void readData(){

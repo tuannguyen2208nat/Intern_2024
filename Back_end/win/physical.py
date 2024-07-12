@@ -4,6 +4,7 @@ import serial.tools.list_ports
 import random
 import relaystate  
 
+
 def getPort():
     ports = serial.tools.list_ports.comports()
     N = len(ports)
@@ -15,6 +16,7 @@ def getPort():
             splitPort = strPort.split(" ")    
             commPort = (splitPort[0])
     return commPort
+
 
 portName = getPort()
 print(portName)
@@ -37,4 +39,4 @@ while True:
         index = random.randint(0, 32) 
         state = random.choice([True, False])
         setDevice(state, index)
-    time.sleep(2)
+    time.sleep(10)

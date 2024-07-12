@@ -1,5 +1,8 @@
 package com.example.intern_2024.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class list_relay {
     private int index;
     private int value;
@@ -43,5 +46,12 @@ public class list_relay {
 
     public void setName(String name) {
         this.name = name;
+    }
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("index", index);
+        hashMap.put("name", name);
+        hashMap.put("value", value);
+        return hashMap;
     }
 }

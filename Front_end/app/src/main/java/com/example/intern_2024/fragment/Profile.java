@@ -54,7 +54,6 @@ public class Profile extends Fragment {
     EditText edit_nick_name;
     ImageView img_avatar,close_button;
     FirebaseUser user;
-    FirebaseFirestore db;
     private Uri mUri;
     private View view;
     private static final int MY_REQUEST_CODE = 101;
@@ -113,7 +112,7 @@ public class Profile extends Fragment {
         btn_sign_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
+                signOut();
                 formlogin_none.setVisibility(View.VISIBLE);
                 formlogin_done.setVisibility(View.GONE);
                 Navigation.findNavController(view).navigate(R.id.menuProfile);
@@ -331,8 +330,11 @@ public class Profile extends Fragment {
         }
         String displayName = edit_nick_name.getText().toString().trim();
         if (displayName.contains(" ")) {
-            // Show toast message
             Toast.makeText(getContext(), "Nickname cannot contain spaces", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (displayName.isEmpty()) {
+            Toast.makeText(getContext(), "Nickname cannot be empty", Toast.LENGTH_SHORT).show();
             return;
         }
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -347,7 +349,8 @@ public class Profile extends Fragment {
                         if (task.isSuccessful()) {
                             Toast.makeText(getActivity(), "Update Profile Success", Toast.LENGTH_SHORT).show();
                             user=FirebaseAuth.getInstance().getCurrentUser();
-                            refresh_uploaddata();
+                            String name=user.getDisplayName();
+                            openDialogUpdateUser(name);
                             refresh_activity();
                         } else {
                             Toast.makeText(getActivity(), "Failed to update profile", Toast.LENGTH_SHORT).show();
@@ -427,6 +430,18 @@ public class Profile extends Fragment {
     private void refresh_uploaddata() {
         if (getActivity() instanceof MainActivity) {
             ((MainActivity) getActivity()).uploadDataRegister(user);
+        }
+    }
+
+    private void openDialogUpdateUser(String name)
+    {
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).updateData(name);
+        }
+    }
+    private void signOut() {
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).sign_out();
         }
     }
 

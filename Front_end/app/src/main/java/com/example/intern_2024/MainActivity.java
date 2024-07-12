@@ -56,29 +56,29 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int MY_REQUEST_CODE=10;
+    public static final int MY_REQUEST_CODE = 10;
     TextView sign_in, sign_up;
     TextView name_user, email_user;
     ConstraintLayout constraintLayout_1, constraintLayout_2;
     View headerView;
-    ImageView image_user, back_login,close_button;
+    ImageView image_user, back_login, close_button;
     FirebaseUser user;
     FirebaseDatabase database;
     DatabaseReference myRef;
-    private final Profile mProfile=new Profile();
+    private final Profile mProfile = new Profile();
     final ActivityResultLauncher<Intent> mActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == RESULT_OK ) {
-                        Intent intent=result.getData();
-                        if(intent==null){
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent intent = result.getData();
+                        if (intent == null) {
                             return;
                         }
-                        Uri uri=intent.getData();
+                        Uri uri = intent.getData();
                         mProfile.setmUri(uri);
                         try {
-                            Bitmap bitmap= MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                             mProfile.setBitmapImageView(bitmap);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
-        database= FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
 
         findViewById(R.id.menuIcon).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,8 +170,8 @@ public class MainActivity extends AppCompatActivity {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.custom_dialog_form_login);
-        Window window=dialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(false);
         dialog.show();
@@ -179,12 +179,13 @@ public class MainActivity extends AppCompatActivity {
         EditText password = dialog.findViewById(R.id.password);
         TextView forgot_password_text = dialog.findViewById(R.id.forgot_password_text);
         TextView signup_text = dialog.findViewById(R.id.signup_text);
-        close_button=dialog.findViewById(R.id.close_button);
+        close_button = dialog.findViewById(R.id.close_button);
 
         close_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();}
+                dialog.dismiss();
+            }
         });
 
         forgot_password_text.setOnClickListener(new View.OnClickListener() {
@@ -218,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
                                     Toast.makeText(MainActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
                                     user = auth.getCurrentUser();
                                     updateUI(user);
+                                    refreshdata();
                                     dialog.dismiss();
                                 } else {
                                     Toast.makeText(MainActivity.this, "Email or password is incorrect",
@@ -233,8 +235,8 @@ public class MainActivity extends AppCompatActivity {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.custom_dialog_form_register);
-        Window window=dialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(false);
         dialog.show();
@@ -242,13 +244,14 @@ public class MainActivity extends AppCompatActivity {
         EditText username = dialog.findViewById(R.id.username);
         EditText password_1 = dialog.findViewById(R.id.password_1);
         EditText password_2 = dialog.findViewById(R.id.password_2);
-        close_button=dialog.findViewById(R.id.close_button);
+        close_button = dialog.findViewById(R.id.close_button);
         Button registerButton = dialog.findViewById(R.id.register_button);
 
         close_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();}
+                dialog.dismiss();
+            }
         });
 
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -258,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
                 String password1Str = password_1.getText().toString();
                 String password2Str = password_2.getText().toString();
 
-                TextView signin_text=dialog.findViewById(R.id.signin_text);
+                TextView signin_text = dialog.findViewById(R.id.signin_text);
 
                 signin_text.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -297,51 +300,87 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public void openGallery(){
-        Intent intent =new Intent();
+
+    public void openGallery() {
+        Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        mActivityResultLauncher.launch(Intent.createChooser(intent,"Select Picture"));
+        mActivityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
     }
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,@NonNull String[] permissions,@NonNull int[] grantResult){
-        super.onRequestPermissionsResult(requestCode,permissions,grantResult);
-        if(requestCode==MY_REQUEST_CODE)
-        {
-            if(grantResult.length>0 && grantResult[0]== PackageManager.PERMISSION_GRANTED)
-            {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResult) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResult);
+        if (requestCode == MY_REQUEST_CODE) {
+            if (grantResult.length > 0 && grantResult[0] == PackageManager.PERMISSION_GRANTED) {
                 openGallery();
             }
         }
     }
 
-    public void uploadDataRegister(FirebaseUser user) {
-        String name="";
-        if (user.getDisplayName() == null) {
-            showAlert("Please go to Profile to update your nickname");
-        } else { name = user.getDisplayName();}
-            myRef = database.getReference("user_inform");
-            String uid = user.getUid();
-            String mail = user.getEmail();
-
-            String[] parts = mail.split("@");
-            String filename = parts[0] + ".db";
-
-            Map<String, Object> userMap = new HashMap<>();
-            userMap.put("email", mail);
-            userMap.put("name", name);
-            userMap.put("file", filename);
-
-            myRef.child(uid).setValue(userMap);
+    public void uploadDataRegister(FirebaseUser user_register) {
+        String name = "";
+        if (user_register.getDisplayName() != null) {
+            name = user_register.getDisplayName();
         }
+        myRef = database.getReference("user_inform");
+        String uid = user_register.getUid();
+        String email = user_register.getEmail();
 
-    private void showAlert(String message) {
-        new AlertDialog.Builder(this)
-                .setTitle("Attension")
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
+        String[] parts = email.split("@");
+        String filename = parts[0] + ".db";
+
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("email", email);
+        userMap.put("name", name);
+        userMap.put("file", filename);
+
+        myRef.child(uid).setValue(userMap);
+        user= FirebaseAuth.getInstance().getCurrentUser();
     }
+
+    public void updateData(String name)
+    {
+        myRef = database.getReference("user_inform");
+        String uid = user.getUid();
+        String email = user.getEmail();
+        String[] parts = email.split("@");
+        String filename = parts[0] + ".db";
+
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("email", email);
+        userMap.put("name", name);
+        userMap.put("file", filename);
+        myRef.child(uid).updateChildren(userMap);
+        user= FirebaseAuth.getInstance().getCurrentUser();
+    }
+    public void refreshdata()
+    {
+        String name = "";
+        if (user.getDisplayName() != null) {
+            name = user.getDisplayName();
+        }
+        myRef = database.getReference("user_inform");
+        String uid = user.getUid();
+        String email = user.getEmail();
+
+        String[] parts = email.split("@");
+        String filename = parts[0] + ".db";
+
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("email", email);
+        userMap.put("name", name);
+        userMap.put("file", filename);
+        myRef.child(uid).updateChildren(userMap);
+        user= FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    public void sign_out()
+    {
+        FirebaseAuth.getInstance().signOut();
+        user= FirebaseAuth.getInstance().getCurrentUser();
+        updateUI(user);
+    }
+
 }

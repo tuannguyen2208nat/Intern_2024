@@ -1,6 +1,5 @@
 package com.example.intern_2024.fragment;
 
-import android.animation.Animator;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.drawable.ColorDrawable;
@@ -23,7 +22,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.intern_2024.R;
+import com.example.intern_2024.adapter.RecycleViewAdapter;
 import com.example.intern_2024.adapter.RelayAdapter;
+import com.example.intern_2024.database.SQLiteHelper;
+import com.example.intern_2024.model.Item;
 import com.example.intern_2024.model.list_relay;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,9 +40,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.nightonke.jellytogglebutton.State;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Calendar;
 
 public class Accessories extends Fragment {
     private View view;
@@ -52,21 +53,23 @@ public class Accessories extends Fragment {
     DatabaseReference myRef;
     FloatingActionButton relay_add;
     ImageView close_button;
+    RecycleViewAdapter adapter;
+    private SQLiteHelper db;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_accessories, container, false);
         rcvRelay=view.findViewById(R.id.rcv_relay);
         relay_add=view.findViewById(R.id.relay_add);
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rcvRelay.setLayoutManager(linearLayoutManager);
 
         mListRelay=new ArrayList<>();
 
-
         user = FirebaseAuth.getInstance().getCurrentUser();
         database=FirebaseDatabase.getInstance();
+        getFileDatabase();
 
         mRelayAdapter = new RelayAdapter(mListRelay, new RelayAdapter.IClickListener() {
             @Override
@@ -191,9 +194,11 @@ public class Accessories extends Fragment {
             public void onClick(View v) {
                 String newName = change_name_device.getText().toString();
                 list_relay.setName(newName);
+                String relay_id=String.valueOf(list_relay.getRelay_id());
                 myRef.child(String.valueOf(list_relay.getIndex())).updateChildren(list_relay.toMap(), new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                        befor_addItemAndReload("Update name relay "+relay_id+" .");
                         Toast.makeText(getContext(), "Update relay successfully", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }
@@ -232,10 +237,12 @@ public class Accessories extends Fragment {
             public void onClick(View v) {
                 String uid = user.getUid();
                 String index = "user_inform/" + uid + "/listRelay" ;
+                String relay_id=String.valueOf(list_relay.getRelay_id());
                 myRef = database.getReference(index);
                 myRef.child(String.valueOf(list_relay.getIndex())).removeValue(new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                        befor_addItemAndReload("Delete relay "+relay_id+" .");
                         Toast.makeText(getContext(), "Delete relay successfully", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -311,6 +318,7 @@ public class Accessories extends Fragment {
                         myRef.child(String.valueOf(newId) ).setValue(newRelay, new DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                befor_addItemAndReload("Add new relay "+ newRelay.getRelay_id()+" .");
                                 Toast.makeText(getContext(), "Add relay successfully", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
                             }
@@ -335,5 +343,66 @@ public class Accessories extends Fragment {
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
     }
+    private void addItemAndReload(String time, String detail) {
+        Item item = new Item(time, detail);
+        long id = db.addItem(item);
+        if (id != -1) {
+            loadData();
+        }
+    }
+
+    private void loadData() {
+        adapter = new RecycleViewAdapter();
+        List<Item> list = db.getAll();
+        adapter.setList(list);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void befor_addItemAndReload(String detail) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        int day=calendar.get(Calendar.DAY_OF_MONTH);
+        int month= calendar.get(Calendar.MONTH) + 1;
+        int year= calendar.get(Calendar.YEAR);
+        String shour = String.valueOf(hour);
+        String sminute = String.valueOf(minute);
+        String sday=String.valueOf(day);
+        String smonth=String.valueOf(month);
+        String syear=String.valueOf(year);
+        if(hour<10)
+        {
+            shour="0"+shour;
+        }
+        if(minute<10)
+        {
+            sminute="0"+sminute;
+        }
+        String timePicker = sday + "/"+smonth+"/"+syear+"-"+shour+":"+sminute;
+        addItemAndReload(timePicker, detail);
+    }
+
+    private void getFileDatabase(){
+        if (user != null) {
+            String uid = user.getUid();
+            myRef = FirebaseDatabase.getInstance().getReference("user_inform").child(uid).child("file");
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String databaseName = dataSnapshot.getValue(String.class);
+
+                    if (databaseName != null && !databaseName.isEmpty()) {
+                        db = new SQLiteHelper(getContext(), databaseName);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+        }
+    }
+
 
 }

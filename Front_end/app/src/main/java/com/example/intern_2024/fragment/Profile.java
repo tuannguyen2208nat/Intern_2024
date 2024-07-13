@@ -30,6 +30,9 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.intern_2024.MainActivity;
 import com.example.intern_2024.R;
+import com.example.intern_2024.adapter.RecycleViewAdapter;
+import com.example.intern_2024.database.SQLiteHelper;
+import com.example.intern_2024.model.Item;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -40,10 +43,17 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Profile extends Fragment {
@@ -57,6 +67,9 @@ public class Profile extends Fragment {
     private Uri mUri;
     private View view;
     private static final int MY_REQUEST_CODE = 101;
+    RecycleViewAdapter adapter;
+    private SQLiteHelper db;
+    private DatabaseReference myRef;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,6 +84,7 @@ public class Profile extends Fragment {
         edit_password = view.findViewById(R.id.edit_password);
         img_avatar = view.findViewById(R.id.img_avatar);
 
+
         formlogin_none = view.findViewById(R.id.formlogin_none);
         sign_in = view.findViewById(R.id.sign_in);
         sign_up = view.findViewById(R.id.sign_up);
@@ -81,6 +95,7 @@ public class Profile extends Fragment {
             form_login_profile();
         } else {
             user = FirebaseAuth.getInstance().getCurrentUser();
+            getFileDatabase();
             formlogin_none.setVisibility(View.GONE);
             formlogin_done.setVisibility(View.VISIBLE);
             edit_profile();
@@ -201,6 +216,8 @@ public class Profile extends Fragment {
                                     formlogin_none.setVisibility(View.GONE);
                                     formlogin_done.setVisibility(View.VISIBLE);
                                     dialog.dismiss();
+                                    getFileDatabase();
+//                                    befor_addItemAndReload("Login Success .");
                                 } else {
                                     Toast.makeText(getActivity(), "Email or password is incorrect",
                                             Toast.LENGTH_SHORT).show();
@@ -276,6 +293,8 @@ public class Profile extends Fragment {
                                     formlogin_none.setVisibility(View.GONE);
                                     formlogin_done.setVisibility(View.VISIBLE);
                                     dialog.dismiss();
+                                    getFileDatabase();
+                                    befor_addItemAndReload("Registered successfully .");
                                 } else {
                                     Toast.makeText(getActivity(), "Your email has been registered", Toast.LENGTH_SHORT).show();
                                 }
@@ -352,6 +371,8 @@ public class Profile extends Fragment {
                             String name=user.getDisplayName();
                             openDialogUpdateUser(name);
                             refresh_activity();
+                            getFileDatabase();
+                            befor_addItemAndReload("Update Profile .");
                         } else {
                             Toast.makeText(getActivity(), "Failed to update profile", Toast.LENGTH_SHORT).show();
                         }
@@ -410,6 +431,7 @@ public class Profile extends Fragment {
                                                     Toast.makeText(getActivity(), "Update Password Success", Toast.LENGTH_SHORT).show();
                                                     dialog.dismiss();
                                                     refresh_activity();
+                                                    befor_addItemAndReload("Update Password .");
                                                 } else {
                                                     Toast.makeText(getActivity(), "Update Password Failed", Toast.LENGTH_SHORT).show();
                                                 }
@@ -457,6 +479,66 @@ public class Profile extends Fragment {
         // Regular expression to check the email format xx@abc.xyz
         String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
         return email.matches(emailPattern);
+    }
+
+    private void addItemAndReload(String time, String detail) {
+        Item item = new Item(time, detail);
+        long id = db.addItem(item);
+        if (id != -1) {
+            loadData();
+        }
+    }
+
+    private void loadData() {
+        adapter = new RecycleViewAdapter();
+        List<Item> list = db.getAll();
+        adapter.setList(list);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void befor_addItemAndReload(String detail) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        int day=calendar.get(Calendar.DAY_OF_MONTH);
+        int month= calendar.get(Calendar.MONTH) + 1;
+        int year= calendar.get(Calendar.YEAR);
+        String shour = String.valueOf(hour);
+        String sminute = String.valueOf(minute);
+        String sday=String.valueOf(day);
+        String smonth=String.valueOf(month);
+        String syear=String.valueOf(year);
+        if(hour<10)
+        {
+            shour="0"+shour;
+        }
+        if(minute<10)
+        {
+            sminute="0"+sminute;
+        }
+        String timePicker = sday + "/"+smonth+"/"+syear+"-"+shour+":"+sminute;
+        addItemAndReload(timePicker, detail);
+    }
+
+    private void getFileDatabase(){
+        if (user != null) {
+            String uid = user.getUid();
+            myRef = FirebaseDatabase.getInstance().getReference("user_inform").child(uid).child("file");
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String databaseName = dataSnapshot.getValue(String.class);
+                    if (databaseName != null && !databaseName.isEmpty()) {
+                        db = new SQLiteHelper(getContext(), databaseName);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+        }
     }
 
 }

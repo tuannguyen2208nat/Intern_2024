@@ -5,30 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.example.intern_2024.model.Item;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class SQLiteHelper extends SQLiteOpenHelper {
 
-    private static final String TAG = "SQLiteHelper";
     private static final int DATABASE_VERSION = 1;
-
     private static final String TABLE_ITEMS = "items";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_TIME = "time";
@@ -39,11 +23,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             COLUMN_TIME + " TEXT," +
             COLUMN_DETAIL + " TEXT)";
 
-    private Context context;
-
     public SQLiteHelper(@Nullable Context context, String databaseName) {
         super(context, databaseName, null, DATABASE_VERSION);
-        this.context = context;
     }
 
     @Override

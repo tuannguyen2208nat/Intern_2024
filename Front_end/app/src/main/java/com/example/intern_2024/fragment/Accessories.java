@@ -133,7 +133,7 @@ public class Accessories extends Fragment {
                 }
                 for (int i = 0; i < mListRelay.size(); i++) {
                     if (listRelay.getIndex() == mListRelay.get(i).getIndex()) {
-                       mListRelay.set(i, listRelay);
+                        mListRelay.set(i, listRelay);
                         break;
                     }
                 }

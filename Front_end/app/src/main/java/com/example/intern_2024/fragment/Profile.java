@@ -34,11 +34,8 @@ import com.example.intern_2024.adapter.RecycleViewAdapter;
 import com.example.intern_2024.database.SQLiteHelper;
 import com.example.intern_2024.model.Item;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,13 +45,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Profile extends Fragment {
 
@@ -127,13 +120,7 @@ public class Profile extends Fragment {
         btn_sign_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signOut();
-                formlogin_none.setVisibility(View.VISIBLE);
-                formlogin_done.setVisibility(View.GONE);
-                Navigation.findNavController(view).navigate(R.id.menuProfile);
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).updateUI(null);
-                }
+                form_signOut();
             }
         });
         btn_update_profile.setOnClickListener(new View.OnClickListener() {
@@ -147,9 +134,7 @@ public class Profile extends Fragment {
     void form_login_profile() {
         sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                form_login();
-            }
+            public void onClick(View v) { form_login();}
         });
 
         sign_up.setOnClickListener(new View.OnClickListener() {
@@ -160,148 +145,22 @@ public class Profile extends Fragment {
         });
     }
 
-    void form_login() {
-        Dialog dialog = new Dialog(getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.custom_dialog_form_login);
-        Window window=dialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setCancelable(false);
-        dialog.show();
-        EditText username = dialog.findViewById(R.id.username);
-        EditText password = dialog.findViewById(R.id.password);
-        TextView forgot_password_text = dialog.findViewById(R.id.forgot_password_text);
-        TextView signup_text = dialog.findViewById(R.id.signup_text);
-        close_button=dialog.findViewById(R.id.close_button);
-        close_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();}
-        });
-
-        forgot_password_text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Add forgot password functionality here
-            }
-        });
-
-        signup_text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                form_register();
-            }
-        });
-
-        Button button = dialog.findViewById(R.id.login_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String usernameStr = username.getText().toString();
-                String passwordStr = password.getText().toString();
-
-                FirebaseAuth auth = FirebaseAuth.getInstance();
-                auth.signInWithEmailAndPassword(usernameStr, passwordStr)
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(getActivity(), "Login Success", Toast.LENGTH_SHORT).show();
-                                    NavController navController = Navigation.findNavController(view);
-                                    navController.navigate(R.id.menuProfile);
-                                    user = auth.getCurrentUser();
-                                    refresh_activity();
-                                    formlogin_none.setVisibility(View.GONE);
-                                    formlogin_done.setVisibility(View.VISIBLE);
-                                    dialog.dismiss();
-                                    getFileDatabase();
-//                                    befor_addItemAndReload("Login Success .");
-                                } else {
-                                    Toast.makeText(getActivity(), "Email or password is incorrect",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
-        });
+    private void form_login(){
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).form_login("profile");
+        }
     }
 
-    void form_register() {
-        Dialog dialog = new Dialog(getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.custom_dialog_form_register);
-        Window window=dialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setCancelable(false);
-        dialog.show();
+    private void form_register(){
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).form_register("profile");
+        }
+    }
 
-        EditText username = dialog.findViewById(R.id.username);
-        EditText password_1 = dialog.findViewById(R.id.password_1);
-        EditText password_2 = dialog.findViewById(R.id.password_2);
-        Button registerButton = dialog.findViewById(R.id.register_button);
-        TextView signin_text = dialog.findViewById(R.id.signin_text);
-        close_button=dialog.findViewById(R.id.close_button);
-        close_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();}
-        });
-
-        signin_text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                form_login();
-            }
-        });
-
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String usernameStr = username.getText().toString();
-                String password1Str = password_1.getText().toString();
-                String password2Str = password_2.getText().toString();
-
-                if (password1Str.length() < 8 || password2Str.length() < 8) {
-                    Toast.makeText(getActivity(), "Password must be at least 8 characters long", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (!password1Str.equals(password2Str)) {
-                    Toast.makeText(getActivity(), "Passwords do not match", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (!isValidEmailFormat(usernameStr)) {
-                    Toast.makeText(getContext(), "Invalid email format", Toast.LENGTH_SHORT).show();
-                }
-
-                FirebaseAuth auth = FirebaseAuth.getInstance();
-                auth.createUserWithEmailAndPassword(usernameStr, password1Str)
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(getActivity(), "Registered successfully.", Toast.LENGTH_SHORT).show();
-                                    NavController navController = Navigation.findNavController(view);
-                                    navController.navigate(R.id.menuProfile);
-                                    user = auth.getCurrentUser();
-                                    refresh_activity();
-                                    refresh_uploaddata();
-                                    formlogin_none.setVisibility(View.GONE);
-                                    formlogin_done.setVisibility(View.VISIBLE);
-                                    dialog.dismiss();
-                                    getFileDatabase();
-                                    befor_addItemAndReload("Registered successfully .");
-                                } else {
-                                    Toast.makeText(getActivity(), "Your email has been registered", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
-        });
+    private void form_signOut() {
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).sign_out("profile");
+        }
     }
 
     private void onClickRequestPermission() {
@@ -445,13 +304,7 @@ public class Profile extends Fragment {
 
     private void refresh_activity() {
         if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).updateUI(user);
-        }
-    }
-
-    private void refresh_uploaddata() {
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).uploadDataRegister(user);
+            ((MainActivity) getActivity()).updateUI();
         }
     }
 
@@ -461,25 +314,7 @@ public class Profile extends Fragment {
             ((MainActivity) getActivity()).updateData(name);
         }
     }
-    private void signOut() {
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).sign_out();
-        }
-    }
 
-    private void showAlert(String message) {
-        new AlertDialog.Builder(getActivity())
-                .setTitle("Attention")
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
-    }
-
-    private boolean isValidEmailFormat(String email) {
-        // Regular expression to check the email format xx@abc.xyz
-        String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
-        return email.matches(emailPattern);
-    }
 
     private void addItemAndReload(String time, String detail) {
         Item item = new Item(time, detail);
@@ -540,5 +375,6 @@ public class Profile extends Fragment {
             });
         }
     }
+
 
 }

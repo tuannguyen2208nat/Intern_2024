@@ -35,20 +35,14 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.example.intern_2024.fragment.Profile;
-import com.example.intern_2024.model.User;
-import com.example.intern_2024.model.list_relay;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -135,24 +129,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        updateUI(user);
+        updateUI();
 
         sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                form_login();
+                form_login("");
             }
         });
 
         sign_up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                form_register();
+                form_register("");
             }
         });
     }
 
-    public void updateUI(FirebaseUser user) {
+    public void updateUI() {
+        user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             constraintLayout_1.setVisibility(View.GONE);
             constraintLayout_2.setVisibility(View.VISIBLE);
@@ -166,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void form_login() {
+    public void form_login(String fragment) {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.custom_dialog_form_login);
@@ -199,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                form_register();
+                form_register("");
             }
         });
 
@@ -210,6 +205,11 @@ public class MainActivity extends AppCompatActivity {
                 String usernameStr = username.getText().toString();
                 String passwordStr = password.getText().toString();
 
+                if (!isValidEmailFormat(usernameStr)) {
+                    Toast.makeText(MainActivity.this, "Invalid email format", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 FirebaseAuth auth = FirebaseAuth.getInstance();
                 auth.signInWithEmailAndPassword(usernameStr, passwordStr)
                         .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
@@ -218,9 +218,10 @@ public class MainActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(MainActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
                                     user = auth.getCurrentUser();
-                                    updateUI(user);
+                                    updateUI();
                                     refreshdata();
                                     dialog.dismiss();
+                                    direction(fragment);
                                 } else {
                                     Toast.makeText(MainActivity.this, "Email or password is incorrect",
                                             Toast.LENGTH_SHORT).show();
@@ -231,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    void form_register() {
+    public void form_register(String fragment) {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.custom_dialog_form_register);
@@ -261,13 +262,18 @@ public class MainActivity extends AppCompatActivity {
                 String password1Str = password_1.getText().toString();
                 String password2Str = password_2.getText().toString();
 
+                if (!isValidEmailFormat(usernameStr)) {
+                    Toast.makeText(MainActivity.this, "Invalid email format", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 TextView signin_text = dialog.findViewById(R.id.signin_text);
 
                 signin_text.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
-                        form_login();
+                        form_login("");
                     }
                 });
 
@@ -289,9 +295,10 @@ public class MainActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(MainActivity.this, "Registered successfully.", Toast.LENGTH_SHORT).show();
                                     user = auth.getCurrentUser();
-                                    uploadDataRegister(user);
-                                    updateUI(user);
+                                    uploadDataRegister();
+                                    updateUI();
                                     dialog.dismiss();
+                                    direction(fragment);
                                 } else {
                                     Toast.makeText(MainActivity.this, "Registration failed.", Toast.LENGTH_SHORT).show();
                                 }
@@ -299,6 +306,14 @@ public class MainActivity extends AppCompatActivity {
                         });
             }
         });
+    }
+
+    public void sign_out(String fragment)
+    {
+        FirebaseAuth.getInstance().signOut();
+        user= FirebaseAuth.getInstance().getCurrentUser();
+        updateUI();
+        direction(fragment);
     }
 
     public void openGallery() {
@@ -319,16 +334,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void uploadDataRegister(FirebaseUser user_register) {
+    public void uploadDataRegister() {
         String name = "";
-        if (user_register.getDisplayName() != null) {
-            name = user_register.getDisplayName();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user==null)
+        {
+            return;
+        }
+
+        String email=user.getEmail();
+        String uid = user.getUid();
+        String[] parts = email.split("@");
+        if (user.getDisplayName() != null) {
+            name = user.getDisplayName();
+        }
+        else {
+            name = parts[0] ;
         }
         myRef = database.getReference("user_inform");
-        String uid = user_register.getUid();
-        String email = user_register.getEmail();
-
-        String[] parts = email.split("@");
         String filename = parts[0] + ".db";
 
         Map<String, Object> userMap = new HashMap<>();
@@ -355,6 +378,13 @@ public class MainActivity extends AppCompatActivity {
         myRef.child(uid).updateChildren(userMap);
         user= FirebaseAuth.getInstance().getCurrentUser();
     }
+
+    private boolean isValidEmailFormat(String email) {
+        // Regular expression to check the email format xx@abc.xyz
+        String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+        return email.matches(emailPattern);
+    }
+
     public void refreshdata()
     {
         String name = "";
@@ -376,11 +406,20 @@ public class MainActivity extends AppCompatActivity {
         user= FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public void sign_out()
-    {
-        FirebaseAuth.getInstance().signOut();
-        user= FirebaseAuth.getInstance().getCurrentUser();
-        updateUI(user);
+    private void direction(String fragment){
+        NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
+        if(fragment.equals("home")) {
+            navController.navigate(R.id.menuHome);
+        }
+        else if (fragment.equals("accessories")) {
+            navController.navigate(R.id.menuAccessories);
+        }
+        else if (fragment.equals("automation")) {
+            navController.navigate(R.id.menuAutomation);
+        }
+        else if (fragment.equals("profile")) {
+            navController.navigate(R.id.menuProfile);
+        }
     }
 
 }

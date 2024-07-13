@@ -55,19 +55,13 @@ public class Home extends Fragment {
                     if (databaseName != null && !databaseName.isEmpty()) {
                         db = new SQLiteHelper(getContext(), databaseName);
                         loadData();
-                        Toast.makeText(getContext(), "Database name: " + databaseName, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getContext(), "Database name not found", Toast.LENGTH_SHORT).show();
                     }
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(getContext(), "Failed to get database name: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+
                 }
             });
-        } else {
-            Toast.makeText(getContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
         }
     }
 

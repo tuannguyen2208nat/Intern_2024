@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.nightonke.jellytogglebutton.State;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,7 +78,14 @@ public class Accessories extends Fragment {
             public void onClickdeleteRelay(list_relay relay) {deleteRelay(relay);}
 
             @Override
-            public void onClickuseRelay(list_relay relay) {
+            public void onClickuseRelay(list_relay relay, State state) {
+
+                if (state.equals(State.LEFT)) {
+                    Toast.makeText(getContext(), "Off", Toast.LENGTH_SHORT).show();
+                }
+                if (state.equals(State.RIGHT)) {
+                    Toast.makeText(getContext(), "On", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });

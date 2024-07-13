@@ -3,6 +3,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="green_1">#A5EFA2</color>
-    <color name="red_1">#EE6B6E</color>
-
+    <color name="green_2">#ECFFDC</color>
+    <color name="red_1">#FAA0A0</color>
+    <color name="red_2">#EE6B6E</color>
+    <color name="yellow_1">#FFD500</color>
+    <color name="yellow_2">#FFBF00</color>
+    <color name="pink_1">#FFF1FA</color>
+    <color name="grey_1">#E8E8E8</color>
 </resources>

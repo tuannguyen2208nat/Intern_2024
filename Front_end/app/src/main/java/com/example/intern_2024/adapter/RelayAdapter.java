@@ -5,14 +5,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.intern_2024.R;
-import com.example.intern_2024.model.User;
 import com.example.intern_2024.model.list_relay;
-import com.github.angads25.toggle.interfaces.OnToggledListener;
-import com.github.angads25.toggle.model.ToggleableView;
-import com.github.angads25.toggle.widget.LabeledSwitch;
+import com.nightonke.jellytogglebutton.JellyToggleButton;
+import com.nightonke.jellytogglebutton.State;
+
 import java.util.List;
 
 public class RelayAdapter extends RecyclerView.Adapter<RelayAdapter.UserViewHolder> {
@@ -22,7 +22,7 @@ public class RelayAdapter extends RecyclerView.Adapter<RelayAdapter.UserViewHold
     public interface IClickListener{
         void onClickupdateRelay(list_relay relay);
         void onClickdeleteRelay(list_relay relay);
-        void onClickuseRelay(list_relay relay);
+        void onClickuseRelay(list_relay relay,State state);
     }
 
     public RelayAdapter(List<list_relay> listRelay, IClickListener mIClickListener) {
@@ -59,11 +59,15 @@ public class RelayAdapter extends RecyclerView.Adapter<RelayAdapter.UserViewHold
                 mIClickListener.onClickdeleteRelay(listRelayItem);
             }
         });
-        holder.labeledSwitch.setOnToggledListener(new OnToggledListener() {
+        holder.faceOffToggleButton.setOnStateChangeListener(new JellyToggleButton.OnStateChangeListener() {
             @Override
-            public void onSwitched(ToggleableView toggleableView, boolean isOn) {
-
-                   mIClickListener.onClickuseRelay(listRelayItem);
+            public void onStateChange(float process, State state, JellyToggleButton fotb) {
+                if (state.equals(State.LEFT)) {
+                    mIClickListener.onClickuseRelay(listRelayItem,State.LEFT);
+                }
+                if (state.equals(State.RIGHT)) {
+                    mIClickListener.onClickuseRelay(listRelayItem,State.RIGHT);
+                }
             }
         });
 
@@ -80,7 +84,7 @@ public class RelayAdapter extends RecyclerView.Adapter<RelayAdapter.UserViewHold
 
     public class UserViewHolder extends RecyclerView.ViewHolder {
         private TextView relayIndex, relayName;
-        private LabeledSwitch labeledSwitch;
+        private JellyToggleButton faceOffToggleButton;
         private ImageView deleteButton,change_name;
 
         public UserViewHolder(@NonNull View itemView) {
@@ -88,7 +92,7 @@ public class RelayAdapter extends RecyclerView.Adapter<RelayAdapter.UserViewHold
             relayIndex = itemView.findViewById(R.id.relay_index);
             relayName = itemView.findViewById(R.id.relay_name);
             change_name=itemView.findViewById(R.id.change_name);
-            labeledSwitch = itemView.findViewById(R.id.relay_btn);
+            faceOffToggleButton = itemView.findViewById(R.id.relay_btn);
             deleteButton = itemView.findViewById(R.id.delete_button);
         }
     }

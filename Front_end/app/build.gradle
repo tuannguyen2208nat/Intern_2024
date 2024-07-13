@@ -51,7 +51,7 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.8.8")
     implementation("com.google.firebase:firebase-auth")
     implementation ("com.github.bumptech.glide:glide:4.16.0")
-    implementation ("com.github.angads25:toggle:1.1.0")
+    implementation ("com.nightonke:jellytogglebutton:1.0.2")
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit

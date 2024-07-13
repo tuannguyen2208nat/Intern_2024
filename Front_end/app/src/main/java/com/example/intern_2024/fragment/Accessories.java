@@ -289,7 +289,7 @@ public class Accessories extends Fragment {
                         int maxId = 0;
                         for (DataSnapshot child : snapshot.getChildren()) {
                             list_relay relay = child.getValue(list_relay.class);
-                            if(relay_id_int==relay.getIndex())
+                            if(relay_id_int==relay.getRelay_id())
                             {
                                 showAlert("Relay id already exists");
                                 return;

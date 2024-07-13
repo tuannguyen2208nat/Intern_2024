@@ -47,7 +47,7 @@
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="@drawable/button_form_sign_out"
+                android:background="@drawable/button_form_login"
                 android:text="No"
                 android:textColor="@color/black"
                 android:layout_marginRight="20dp"/>
@@ -58,7 +58,7 @@
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="@drawable/button_form_login"
+                android:background="@drawable/button_form_sign_out"
                 android:text="Yes"
                 android:textColor="@color/black"
                 android:layout_marginLeft="20dp"/>

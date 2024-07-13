@@ -15,6 +15,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -25,32 +27,28 @@ import java.util.List;
 public class SQLiteHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "SQLiteHelper";
-    private FirebaseUser user;
-    private FirebaseFirestore db_cloud;
-    private Context context;
-
-    private static final String DATABASE_NAME = "database.db";
     private static final int DATABASE_VERSION = 1;
 
-    public SQLiteHelper(@Nullable Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    private static final String TABLE_ITEMS = "items";
+    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_TIME = "time";
+    private static final String COLUMN_DETAIL = "detail";
+
+    private static final String SQL_CREATE_TABLE_ITEMS = "CREATE TABLE " + TABLE_ITEMS + " (" +
+            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            COLUMN_TIME + " TEXT," +
+            COLUMN_DETAIL + " TEXT)";
+
+    private Context context;
+
+    public SQLiteHelper(@Nullable Context context, String databaseName) {
+        super(context, databaseName, null, DATABASE_VERSION);
         this.context = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        db_cloud = FirebaseFirestore.getInstance();
-        if (user == null) {
-            return;
-        }
-        String uid = user.getUid();
-
-        String sqlCreateDB = "CREATE TABLE items(" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "time TEXT," +
-                "detail TEXT)";
-        db.execSQL(sqlCreateDB);
+        db.execSQL(SQL_CREATE_TABLE_ITEMS);
     }
 
     @Override
@@ -61,24 +59,33 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public List<Item> getAll() {
         List<Item> list = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
-        String order = "id DESC";
-        Cursor rs = db.query("items", null, null, null, null, null, order);
+        String order = COLUMN_ID + " DESC";
+        Cursor rs = db.query(TABLE_ITEMS, null, null, null, null, null, order);
 
-        while (rs != null && rs.moveToNext()) {
-            int id = rs.getInt(0);
-            String time = rs.getString(1);
-            String detail = rs.getString(2);
-            Item item = new Item(id, time, detail);
-            list.add(item);
+        if (rs != null) {
+            try {
+                while (rs.moveToNext()) {
+                    int id = rs.getInt(rs.getColumnIndexOrThrow(COLUMN_ID));
+                    String time = rs.getString(rs.getColumnIndexOrThrow(COLUMN_TIME));
+                    String detail = rs.getString(rs.getColumnIndexOrThrow(COLUMN_DETAIL));
+                    Item item = new Item(id, time, detail);
+                    list.add(item);
+                }
+            } finally {
+                rs.close();
+            }
         }
+        db.close();
         return list;
     }
 
-    public long addItem(Item i) {
+    public long addItem(Item item) {
         ContentValues values = new ContentValues();
-        values.put("time", i.getTime());
-        values.put("detail", i.getDetail());
+        values.put(COLUMN_TIME, item.getTime());
+        values.put(COLUMN_DETAIL, item.getDetail());
         SQLiteDatabase db = getWritableDatabase();
-        return db.insert("items", null, values);
+        long result = db.insert(TABLE_ITEMS, null, values);
+        db.close();
+        return result;
     }
 }

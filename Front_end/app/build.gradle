@@ -48,10 +48,16 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-firestore")
+    implementation ("com.google.firebase:firebase-core:21.1.1")
     implementation ("com.google.code.gson:gson:2.8.8")
     implementation("com.google.firebase:firebase-auth")
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     implementation ("com.nightonke:jellytogglebutton:1.0.2")
+    implementation ("com.google.firebase:firebase-messaging:23.2.0")
+
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+    implementation ("com.google.android.gms:play-services-oss-licenses:17.0.1")
+
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit

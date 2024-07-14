@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.Window;
@@ -35,6 +36,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.example.intern_2024.fragment.Profile;
+import com.example.intern_2024.welcome.welcome_app;
+import com.example.intern_2024.welcome.welcome_login;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -216,11 +219,11 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(MainActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
                                     user = auth.getCurrentUser();
                                     updateUI();
                                     refreshdata();
                                     dialog.dismiss();
+                                    welcome();
                                     direction(fragment);
                                 } else {
                                     Toast.makeText(MainActivity.this, "Email or password is incorrect",
@@ -293,7 +296,6 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(MainActivity.this, "Registered successfully.", Toast.LENGTH_SHORT).show();
                                     user = auth.getCurrentUser();
                                     uploadDataRegister();
                                     updateUI();
@@ -408,7 +410,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void direction(String fragment){
         NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
-        if(fragment.equals("home")) {
+        if(fragment.equals("home")|| fragment.equals("")) {
             navController.navigate(R.id.menuHome);
         }
         else if (fragment.equals("accessories")) {
@@ -420,6 +422,16 @@ public class MainActivity extends AppCompatActivity {
         else if (fragment.equals("profile")) {
             navController.navigate(R.id.menuProfile);
         }
+    }
+
+    public void welcome() {
+
+        String name = user.getDisplayName();
+
+        Intent intent = new Intent(MainActivity.this, welcome_login.class);
+        intent.putExtra("name", name);
+        startActivity(intent);
+        finish();
     }
 
 }

@@ -404,5 +404,4 @@ public class Accessories extends Fragment {
         }
     }
 
-
 }

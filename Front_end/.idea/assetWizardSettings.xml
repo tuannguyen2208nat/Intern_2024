@@ -48,6 +48,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
+                                                <entry key="imagePath" value="$USER_HOME$/Downloads/123.jpg" />
                                                 <entry key="opacityPercent" value="60" />
                                               </map>
                                             </option>
@@ -80,6 +81,8 @@
                                   </option>
                                   <option name="values">
                                     <map>
+                                      <entry key="assetType" value="IMAGE" />
+                                      <entry key="imageAsset" value="$USER_HOME$/Downloads/123.jpg" />
                                       <entry key="outputName" value="ic_change_name_1" />
                                     </map>
                                   </option>
@@ -108,6 +111,8 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
+                                                <entry key="imagePath" value="$USER_HOME$/Downloads/123.jpg" />
+                                                <entry key="scalingPercent" value="84" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -305,11 +310,6 @@
                             </entry>
                           </map>
                         </option>
-                        <option name="values">
-                          <map>
-                            <entry key="outputIconType" value="ACTIONBAR" />
-                          </map>
-                        </option>
                       </PersistentState>
                     </value>
                   </entry>
@@ -343,8 +343,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_close" />
-                            <entry key="sourceFile" value="$USER_HOME$/Downloads/211686_back_arrow_icon.svg" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="outputName" value="ic_wind" />
+                            <entry key="sourceFile" value="$USER_HOME$/Downloads/wind-energy-svgrepo-com.svg" />
                           </map>
                         </option>
                       </PersistentState>

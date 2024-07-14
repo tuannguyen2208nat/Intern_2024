@@ -12,8 +12,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,9 +97,13 @@ public class Profile extends Fragment {
 
     void edit_profile() {
         Uri photoUrl = user.getPhotoUrl();
-        Glide.with(this).load(photoUrl).error(R.drawable.ic_avatar_default).into(img_avatar);
+        Glide.with(getActivity()).load(photoUrl).error(R.drawable.ic_avatar_default).into(img_avatar);
         edit_email.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         if (FirebaseAuth.getInstance().getCurrentUser().getDisplayName() != null) {
+            edit_nick_name.setText(user.getDisplayName());
+        }
+        if(user.getDisplayName()!=null)
+        {
             edit_nick_name.setText(user.getDisplayName());
         }
 
@@ -169,14 +171,16 @@ public class Profile extends Fragment {
             return;
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            mainActivity.openGallery();
+            mUri=mainActivity.openGallery();
+            Glide.with(getActivity()).load(mUri).error(R.drawable.ic_avatar_default).into(img_avatar);
             return;
         }
-        if (requireActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            mainActivity.openGallery();
+        if (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+           mUri=mainActivity.openGallery();
+            Glide.with(getActivity()).load(mUri).error(R.drawable.ic_avatar_default).into(img_avatar);
         } else {
             String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
-            requireActivity().requestPermissions(permissions, MY_REQUEST_CODE);
+            getActivity().requestPermissions(permissions, MY_REQUEST_CODE);
         }
     }
 
@@ -192,14 +196,6 @@ public class Profile extends Fragment {
                 Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    public void setBitmapImageView(Bitmap bitmapImageView) {
-        img_avatar.setImageBitmap(bitmapImageView);
-    }
-
-    public void setmUri(Uri mUri) {
-        this.mUri = mUri;
     }
 
     private void onClickUpdateProfile() {

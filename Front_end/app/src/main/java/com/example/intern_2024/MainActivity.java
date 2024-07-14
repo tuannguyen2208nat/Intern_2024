@@ -1,18 +1,21 @@
 package com.example.intern_2024;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -36,16 +39,21 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.example.intern_2024.fragment.Profile;
-import com.example.intern_2024.welcome.welcome_app;
 import com.example.intern_2024.welcome.welcome_login;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -53,7 +61,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int MY_REQUEST_CODE = 10;
+    private static final int PICK_IMAGE_REQUEST = 1;
     TextView sign_in, sign_up;
     TextView name_user, email_user;
     ConstraintLayout constraintLayout_1, constraintLayout_2;
@@ -62,27 +70,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser user;
     FirebaseDatabase database;
     DatabaseReference myRef;
-    private final Profile mProfile = new Profile();
-    final ActivityResultLauncher<Intent> mActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent intent = result.getData();
-                        if (intent == null) {
-                            return;
-                        }
-                        Uri uri = intent.getData();
-                        mProfile.setmUri(uri);
-                        try {
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                            mProfile.setBitmapImageView(bitmap);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
+    StorageReference reference;
+    private Uri imageUri, imageUri2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance();
+        reference= FirebaseStorage.getInstance().getReference();
 
         findViewById(R.id.menuIcon).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -318,23 +308,49 @@ public class MainActivity extends AppCompatActivity {
         direction(fragment);
     }
 
-    public void openGallery() {
+    public Uri openGallery() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        mActivityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
-    }
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+        return imageUri2;
 
+    }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResult) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResult);
-        if (requestCode == MY_REQUEST_CODE) {
-            if (grantResult.length > 0 && grantResult[0] == PackageManager.PERMISSION_GRANTED) {
-                openGallery();
-            }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri2 = data.getData();
+            uploadImageToFirebaseStorage();
+        }
+        else {
+            Toast.makeText(this, "No Image Selected", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+    private void uploadImageToFirebaseStorage() {
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(imageUri2)
+                .build();
+
+        user=FirebaseAuth.getInstance().getCurrentUser();
+
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            user=FirebaseAuth.getInstance().getCurrentUser();
+                            direction("profile");
+                        } else {
+                            Toast.makeText(MainActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
 
     public void uploadDataRegister() {
         String name = "";
@@ -433,5 +449,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+
 
 }

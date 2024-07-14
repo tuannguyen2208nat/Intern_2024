@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.example.intern_2024.R;
 import com.example.intern_2024.adapter.RecycleViewAdapter;
 import com.example.intern_2024.adapter.RelayAdapter;
+import com.example.intern_2024.database.MQTTHelper;
 import com.example.intern_2024.database.SQLiteHelper;
 import com.example.intern_2024.model.Item;
 import com.example.intern_2024.model.list_relay;
@@ -39,11 +40,19 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.nightonke.jellytogglebutton.State;
 
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Calendar;
 
 public class Accessories extends Fragment {
+    MQTTHelper mqttHelper;
+    String link="La_Toh/feeds/status";
     private View view;
     private RecyclerView rcvRelay;
     private RelayAdapter mRelayAdapter;
@@ -83,12 +92,7 @@ public class Accessories extends Fragment {
             @Override
             public void onClickuseRelay(list_relay relay, State state) {
 
-                if (state.equals(State.LEFT)) {
-                    Toast.makeText(getContext(), "Off", Toast.LENGTH_SHORT).show();
-                }
-                if (state.equals(State.RIGHT)) {
-                    Toast.makeText(getContext(), "On", Toast.LENGTH_SHORT).show();
-                }
+                relay_switch(relay,state);
 
             }
         });
@@ -106,6 +110,7 @@ public class Accessories extends Fragment {
             getlistRelay();
         }
 
+        startMQTT();
 
         return view;
     }
@@ -206,6 +211,42 @@ public class Accessories extends Fragment {
             }
         });
     }
+
+    public void relay_switch(list_relay list_relay,State state){
+        String value="";
+        String uid = user.getUid();
+        String index = "user_inform/" + uid + "/listRelay" ;
+        String relay_id=String.valueOf(list_relay.getRelay_id());
+        myRef = database.getReference(index);
+        String int_fix;
+
+        if (state.equals(State.LEFT)) {
+            if(Integer.valueOf(relay_id)<10)
+            {
+                int_fix="0"+relay_id;
+            }
+            else {
+                int_fix=relay_id;
+            }
+            value="!RELAY"+String.valueOf(int_fix)+":OFF#";
+            Toast.makeText(getContext(), value, Toast.LENGTH_SHORT).show();
+        }
+        if (state.equals(State.RIGHT)) {
+            if(Integer.valueOf(relay_id)<10)
+            {
+                int_fix="0"+relay_id;
+            }
+            else {
+                int_fix=relay_id;
+            }
+            value="!RELAY"+String.valueOf(int_fix)+":ON#";
+            Toast.makeText(getContext(), value, Toast.LENGTH_SHORT).show();
+        }
+
+        sendDataMQTT(link,value);
+
+    }
+
 
     public void deleteRelay(list_relay list_relay){
         Dialog dialog = new Dialog(getActivity());
@@ -401,6 +442,44 @@ public class Accessories extends Fragment {
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                 }
             });
+        }
+    }
+
+
+    public void startMQTT() {
+        mqttHelper = new MQTTHelper(getContext());
+        mqttHelper.setCallback(new MqttCallbackExtended() {
+            @Override
+            public void connectComplete(boolean reconnect, String serverURI) {
+
+            }
+            @Override
+            public void connectionLost(Throwable cause) {
+
+            }
+            @Override
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+
+            }
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+
+            }
+        });
+    }
+
+
+    public void sendDataMQTT(String topic, String value){
+        MqttMessage msg = new MqttMessage();
+        msg.setId(1234);
+        msg.setQos(0);
+        msg.setRetained(false);
+
+        byte[] b = value.getBytes(Charset.forName("UTF-8"));
+        msg.setPayload(b);
+        try {
+            mqttHelper.mqttAndroidClient.publish(topic, msg);
+        }catch (MqttException e){
         }
     }
 

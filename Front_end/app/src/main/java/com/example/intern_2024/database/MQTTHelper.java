@@ -14,17 +14,19 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 
 public class MQTTHelper {
     public MqttAndroidClient mqttAndroidClient;
 
-    public final String[] arrayTopics = {"La_Toh/feeds/status"};
-
-    final String clientId = "12345678";
-    final String username = "La_Toh";
-    final String password = "aio_ZgzD57XCLY6E5cdGalKGfZOngweL";
-
-    final String serverUri = "tcp://io.adafruit.com:1883";
+    private String username ="tuannguyen2208nat" ;
+    private String password ="aio_TVsv55eu69pNVx4J10NS5oZewvLq";
+    public final String link = "tuannguyen2208nat/feeds/status";
+    private String clientId ="12345678";
+    private String serverUri = "tcp://io.adafruit.com:1883";
 
     public MQTTHelper(Context context){
         mqttAndroidClient = new MqttAndroidClient(context, serverUri, clientId);
@@ -80,7 +82,7 @@ public class MQTTHelper {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.w("Mqtt", "Failed to connect to: " + serverUri + exception.toString());
+
                 }
             });
 
@@ -91,17 +93,16 @@ public class MQTTHelper {
     }
 
     private void subscribeToTopic() {
-        for(int i = 0; i < arrayTopics.length; i++) {
             try {
-                mqttAndroidClient.subscribe(arrayTopics[i], 0, null, new IMqttActionListener() {
+                mqttAndroidClient.subscribe(link, 0, null, new IMqttActionListener() {
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
-                        Log.d("TEST", "Subscribed!");
+
                     }
 
                     @Override
                     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                        Log.d("TEST", "Subscribed fail!");
+
                     }
                 });
 
@@ -109,7 +110,7 @@ public class MQTTHelper {
                 System.err.println("Exceptionst subscribing");
                 ex.printStackTrace();
             }
-        }
     }
+
 
 }

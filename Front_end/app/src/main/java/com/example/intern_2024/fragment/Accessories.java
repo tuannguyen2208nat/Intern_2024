@@ -52,7 +52,7 @@ import java.util.Calendar;
 
 public class Accessories extends Fragment {
     MQTTHelper mqttHelper;
-    String link="La_Toh/feeds/status";
+    String link="tuannguyen2208nat/feeds/status";
     private View view;
     private RecyclerView rcvRelay;
     private RelayAdapter mRelayAdapter;
@@ -218,7 +218,8 @@ public class Accessories extends Fragment {
         String index = "user_inform/" + uid + "/listRelay" ;
         String relay_id=String.valueOf(list_relay.getRelay_id());
         myRef = database.getReference(index);
-        String int_fix;
+        String int_fix="";
+        String switch_state="";
 
         if (state.equals(State.LEFT)) {
             if(Integer.valueOf(relay_id)<10)
@@ -228,8 +229,8 @@ public class Accessories extends Fragment {
             else {
                 int_fix=relay_id;
             }
-            value="!RELAY"+String.valueOf(int_fix)+":OFF#";
-            Toast.makeText(getContext(), value, Toast.LENGTH_SHORT).show();
+            switch_state="OFF";
+
         }
         if (state.equals(State.RIGHT)) {
             if(Integer.valueOf(relay_id)<10)
@@ -239,10 +240,10 @@ public class Accessories extends Fragment {
             else {
                 int_fix=relay_id;
             }
-            value="!RELAY"+String.valueOf(int_fix)+":ON#";
-            Toast.makeText(getContext(), value, Toast.LENGTH_SHORT).show();
+            switch_state="ON";
         }
-
+        value="!RELAY"+int_fix+":"+switch_state+"#";
+        befor_addItemAndReload("Relay "+relay_id+" "+switch_state+" .");
         sendDataMQTT(link,value);
 
     }

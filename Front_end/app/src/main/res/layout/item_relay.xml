@@ -35,7 +35,7 @@
                 android:id="@+id/change_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_change_name"/>
+                android:src="@drawable/ic_change_relay_name"/>
         </LinearLayout>
 
         <View

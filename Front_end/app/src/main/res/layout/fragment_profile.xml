@@ -36,13 +36,13 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1">
                     <com.makeramen.roundedimageview.RoundedImageView
-                        android:id="@+id/img_avatar"
+                        android:id="@+id/edit_avatar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
                         app:riv_oval="true"
                         app:riv_border_color="@color/black"
-                        app:riv_border_width="1dp" />
+                        app:riv_border_width="0.1dp" />
                 </LinearLayout>
 
 
@@ -53,13 +53,19 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"/>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3"
                 android:orientation="vertical"
-                android:layout_marginTop="20dp">
+                android:background="@drawable/border_white_background"
+                android:padding="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -76,7 +82,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:textSize="18sp"
-                            android:text="Nick name"
+                            android:textStyle="bold"
+                            android:text="Name"
                             android:gravity="center_vertical"
                             android:textColor="@color/black" />
 
@@ -87,13 +94,30 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1">
 
-                        <EditText
-                            android:id="@+id/edit_nick_name"
-                            android:textSize="20sp"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:textColor="@color/black"/>
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/edit_name"
+                                android:textSize="20sp"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/black"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="10"
+                            android:gravity="center">
+                            <ImageView
+                                android:id="@+id/arrow_left_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/arrow_right"/>
+
+                        </LinearLayout>
 
                     </LinearLayout>
                 </LinearLayout>
@@ -118,6 +142,7 @@
                             android:layout_height="match_parent"
                             android:text="Email"
                             android:textSize="18sp"
+                            android:textStyle="bold"
                             android:gravity="center_vertical"
                             android:textColor="@color/black"/>
                     </LinearLayout>
@@ -127,13 +152,30 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1">
 
-                        <TextView
-                            android:id="@+id/edit_email"
-                            android:textSize="20sp"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:textColor="@color/black"/>
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/edit_email"
+                                android:textSize="20sp"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/black"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="10"
+                            android:gravity="center">
+                            <ImageView
+                                android:id="@+id/arrow_left_email"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/arrow_right"/>
+
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -157,6 +199,7 @@
                             android:layout_height="match_parent"
                             android:text="Password"
                             android:textSize="18sp"
+                            android:textStyle="bold"
                             android:gravity="center_vertical"
                             android:textColor="@color/black"/>
                     </LinearLayout>
@@ -165,20 +208,34 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1">
-
-                        <TextView
-                            android:id="@+id/edit_password"
-                            android:textSize="20sp"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="*********"
-                            android:gravity="center_vertical"/>
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/edit_password"
+                                android:textSize="20sp"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="*********"
+                                android:gravity="center_vertical"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="10"
+                            android:gravity="center">
+                            <ImageView
+                                android:id="@+id/arrow_left_password"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/arrow_right"/>
+                        </LinearLayout>
+
+
+
                     </LinearLayout>
                 </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider" />
             </LinearLayout>
         </LinearLayout>
 
@@ -186,25 +243,46 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="3"
-            android:gravity="center_vertical|center_horizontal">
+            android:gravity="center">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="top">
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_sign_out"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_form_sign_out"
+                        android:text="Sign Out"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_sign_out"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="30dp"
-                android:background="@drawable/button_form_sign_out"
-                android:text="Sign Out"
-                android:textColor="@color/black"/>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_update_profile"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:background="@drawable/button_form_login"
-                android:text="Update profile"
-                android:textColor="@color/black"/>
+
+
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

@@ -66,7 +66,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:background="@drawable/border_black_background">
+                android:background="@drawable/border_white_background">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -269,8 +269,7 @@
             android:layout_weight="5"
             android:gravity="center"
             android:orientation="vertical"
-            android:background="@drawable/border_black_background"
-            >
+            android:background="@drawable/border_white_background">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -285,12 +284,20 @@
                     android:textSize="17sp"
                     android:textStyle="bold"/>
             </LinearLayout>
+
             <LinearLayout
-                android:layout_marginTop="10dp"
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:paddingHorizontal="5sp">
+                android:paddingHorizontal="5sp"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"

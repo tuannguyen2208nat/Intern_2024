@@ -14,6 +14,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,17 +48,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
 import java.util.List;
 
 public class Profile extends Fragment {
 
-    Button btn_sign_out, btn_update_profile;
-    TextView edit_email, edit_password;
-    EditText edit_nick_name;
-    ImageView img_avatar,close_button;
+    Button btn_sign_out;
+    TextView edit_name,edit_email, edit_password;
+    ImageView edit_avatar,close_button,arrow_left_name,arrow_left_email,arrow_left_password;
     FirebaseUser user;
     Uri mUri;
     private View view;
@@ -75,11 +74,14 @@ public class Profile extends Fragment {
         view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         btn_sign_out = view.findViewById(R.id.btn_sign_out);
-        btn_update_profile = view.findViewById(R.id.btn_update_profile);
-        edit_nick_name = view.findViewById(R.id.edit_nick_name);
+        edit_name = view.findViewById(R.id.edit_name);
         edit_email = view.findViewById(R.id.edit_email);
-        edit_password = view.findViewById(R.id.edit_password);
-        img_avatar = view.findViewById(R.id.img_avatar);
+        edit_password=view.findViewById(R.id.edit_password);
+        edit_avatar = view.findViewById(R.id.edit_avatar);
+        arrow_left_name=view.findViewById(R.id.arrow_left_name);
+        arrow_left_email=view.findViewById(R.id.arrow_left_email);
+        arrow_left_password=view.findViewById(R.id.arrow_left_password);
+
 
         user=FirebaseAuth.getInstance().getCurrentUser();
         storage= FirebaseStorage.getInstance();
@@ -94,36 +96,56 @@ public class Profile extends Fragment {
     void edit_profile() {
         user = FirebaseAuth.getInstance().getCurrentUser();
         Uri photoUrl = user.getPhotoUrl();
-        Glide.with(getActivity()).load(photoUrl).error(R.drawable.ic_avatar_default).into(img_avatar);
+        Glide.with(getActivity()).load(photoUrl).error(R.drawable.ic_avatar_default).into(edit_avatar);
         edit_email.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-        if(user.getDisplayName()!=null)
-        {
-            edit_nick_name.setText(user.getDisplayName());
-        }
-        img_avatar.setOnClickListener(new View.OnClickListener() {
+
+        edit_name.setText(user.getDisplayName());
+
+        edit_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickRequestPermission();
+                onClickEditImage();
             }
         });
+
+        edit_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {onClickEditName();}
+        });
+        arrow_left_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {onClickEditName();}
+        });
+
+        edit_email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {onClickEditEmail();}
+        });
+        arrow_left_email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {onClickEditEmail();}
+        });
+
         edit_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onClickEditPassword();
             }
         });
+        arrow_left_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickEditPassword();
+            }
+        });
+
         btn_sign_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 form_signOut();
             }
         });
-        btn_update_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickUpdateProfile();
-            }
-        });
+
     }
 
     private void form_signOut() {
@@ -144,55 +166,182 @@ public class Profile extends Fragment {
         }
     }
 
-    private void onClickUpdateProfile() {
-        if (user == null) {
-            return;
-        }
-        String displayName = edit_nick_name.getText().toString().trim();
-        if (displayName.contains(" ")) {
-            Toast.makeText(getContext(), "Nickname cannot contain spaces", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    private void onClickEditImage(){
+        Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_dialog_box_change_avatar);
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.show();
+        ImageView change_avatar=dialog.findViewById(R.id.change_avatar);
+        change_avatar.setImageDrawable(edit_avatar.getDrawable());
+        close_button = dialog.findViewById(R.id.close_button);
+        close_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        change_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickRequestPermission();
+                Glide.with(getActivity()).load(mUri).error(edit_avatar.getDrawable()).into(change_avatar);
+            }
+        });
+        Button change_button=dialog.findViewById(R.id.change_button);
+        change_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                user=FirebaseAuth.getInstance().getCurrentUser();
+                if (mUri == null) {
+                    dialog.dismiss();
+                    return;
+                }
+                uploadImageToFirebaseStorage();
+                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                        .setDisplayName(user.getDisplayName())
+                        .setPhotoUri(mUri)
+                        .build();
 
-        if (displayName.isEmpty()) {
-            Toast.makeText(getContext(), "Nickname cannot be empty", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        UserProfileChangeRequest.Builder profileUpdatesBuilder = new UserProfileChangeRequest.Builder()
-                .setDisplayName(displayName);
-
-        if (mUri != null) {
-            profileUpdatesBuilder.setPhotoUri(mUri);
-        }
-
-        UserProfileChangeRequest profileUpdates = profileUpdatesBuilder.build();
-
-        user.updateProfile(profileUpdates)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getActivity(), "Update Profile Success", Toast.LENGTH_SHORT).show();
-                            user=FirebaseAuth.getInstance().getCurrentUser();
-                            befor_addItemAndReload("Update Profile .");
-                            if(mUri!=null)
-                            {
-                                uploadImageToFirebaseStorage(mUri);
+                user.updateProfile(profileUpdates)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(getActivity(), "Update image succes", Toast.LENGTH_SHORT).show();
+                                    user=FirebaseAuth.getInstance().getCurrentUser();
+                                    befor_addItemAndReload("Update image .");
+                                    Glide.with(getActivity()).load(mUri).error(edit_avatar.getDrawable()).into(edit_avatar);
+                                    refresh_activity();
+                                    dialog.dismiss();
+                                }
                             }
-                            refresh_activity();
+                        });
+            }
+        });
+    }
 
-                        } else {
-                            Toast.makeText(getActivity(), "Failed to update profile", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+    private void onClickEditName() {
+        Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_dialog_form_change_name);
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.show();
+        EditText text_name = dialog.findViewById(R.id.text_name);
+        text_name.setText(user.getDisplayName());
+        close_button = dialog.findViewById(R.id.close_button);
+        close_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        Button change_button = dialog.findViewById(R.id.change_button);
+        change_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (text_name.getText().toString().contains(" ")) {
+                    Toast.makeText(getContext(), "Name cannot contain spaces", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (text_name.getText().toString().isEmpty()) {
+                    Toast.makeText(getContext(), "Name cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                UserProfileChangeRequest.Builder profileUpdatesBuilder = new UserProfileChangeRequest.Builder()
+                        .setDisplayName(text_name.getText().toString());
+
+                if (mUri != null) {
+                    profileUpdatesBuilder.setPhotoUri(mUri);
+                }
+
+                UserProfileChangeRequest profileUpdates = profileUpdatesBuilder.build();
+
+                user.updateProfile(profileUpdates)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    user=FirebaseAuth.getInstance().getCurrentUser();
+                                    befor_addItemAndReload("Change name .");
+                                    refresh_activity();
+                                    edit_name.setText(text_name.getText());
+                                    Toast.makeText(getActivity(), "Change name success", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                }
+                            }
+                        });
+            }
+        });
+    }
+
+    private void onClickEditEmail(){
+        Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_dialog_form_change_email);
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setCancelable(false);
+        dialog.show();
+        EditText text_email=dialog.findViewById(R.id.text_email);
+        text_email.setText(edit_email.getText());
+
+        close_button = dialog.findViewById(R.id.close_button);
+        close_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        Button change_button = dialog.findViewById(R.id.change_button);
+        change_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(text_email.getText().toString().isEmpty())
+                {
+                    Toast.makeText(getContext(), "Email cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (!isValidEmailFormat(text_email.getText().toString())) {
+                    Toast.makeText(getContext(), "Invalid email format", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                user = FirebaseAuth.getInstance().getCurrentUser();
+                if(user==null)
+                {
+                    return;
+                }
+                user.updateEmail(text_email.getText().toString())
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    user=FirebaseAuth.getInstance().getCurrentUser();
+                                    befor_addItemAndReload("Change email .");
+                                    refresh_activity();
+                                    edit_email.setText(text_email.getText());
+                                    Toast.makeText(getActivity(), "Change name success", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                }
+                            }
+                        });
+            }
+        });
     }
 
     private void onClickEditPassword() {
         Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.custom_dialog_form_edit_password);
+        dialog.setContentView(R.layout.custom_dialog_form_change_password);
         Window window=dialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
         window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -237,12 +386,12 @@ public class Profile extends Fragment {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    Toast.makeText(getActivity(), "Update Password Success", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getActivity(), "Update password success", Toast.LENGTH_SHORT).show();
                                                     dialog.dismiss();
                                                     refresh_activity();
-                                                    befor_addItemAndReload("Update Password .");
+                                                    befor_addItemAndReload("Change password .");
                                                 } else {
-                                                    Toast.makeText(getActivity(), "Update Password Failed", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getActivity(), "Update password failed", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         });
@@ -288,16 +437,15 @@ public class Profile extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Toast.makeText(getActivity(), "Image selected successfully", Toast.LENGTH_SHORT).show();
             mUri = data.getData();
-            Glide.with(getActivity()).load(mUri).error(R.drawable.ic_avatar_default).into(img_avatar);
+            Toast.makeText(getActivity(), "Image selected successfully", Toast.LENGTH_SHORT).show();
         }
         else {
             Toast.makeText(getActivity(), "No Image selected", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void uploadImageToFirebaseStorage(Uri mUri) {
+    public void uploadImageToFirebaseStorage() {
         StorageReference mountainsRef = storageRef.child(user.getUid()+"/avatar/"+mUri.getLastPathSegment());
         UploadTask uploadTask = mountainsRef.putFile(mUri);
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -308,7 +456,7 @@ public class Profile extends Fragment {
         }).addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
-
+                mUri=task.getResult();
             }
         });
     }
@@ -371,6 +519,12 @@ public class Profile extends Fragment {
     }
 
     /////////////////
+
+    private boolean isValidEmailFormat(String email) {
+        // Regular expression to check the email format xx@abc.xyz
+        String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+        return email.matches(emailPattern);
+    }
 
 
 }

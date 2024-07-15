@@ -20,18 +20,16 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         tools:ignore="MissingConstraints">
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/image_user"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:riv_oval="true"
-            tools:ignore="MissingConstraints"
-            android:src="@drawable/ic_avatar_default" />
+            app:riv_oval="true" />
 
         <View
             android:id="@+id/viewSupporter"
@@ -49,12 +47,6 @@
             app:layout_constraintBottom_toTopOf="@id/viewSupporter"
             app:layout_constraintStart_toEndOf="@id/image_user">
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hello "
-                android:textStyle="bold"
-                android:textSize="20sp"/>
-            <TextView
                 android:id="@+id/name_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -68,7 +60,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:textSize="16sp"
+            android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@id/image_user"
             app:layout_constraintTop_toBottomOf="@id/viewSupporter"/>
 

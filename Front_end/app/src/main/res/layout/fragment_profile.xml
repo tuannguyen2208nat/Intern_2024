@@ -8,7 +8,6 @@
     android:background="@drawable/background_app">
 
     <LinearLayout
-        android:id="@+id/formlogin_done"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -24,18 +23,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1.5"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
-                <com.makeramen.roundedimageview.RoundedImageView
-                    android:id="@+id/img_avatar"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:scaleType="centerCrop"
-                    app:riv_oval="true"
-                    app:riv_border_color="@color/black"
-                    app:riv_border_width="1dp"
-                    tools:ignore="MissingConstraints" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+                    <com.makeramen.roundedimageview.RoundedImageView
+                        android:id="@+id/img_avatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        app:riv_oval="true"
+                        app:riv_border_color="@color/black"
+                        app:riv_border_width="1dp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+
             </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -60,7 +77,8 @@
                             android:layout_height="match_parent"
                             android:textSize="18sp"
                             android:text="Nick name"
-                            android:gravity="center_vertical" />
+                            android:gravity="center_vertical"
+                            android:textColor="@color/black" />
 
                     </LinearLayout>
 
@@ -74,7 +92,8 @@
                             android:textSize="20sp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:gravity="center_vertical" />
+                            android:gravity="center_vertical"
+                            android:textColor="@color/black"/>
 
                     </LinearLayout>
                 </LinearLayout>
@@ -94,7 +113,8 @@
                             android:layout_height="match_parent"
                             android:text="Email"
                             android:textSize="18sp"
-                            android:gravity="center_vertical" />
+                            android:gravity="center_vertical"
+                            android:textColor="@color/black"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -107,7 +127,8 @@
                             android:textSize="20sp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:gravity="center_vertical" />
+                            android:gravity="center_vertical"
+                            android:textColor="@color/black"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -126,7 +147,8 @@
                             android:layout_height="match_parent"
                             android:text="Password"
                             android:textSize="18sp"
-                            android:gravity="center_vertical" />
+                            android:gravity="center_vertical"
+                            android:textColor="@color/black"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -158,7 +180,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="30dp"
                 android:background="@drawable/button_form_sign_out"
-                android:text="Sign Out" />
+                android:text="Sign Out"
+                android:textColor="@color/black"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_update_profile"
@@ -166,46 +189,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:background="@drawable/button_form_login"
-                android:text="Update profile" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/formlogin_none"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical|center_horizontal">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:layout_marginRight="20dp">
-
-            <TextView
-                android:id="@+id/sign_in"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sign in" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left"
-            android:layout_marginLeft="20dp">
-
-            <TextView
-                android:id="@+id/sign_up"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sign up" />
+                android:text="Update profile"
+                android:textColor="@color/black"/>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

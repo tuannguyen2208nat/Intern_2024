@@ -1,23 +1,15 @@
 package com.example.intern_2024;
 
-import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -26,41 +18,22 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
-import com.example.intern_2024.welcome.welcome_login;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.intern_2024.welcome.welcome_form_login;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int PICK_IMAGE_REQUEST = 1;
-    TextView sign_in, sign_up;
+
     TextView name_user, email_user;
-    ConstraintLayout constraintLayout_1, constraintLayout_2;
     View headerView;
-    ImageView image_user, back_login, close_button;
+    ImageView image_user, back_login;
     FirebaseUser user;
     FirebaseDatabase database;
-    FirebaseStorage storage;
-    DatabaseReference myRef;
-    StorageReference storageRef ;
     Uri imageUri;
-
-
 
 
     @Override
@@ -74,10 +47,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
 
         headerView = navigationView.getHeaderView(0);
-        constraintLayout_1 = headerView.findViewById(R.id.formlogin_none);
-        constraintLayout_2 = headerView.findViewById(R.id.formlogin_done);
-        sign_in = headerView.findViewById(R.id.sign_in);
-        sign_up = headerView.findViewById(R.id.sign_up);
 
         name_user = headerView.findViewById(R.id.name_user);
         email_user = headerView.findViewById(R.id.email_user);
@@ -90,9 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance();
-        storage=FirebaseStorage.getInstance();
-        storageRef=storage.getReferenceFromUrl("gs://intern-2024-7b2c9.appspot.com");
 
+//
         findViewById(R.id.menuIcon).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,310 +80,24 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
         });
-
         updateUI();
-
-        sign_in.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                form_login("");
-            }
-        });
-
-        sign_up.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                form_register("");
-            }
-        });
-    }
-
-    public void welcome() {
-        String name = user.getDisplayName();
-        Intent intent = new Intent(MainActivity.this, welcome_login.class);
-        intent.putExtra("name", name);
-        startActivity(intent);
-        finish();
-    }
-
-    private void direction(String fragment){
-        NavController navController = Navigation.findNavController(this, R.id.navHostFragment);
-        if(fragment.equals("home")|| fragment.equals("")) {
-            navController.navigate(R.id.menuHome);
-        }
-        else if (fragment.equals("accessories")) {
-            navController.navigate(R.id.menuAccessories);
-        }
-        else if (fragment.equals("automation")) {
-            navController.navigate(R.id.menuAutomation);
-        }
-        else if (fragment.equals("profile")) {
-            navController.navigate(R.id.menuProfile);
-        }
     }
 
 
     public void updateUI() {
         user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            constraintLayout_1.setVisibility(View.GONE);
-            constraintLayout_2.setVisibility(View.VISIBLE);
-            email_user.setText(user.getEmail());
-            name_user.setText(user.getDisplayName());
-            Uri photoUrl = user.getPhotoUrl();
-            Glide.with(this).load(photoUrl).error(R.drawable.ic_avatar_default).into(image_user);
-        } else {
-            constraintLayout_1.setVisibility(View.VISIBLE);
-            constraintLayout_2.setVisibility(View.GONE);
-        }
-    }
-
-    public void form_login(String fragment) {
-        Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.custom_dialog_form_login);
-        Window window = dialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setCancelable(false);
-        dialog.show();
-        EditText username = dialog.findViewById(R.id.username);
-        EditText password = dialog.findViewById(R.id.password);
-        TextView forgot_password_text = dialog.findViewById(R.id.forgot_password_text);
-        TextView signup_text = dialog.findViewById(R.id.signup_text);
-        close_button = dialog.findViewById(R.id.close_button);
-
-        close_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        forgot_password_text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Add forgot password functionality here
-            }
-        });
-
-        signup_text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                form_register("");
-            }
-        });
-
-        Button button = dialog.findViewById(R.id.login_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String usernameStr = username.getText().toString();
-                String passwordStr = password.getText().toString();
-
-                if (!isValidEmailFormat(usernameStr)) {
-                    Toast.makeText(MainActivity.this, "Invalid email format", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                FirebaseAuth auth = FirebaseAuth.getInstance();
-                auth.signInWithEmailAndPassword(usernameStr, passwordStr)
-                        .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    user = auth.getCurrentUser();
-                                    updateUI();
-                                    updateData();
-                                    dialog.dismiss();
-                                    welcome();
-                                    direction(fragment);
-                                } else {
-                                    Toast.makeText(MainActivity.this, "Email or password is incorrect",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
-        });
-    }
-
-    public void form_register(String fragment) {
-        Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.custom_dialog_form_register);
-        Window window = dialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setCancelable(false);
-        dialog.show();
-
-        EditText username = dialog.findViewById(R.id.username);
-        EditText password_1 = dialog.findViewById(R.id.password_1);
-        EditText password_2 = dialog.findViewById(R.id.password_2);
-        close_button = dialog.findViewById(R.id.close_button);
-        Button registerButton = dialog.findViewById(R.id.register_button);
-
-        close_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String usernameStr = username.getText().toString();
-                String password1Str = password_1.getText().toString();
-                String password2Str = password_2.getText().toString();
-
-                if (!isValidEmailFormat(usernameStr)) {
-                    Toast.makeText(MainActivity.this, "Invalid email format", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                TextView signin_text = dialog.findViewById(R.id.signin_text);
-
-                signin_text.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                        form_login("");
-                    }
-                });
-
-                if (password1Str.length() < 8 || password2Str.length() < 8) {
-                    Toast.makeText(MainActivity.this, "Password must be at least 8 characters long", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (!password1Str.equals(password2Str)) {
-                    Toast.makeText(MainActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                FirebaseAuth auth = FirebaseAuth.getInstance();
-                auth.createUserWithEmailAndPassword(usernameStr, password1Str)
-                        .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    user = auth.getCurrentUser();
-                                    updateData();
-                                    updateUI();
-                                    dialog.dismiss();
-                                    direction(fragment);
-                                } else {
-                                    Toast.makeText(MainActivity.this, "Registration failed.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
-        });
+        email_user.setText(user.getEmail());
+        name_user.setText(user.getDisplayName());
+        Uri photoUrl = user.getPhotoUrl();
+        Glide.with(this).load(photoUrl).error(R.drawable.ic_avatar_default).into(image_user);
     }
 
     public void form_sign_out(String fragment)
     {
         FirebaseAuth.getInstance().signOut();
-        user= FirebaseAuth.getInstance().getCurrentUser();
-        updateUI();
-        direction(fragment);
-    }
-
-
-    /////Image/////
-
-    public Uri openGallery() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
-        return imageUri;
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Toast.makeText(this, "Image selected successfully", Toast.LENGTH_SHORT).show();
-            imageUri = data.getData();
-        }
-        else {
-            Toast.makeText(this, "No Image selected", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-
-    public void uploadImageToFirebaseStorage(Uri mUri) {
-
-        StorageReference mountainsRef = storageRef.child(user.getUid()+"/avatar/"+mUri.getLastPathSegment());
-        UploadTask uploadTask = mountainsRef.putFile(mUri);
-        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if (!task.isSuccessful()) {
-                    throw task.getException();
-                }
-                return mountainsRef.getDownloadUrl();
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    imageUri = task.getResult();
-                    updateData();
-
-                } else {
-
-                }
-            }
-        });
-        direction("profile");
-
-    }
-
-    /////End Image/////
-
-    public void updateData()
-    {
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user==null)
-        {
-            return;
-        }
-        String name = "";
-        myRef = database.getReference("user_inform");
-        String uid = user.getUid();
-        String email = user.getEmail();
-        String[] parts = email.split("@");
-        if (user.getDisplayName() != null) {
-            name = user.getDisplayName();
-        }
-        else
-        {
-            name=parts[0];
-        }
-        String filename = parts[0] + ".db";
-
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("email", email);
-        userMap.put("name", name);
-        userMap.put("file", filename);
-        if(imageUri!=null)
-        {
-            userMap.put("avatar", imageUri.toString());
-        }
-        myRef.child(uid).updateChildren(userMap);
-        user= FirebaseAuth.getInstance().getCurrentUser();
-    }
-
-    private boolean isValidEmailFormat(String email) {
-        // Regular expression to check the email format xx@abc.xyz
-        String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
-        return email.matches(emailPattern);
+        Intent  intent = new Intent(MainActivity.this, welcome_form_login.class);
+        startActivity(intent);
+        finish();
     }
 
 

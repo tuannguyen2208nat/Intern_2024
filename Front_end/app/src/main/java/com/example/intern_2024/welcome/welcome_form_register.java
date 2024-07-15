@@ -2,18 +2,15 @@ package com.example.intern_2024.welcome;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.intern_2024.MainActivity;
 import com.example.intern_2024.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -21,17 +18,24 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class welcome_form_register extends AppCompatActivity {
     EditText email,password,confirm_password;
     Button btn_sign_up;
     TextView forgot_password,sign_in;
     FirebaseUser user;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome_register);
+        setContentView(R.layout.activity_welcome_form_register);
 
         email=findViewById(R.id.email);
         password=findViewById(R.id.password);
@@ -39,6 +43,7 @@ public class welcome_form_register extends AppCompatActivity {
         btn_sign_up=findViewById(R.id.btn_sign_up);
         forgot_password=findViewById(R.id.forgot_password);
         sign_in=findViewById(R.id.sign_in);
+        database = FirebaseDatabase.getInstance();
 
         sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +97,7 @@ public class welcome_form_register extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 user=auth.getCurrentUser();
                                 updateData(name);
+                                UploadData();
                             } else {
                                 Toast.makeText(welcome_form_register.this, "Registration failed.", Toast.LENGTH_SHORT).show();
                             }
@@ -125,6 +131,36 @@ private void updateData(String displayName){
                 }
             });
 }
+
+    public void UploadData()
+    {
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user==null)
+        {
+            return;
+        }
+        String name = "";
+        myRef = database.getReference("user_inform");
+        String uid = user.getUid();
+        String email = user.getEmail();
+        String[] parts = email.split("@");
+        if (user.getDisplayName() != null) {
+            name = user.getDisplayName();
+        }
+        else
+        {
+            name=parts[0];
+        }
+        String filename = parts[0] + ".db";
+
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("email", email);
+        userMap.put("name", name);
+        userMap.put("file", filename);
+        myRef.child(uid).updateChildren(userMap);
+        user= FirebaseAuth.getInstance().getCurrentUser();
+    }
+
 
 private void change_to_home(){
     Intent intent = new Intent(welcome_form_register.this, welcome_login.class);

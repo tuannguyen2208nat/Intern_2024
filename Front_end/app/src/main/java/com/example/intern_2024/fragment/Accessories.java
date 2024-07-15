@@ -178,8 +178,7 @@ public class Accessories extends Fragment {
         window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(false);
         dialog.show();
-        String uid = user.getUid();
-        String index = "user_inform/" + uid + "/listRelay";
+
         close_button=dialog.findViewById(R.id.close_button);
         close_button.setOnClickListener(new View.OnClickListener() {
             @Override

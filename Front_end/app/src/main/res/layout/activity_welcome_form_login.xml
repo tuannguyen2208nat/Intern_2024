@@ -76,7 +76,8 @@
                             android:inputType="textEmailAddress"
                             android:textSize="20sp"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:hint="Type email"/>
 
                     </LinearLayout>
                 </LinearLayout>
@@ -113,7 +114,8 @@
                             android:inputType="textPassword"
                             android:textSize="20sp"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:hint="Type password"/>
                     </LinearLayout>
                 </LinearLayout>
         </LinearLayout>
@@ -122,14 +124,32 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_sign_in"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_form_login"
-                android:text="Sign in" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_sign_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_form_login"
+                    android:text="Sign in" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -151,12 +171,12 @@
                     android:text="Forgot password"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="@android:color/holo_red_dark"/>
+                    android:textColor="@color/black"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@android:color/holo_red_dark" />
+                    android:background="@color/black" />
             </LinearLayout>
 
 
@@ -190,12 +210,12 @@
                         android:text="Signup now"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        android:textColor="@android:color/holo_orange_dark"/>
+                        android:textColor="@color/black"/>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@android:color/holo_orange_dark" />
+                        android:background="@color/black" />
                 </LinearLayout>
 
 

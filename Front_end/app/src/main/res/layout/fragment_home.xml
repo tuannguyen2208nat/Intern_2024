@@ -30,7 +30,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.7"
+            android:layout_weight="2"
             android:orientation="horizontal">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -142,7 +142,7 @@
                             android:layout_weight="1"
                             android:layout_gravity="center_vertical"
                             android:layout_width="match_parent"
-                            android:layout_height="30dp"
+                            android:layout_height="match_parent"
                             android:src="@drawable/humidity"/>
 
                     </LinearLayout>
@@ -188,13 +188,55 @@
                         <ImageView
                             android:layout_weight="1"
                             android:layout_gravity="center_vertical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="30dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:src="@drawable/wind"/>
 
                     </LinearLayout>
                     <TextView
                         android:id="@+id/txtSpeed"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_weight="1" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_margin="2sp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.7"
+                        android:layout_gravity="center_vertical">
+                        <TextView
+                            android:layout_weight="0.5"
+                            android:paddingLeft="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="left|center_vertical"
+                            android:text="TDS"
+                            android:textSize="17sp"
+                            android:textStyle="bold"
+                            tools:ignore="NestedWeights,RtlHardcoded,RtlSymmetry" />
+                        <ImageView
+                            android:layout_weight="1"
+                            android:layout_gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/tds"/>
+
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/txtTDS"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"

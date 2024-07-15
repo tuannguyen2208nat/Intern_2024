@@ -1,10 +1,8 @@
 package com.example.intern_2024.fragment;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -13,6 +11,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +30,7 @@ import com.example.intern_2024.R;
 import com.example.intern_2024.adapter.RecycleViewAdapter;
 import com.example.intern_2024.database.SQLiteHelper;
 import com.example.intern_2024.model.Item;
+import com.example.intern_2024.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -42,7 +42,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
 import java.util.List;
@@ -55,12 +57,14 @@ public class Profile extends Fragment {
     EditText edit_nick_name;
     ImageView img_avatar,close_button;
     FirebaseUser user;
-    private Uri mUri;
+     Uri mUri;
     private View view;
     private static final int MY_REQUEST_CODE = 101;
     RecycleViewAdapter adapter;
     private SQLiteHelper db;
+    private FirebaseDatabase database ;
     private DatabaseReference myRef;
+    User user1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,6 +90,7 @@ public class Profile extends Fragment {
             form_login_profile();
         } else {
             user = FirebaseAuth.getInstance().getCurrentUser();
+            database= FirebaseDatabase.getInstance();
             getFileDatabase();
             formlogin_none.setVisibility(View.GONE);
             formlogin_done.setVisibility(View.VISIBLE);
@@ -96,17 +101,14 @@ public class Profile extends Fragment {
     }
 
     void edit_profile() {
+        user = FirebaseAuth.getInstance().getCurrentUser();
         Uri photoUrl = user.getPhotoUrl();
         Glide.with(getActivity()).load(photoUrl).error(R.drawable.ic_avatar_default).into(img_avatar);
         edit_email.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-        if (FirebaseAuth.getInstance().getCurrentUser().getDisplayName() != null) {
-            edit_nick_name.setText(user.getDisplayName());
-        }
         if(user.getDisplayName()!=null)
         {
             edit_nick_name.setText(user.getDisplayName());
         }
-
         img_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,7 +163,7 @@ public class Profile extends Fragment {
 
     private void form_signOut() {
         if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).sign_out("profile");
+            ((MainActivity) getActivity()).form_sign_out("profile");
         }
     }
 
@@ -176,7 +178,7 @@ public class Profile extends Fragment {
             return;
         }
         if (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-           mUri=mainActivity.openGallery();
+            mUri=mainActivity.openGallery();
             Glide.with(getActivity()).load(mUri).error(R.drawable.ic_avatar_default).into(img_avatar);
         } else {
             String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
@@ -223,8 +225,7 @@ public class Profile extends Fragment {
                         if (task.isSuccessful()) {
                             Toast.makeText(getActivity(), "Update Profile Success", Toast.LENGTH_SHORT).show();
                             user=FirebaseAuth.getInstance().getCurrentUser();
-                            String name=user.getDisplayName();
-                            openDialogUpdateUser(name);
+                            openDialogUpdateImage(mUri);
                             refresh_activity();
                             getFileDatabase();
                             befor_addItemAndReload("Update Profile .");
@@ -304,10 +305,10 @@ public class Profile extends Fragment {
         }
     }
 
-    private void openDialogUpdateUser(String name)
+    private void openDialogUpdateImage(Uri mUri)
     {
         if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).updateData(name);
+            ((MainActivity) getActivity()).uploadImageToFirebaseStorage(mUri);
         }
     }
 

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.Profile"
-    android:background="@drawable/border_background">
+    android:background="@drawable/background_app">
 
     <LinearLayout
         android:id="@+id/formlogin_done"
@@ -28,10 +28,12 @@
 
                 <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/img_avatar"
-                    android:layout_width="79dp"
-                    android:layout_height="79dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:scaleType="centerCrop"
                     app:riv_oval="true"
+                    app:riv_border_color="@color/black"
+                    app:riv_border_width="1dp"
                     tools:ignore="MissingConstraints" />
             </LinearLayout>
 

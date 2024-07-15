@@ -5,8 +5,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
-
-
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -24,7 +22,13 @@
         android:theme="@style/Theme.Intern_2024"
         tools:targetApi="31">
         <activity
-            android:name=".welcome.welcome_register"
+            android:name=".welcome.welcome_form_forgot_password"
+            android:exported="false" />
+        <activity
+            android:name=".welcome.welcome_form_login"
+            android:exported="false" />
+        <activity
+            android:name=".welcome.welcome_form_register"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -41,7 +45,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="org.eclipse.paho.android.service.MqttService"/>
+
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
     </application>
 
 </manifest>

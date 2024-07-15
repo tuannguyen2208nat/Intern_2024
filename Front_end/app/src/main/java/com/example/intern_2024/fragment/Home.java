@@ -64,19 +64,6 @@ public class Home extends Fragment {
             });
         }
     }
-
-    private void addItemAndReload(String time, String detail) {
-        if (db != null) {
-            Item item = new Item(time, detail);
-            long id = db.addItem(item);
-            if (id != -1) {
-                loadData();
-            }
-        } else {
-            Toast.makeText(getContext(), "Database not initialized", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private void loadData() {
         if (db != null) {
             List<Item> list = db.getAll();

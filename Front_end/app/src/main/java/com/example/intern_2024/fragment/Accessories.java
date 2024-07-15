@@ -91,14 +91,11 @@ public class Accessories extends Fragment {
 
             @Override
             public void onClickuseRelay(list_relay relay, State state) {
-
                 relay_switch(relay,state);
 
             }
         });
         rcvRelay.setAdapter(mRelayAdapter);
-
-
         relay_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,9 +106,7 @@ public class Accessories extends Fragment {
         if (user != null) {
             getlistRelay();
         }
-
         startMQTT();
-
         return view;
     }
 

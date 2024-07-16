@@ -81,7 +81,8 @@
                             android:textSize="20sp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Type email"/>
+                            android:hint="Type email"
+                            android:textColor="@color/black"/>
 
                     </LinearLayout>
                 </LinearLayout>
@@ -119,7 +120,8 @@
                             android:textSize="20sp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Type password"/>
+                            android:hint="Type password"
+                            android:textColor="@color/black"/>
                     </LinearLayout>
                 </LinearLayout>
                 <LinearLayout
@@ -155,7 +157,8 @@
                             android:textSize="20sp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Confirm password"/>
+                            android:hint="Confirm password"
+                            android:textColor="@color/black"/>
                     </LinearLayout>
                 </LinearLayout>
         </LinearLayout>

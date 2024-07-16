@@ -23,7 +23,7 @@ public class MQTTHelper {
     public MqttAndroidClient mqttAndroidClient;
 
     private String username ="tuannguyen2208nat" ;
-    private String password ="aio_ANPf99Y2Kaww6DKKVIHdWcXD3GMV";
+    private String password ="aio_Tpqz630LWJqmQ5r5g4Kjzeg4BHHh";
     public final String link = "tuannguyen2208nat/feeds/status";
     private String clientId ="12345678";
     private String serverUri = "tcp://io.adafruit.com:1883";
@@ -93,23 +93,23 @@ public class MQTTHelper {
     }
 
     private void subscribeToTopic() {
-            try {
-                mqttAndroidClient.subscribe(link, 0, null, new IMqttActionListener() {
-                    @Override
-                    public void onSuccess(IMqttToken asyncActionToken) {
+        try {
+            mqttAndroidClient.subscribe(link, 0, null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
 
-                    }
+                }
 
-                    @Override
-                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
 
-                    }
-                });
+                }
+            });
 
-            } catch (MqttException ex) {
-                System.err.println("Exceptionst subscribing");
-                ex.printStackTrace();
-            }
+        } catch (MqttException ex) {
+            System.err.println("Exceptionst subscribing");
+            ex.printStackTrace();
+        }
     }
 
 

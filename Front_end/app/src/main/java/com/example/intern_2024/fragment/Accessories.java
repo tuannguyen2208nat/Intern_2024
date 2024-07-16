@@ -240,10 +240,10 @@ public class Accessories extends Fragment {
         }
         list_relay.setState(state_relay);
         myRef.child(String.valueOf(list_relay.getIndex())).updateChildren(list_relay.toMap(), new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                    }
-                });
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+            }
+        });
         value="!RELAY"+int_fix+":"+switch_state+"#";
         befor_addItemAndReload("Relay "+relay_id+" "+switch_state+" .");
         sendDataMQTT(link,value);

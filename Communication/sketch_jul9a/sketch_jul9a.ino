@@ -3,7 +3,7 @@
 #include "RelayStatus.h"
 
 #define IO_USERNAME "tuannguyen2208nat"
-#define IO_KEY "aio_ZMAD70yk9WBlfvJMFK1MgWjUCj4K"
+#define IO_KEY "aio_Tpqz630LWJqmQ5r5g4Kjzeg4BHHh"
 
 #define WIFI_SSID "ACLAB"
 #define WIFI_PASS "ACLAB2023"

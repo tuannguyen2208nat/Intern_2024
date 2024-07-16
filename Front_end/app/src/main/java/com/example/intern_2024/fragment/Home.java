@@ -1,6 +1,9 @@
 package com.example.intern_2024.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
+
+import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -30,6 +33,7 @@ public class Home extends Fragment {
     private RecycleViewAdapter adapter;
     private RecyclerView recyclerView;
     private SQLiteHelper db;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -71,4 +75,5 @@ public class Home extends Fragment {
             adapter.notifyDataSetChanged();
         }
     }
+
 }

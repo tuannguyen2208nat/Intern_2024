@@ -30,6 +30,7 @@ import com.bumptech.glide.Glide;
 import com.example.intern_2024.MainActivity;
 import com.example.intern_2024.R;
 import com.example.intern_2024.adapter.RecycleViewAdapter;
+import com.example.intern_2024.asset.ImageLoadTask;
 import com.example.intern_2024.database.SQLiteHelper;
 import com.example.intern_2024.model.Item;
 import com.google.android.gms.tasks.Continuation;
@@ -50,23 +51,28 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Profile extends Fragment {
 
+    private View view;
+    private static final int MY_REQUEST_CODE = 101;
+    private static final int PICK_IMAGE_REQUEST = 1;
     Button btn_sign_out;
     TextView edit_name,edit_email, edit_password;
     ImageView edit_avatar,close_button,arrow_left_name,arrow_left_email,arrow_left_password;
     FirebaseUser user;
-    Uri mUri;
-    private View view;
-    private static final int MY_REQUEST_CODE = 101;
-    private static final int PICK_IMAGE_REQUEST = 1;
-    RecycleViewAdapter adapter;
-    private SQLiteHelper db;
+    private FirebaseDatabase database;
     private DatabaseReference myRef;
     StorageReference storageRef ;
     FirebaseStorage storage;
+    Uri mUri;
+    RecycleViewAdapter adapter;
+    private SQLiteHelper db;
+    private String URL;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,6 +90,7 @@ public class Profile extends Fragment {
 
 
         user=FirebaseAuth.getInstance().getCurrentUser();
+        database= FirebaseDatabase.getInstance();
         storage= FirebaseStorage.getInstance();
         storageRef=storage.getReferenceFromUrl("gs://intern-2024-7b2c9.appspot.com");
 
@@ -96,7 +103,7 @@ public class Profile extends Fragment {
     void edit_profile() {
         user = FirebaseAuth.getInstance().getCurrentUser();
         Uri photoUrl = user.getPhotoUrl();
-        Glide.with(getActivity()).load(photoUrl).error(R.drawable.ic_avatar_default).into(edit_avatar);
+        getImagefromStorage();
         edit_email.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
         edit_name.setText(user.getDisplayName());
@@ -211,8 +218,8 @@ public class Profile extends Fragment {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(getActivity(), "Update image succes", Toast.LENGTH_SHORT).show();
                                     user=FirebaseAuth.getInstance().getCurrentUser();
+                                    Toast.makeText(getActivity(), "Update image succes", Toast.LENGTH_SHORT).show();
                                     befor_addItemAndReload("Update image .");
                                     Glide.with(getActivity()).load(mUri).error(edit_avatar.getDrawable()).into(edit_avatar);
                                     refresh_activity();
@@ -271,10 +278,11 @@ public class Profile extends Fragment {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     user=FirebaseAuth.getInstance().getCurrentUser();
-                                    befor_addItemAndReload("Change name .");
-                                    refresh_activity();
                                     edit_name.setText(text_name.getText());
+                                    befor_addItemAndReload("Change name .");
                                     Toast.makeText(getActivity(), "Change name success", Toast.LENGTH_SHORT).show();
+                                    updateData();
+                                    refresh_activity();
                                     dialog.dismiss();
                                 }
                             }
@@ -330,6 +338,7 @@ public class Profile extends Fragment {
                                     refresh_activity();
                                     edit_email.setText(text_email.getText());
                                     Toast.makeText(getActivity(), "Change name success", Toast.LENGTH_SHORT).show();
+                                    updateData();
                                     dialog.dismiss();
                                 }
                             }
@@ -446,7 +455,7 @@ public class Profile extends Fragment {
     }
 
     public void uploadImageToFirebaseStorage() {
-        StorageReference mountainsRef = storageRef.child(user.getUid()+"/avatar/"+mUri.getLastPathSegment());
+        StorageReference mountainsRef = storageRef.child(user.getUid()+"/avatar/"+"avatar.jpg");
         UploadTask uploadTask = mountainsRef.putFile(mUri);
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
@@ -457,6 +466,7 @@ public class Profile extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 mUri=task.getResult();
+                updateData();
             }
         });
     }
@@ -525,6 +535,57 @@ public class Profile extends Fragment {
         String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
         return email.matches(emailPattern);
     }
+
+    public void updateData()
+    {
+        myRef = database.getReference("user_inform");
+        String uid = user.getUid();
+        String email = user.getEmail();
+        String[] parts = email.split("@");
+        String name=user.getDisplayName();
+        String filename = parts[0] + ".db";
+        if(user.getDisplayName()==null)
+        {
+            name=parts[0];
+        }
+
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("email", email);
+        userMap.put("name", name);
+        userMap.put("file", filename);
+        if(mUri!=null)
+        {
+            userMap.put("avatar", mUri.toString());
+        }
+        myRef.child(uid).updateChildren(userMap);
+        user= FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    private void getImagefromStorage() {
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String uid = user.getUid();
+            String index = "user_inform/" + uid;
+            myRef = database.getReference(index);
+            myRef.child("avatar").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (!task.isSuccessful()) {
+                    } else {
+                        String URL = task.getResult().getValue(String.class);
+                        if (URL != null) {
+                            new ImageLoadTask(URL, edit_avatar).execute();
+                        } else {
+                        }
+                    }
+                }
+            });
+        } else {
+            Log.e("firebase", "User not logged in");
+        }
+    }
+
+
 
 
 }

@@ -1,9 +1,13 @@
 package com.example.intern_2024.fragment;
 
+import static android.widget.Toast.makeText;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -46,9 +50,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Home extends Fragment {
     private DatabaseReference myRef;
@@ -66,6 +72,7 @@ public class Home extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
+        getLastLocation();
     }
 
 
@@ -108,35 +115,35 @@ public class Home extends Fragment {
                 }
             });
         }
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            // Permission granted, get the last known location
-            getLastLocation();
-        } else {
-            // Request permission
-            ActivityCompat.requestPermissions(requireActivity(),
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_PERMISSION_REQUEST_CODE);
-        }
     }
 
     private void getLastLocation() {
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            // Use the location data
-                            double latitude = location.getLatitude();
-                            double longitude = location.getLongitude();
-                            // Now you can fetch weather data using latitude and longitude
-                            getJsonWeather(latitude, longitude);
-                        } else {
-                            // Handle null location scenario
-                            Toast.makeText(requireContext(), "Location not available", Toast.LENGTH_SHORT).show();
-                        }
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    Geocoder geocoder=new Geocoder(getContext(), Locale.getDefault());
+                    List<Address> addresses=null;
+                    try {
+                        addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                        String lattitude=String.valueOf(addresses.get(0).getLatitude());
+                        String longitude=String.valueOf(addresses.get(0).getLongitude());
+                        getJsonWeather(lattitude,longitude);
                     }
-                });
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } else {
+           askPermission();
+        }
+    }
+
+    private void askPermission() {
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_PERMISSION_REQUEST_CODE);
     }
 
     @Override
@@ -144,17 +151,15 @@ public class Home extends Fragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted
                 getLastLocation();
             } else {
-                // Permission denied
                 Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     @SuppressLint("SetTextI18n")
-    public void getJsonWeather(double latitude, double longitude) {
+    public void getJsonWeather(String latitude, String longitude) {
         String url = "https://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&appid=" + API_KEY;
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -169,9 +174,14 @@ public class Home extends Fragment {
                         }
                         String urlIcon = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
                         Picasso.get().load(urlIcon).into(imgWeatherIcon);
-                        String temp = response.getJSONObject("main").getString("temp") + "°C";
+
+                        String temp_txt = response.getJSONObject("main").getString("temp") ;
+                        double temp_dob = Double.parseDouble(temp_txt) - 273.15;
+                        temp_dob = Math.round(temp_dob);
+                        temp_txt = temp_dob + "°C";
+                        txtTemp.setText(temp_txt);
+
                         txtCountry.setText(response.getJSONObject("sys").getString("country"));
-                        txtTemp.setText(temp);
                         txtHumidity.setText(response.getJSONObject("main").getString("humidity")+"%");
                         txtSpeed.setText(response.getJSONObject("wind").getString("speed")+"m/s");
                         txtTDS.setText(response.getJSONObject("main").getString("temp_max")+"°C");
@@ -188,12 +198,11 @@ public class Home extends Fragment {
                     }
                 },
                 error -> {
-                    Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+                    makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
                 }
         );
         requestQueue.add(jsonObjectRequest);
     }
-
 
     private void loadData() {
         if (db != null) {

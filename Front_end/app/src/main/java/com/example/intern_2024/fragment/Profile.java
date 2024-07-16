@@ -157,7 +157,7 @@ public class Profile extends Fragment {
 
     private void form_signOut() {
         if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).form_sign_out("profile");
+            ((MainActivity) getActivity()).form_sign_out();
         }
     }
 

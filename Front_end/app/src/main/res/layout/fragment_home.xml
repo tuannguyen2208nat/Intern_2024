@@ -39,6 +39,7 @@
                 android:layout_weight="2"
                 android:orientation="vertical"
                 tools:ignore="NestedWeights"
+                android:background="@drawable/border_black_1dp_background"
                 >
                 <ImageView
                     android:id="@+id/imgWeatherIcon"
@@ -49,13 +50,20 @@
                     tools:ignore="NestedWeights"
                     android:alpha="1.0"  />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
                 <TextView
                     android:id="@+id/txtCountry"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="4"
                     android:textSize="17sp"
+                    android:textStyle="bold"
                     android:gravity="center"
+                    android:textColor="@color/black"
                     />
             </LinearLayout>
 
@@ -106,7 +114,6 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="30°C"
                         android:textSize="17sp" />
                 </LinearLayout>
 
@@ -152,7 +159,6 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:textSize="17sp"
-                        android:text="79%"
                         android:layout_weight="1" />
 
                 </LinearLayout>

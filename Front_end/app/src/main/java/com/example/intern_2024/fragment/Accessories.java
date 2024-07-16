@@ -73,13 +73,17 @@ public class Accessories extends Fragment {
         relay_add=view.findViewById(R.id.relay_add);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rcvRelay.setLayoutManager(linearLayoutManager);
-
-        mListRelay=new ArrayList<>();
-
         user = FirebaseAuth.getInstance().getCurrentUser();
         database=FirebaseDatabase.getInstance();
-        getFileDatabase();
+        mListRelay=new ArrayList<>();
 
+        start();
+
+        return view;
+    }
+
+    private void start(){
+        getFileDatabase();
         mRelayAdapter = new RelayAdapter(mListRelay, new RelayAdapter.IClickListener() {
             @Override
             public void onClickupdateRelay(list_relay relay) {
@@ -106,7 +110,7 @@ public class Accessories extends Fragment {
             getlistRelay();
         }
         startMQTT();
-        return view;
+
     }
 
     private void getlistRelay() {
@@ -213,10 +217,8 @@ public class Accessories extends Fragment {
         myRef = database.getReference(index);
         String int_fix="";
         String switch_state="";
-        int state_relay=0;
 
         if (state.equals(State.LEFT)) {
-            state_relay=0;
             if(Integer.valueOf(relay_id)<10)
             {
                 int_fix="0"+relay_id;
@@ -228,7 +230,6 @@ public class Accessories extends Fragment {
 
         }
         if (state.equals(State.RIGHT)) {
-            state_relay=1;
             if(Integer.valueOf(relay_id)<10)
             {
                 int_fix="0"+relay_id;
@@ -238,12 +239,6 @@ public class Accessories extends Fragment {
             }
             switch_state="ON";
         }
-        list_relay.setState(state_relay);
-        myRef.child(String.valueOf(list_relay.getIndex())).updateChildren(list_relay.toMap(), new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-            }
-        });
         value="!RELAY"+int_fix+":"+switch_state+"#";
         befor_addItemAndReload("Relay "+relay_id+" "+switch_state+" .");
         sendDataMQTT(link,value);
@@ -357,7 +352,7 @@ public class Accessories extends Fragment {
                             }
                         }
                         int newId = maxId + 1;
-                        list_relay newRelay = new list_relay(newId, relay_id_int, 0,set_name_device_str);
+                        list_relay newRelay = new list_relay(newId, relay_id_int,set_name_device_str);
                         myRef.child(String.valueOf(newId) ).setValue(newRelay, new DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {

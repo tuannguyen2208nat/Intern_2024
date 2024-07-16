@@ -15,6 +15,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 
 import com.bumptech.glide.Glide;
@@ -47,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.navigationView);
 
-        TextView textTitle = findViewById(R.id.textTitle);
-
         headerView = navigationView.getHeaderView(0);
         name_user = headerView.findViewById(R.id.name_user);
         email_user = headerView.findViewById(R.id.email_user);
@@ -75,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
         back_login.setOnClickListener(v -> {
             drawerLayout.closeDrawer(GravityCompat.START);
-            form_sign_out();
         });
 
         updateUI();

@@ -1,7 +1,5 @@
 package com.example.intern_2024.fragment;
 
-import static android.widget.Toast.makeText;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -19,6 +17,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +57,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class Home extends Fragment {
+
     private DatabaseReference myRef;
     private FirebaseUser user;
     private static final String API_KEY = "37294f583d2e566162db243302715283";
@@ -65,37 +66,34 @@ public class Home extends Fragment {
     private SQLiteHelper db;
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
-    TextView txtCountry,txtTemp, txtDate,txtHumidity, txtSpeed,txtTDS;
+    TextView txtCountry, txtTemp, txtDate, txtHumidity, txtSpeed, txtTDS;
     ImageView imgWeatherIcon;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
-        getLastLocation();
-    }
-
+    Handler handler;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        adapter = new RecycleViewAdapter();
-        recyclerView.setAdapter(adapter);
-        txtCountry=view.findViewById(R.id.txtCountry);
+        txtCountry = view.findViewById(R.id.txtCountry);
         txtTemp = view.findViewById(R.id.txtTemp);
         txtDate = view.findViewById(R.id.txtDate);
-        txtHumidity=view.findViewById(R.id.txtHumidity);
-        txtSpeed=view.findViewById(R.id.txtSpeed);
-        txtTDS=view.findViewById(R.id.txtTDS);
-        imgWeatherIcon=view.findViewById(R.id.imgWeatherIcon);
+        txtHumidity = view.findViewById(R.id.txtHumidity);
+        txtSpeed = view.findViewById(R.id.txtSpeed);
+        txtTDS = view.findViewById(R.id.txtTDS);
+        imgWeatherIcon = view.findViewById(R.id.imgWeatherIcon);
+        handler = new Handler(Looper.getMainLooper());
+
+        start();
+
         return view;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    private void start(){
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
+        getLastLocation();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+        adapter = new RecycleViewAdapter();
+        recyclerView.setAdapter(adapter);
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String uid = user.getUid();
@@ -109,9 +107,10 @@ public class Home extends Fragment {
                         loadData();
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    // Handle error
                 }
             });
         }
@@ -123,27 +122,26 @@ public class Home extends Fragment {
             fusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
-                    Geocoder geocoder=new Geocoder(getContext(), Locale.getDefault());
-                    List<Address> addresses=null;
-                    try {
-                        addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                        String lattitude=String.valueOf(addresses.get(0).getLatitude());
-                        String longitude=String.valueOf(addresses.get(0).getLongitude());
-                        getJsonWeather(lattitude,longitude);
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
+                    if (location != null) {
+                        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                        try {
+                            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                            String latitude = String.valueOf(addresses.get(0).getLatitude());
+                            String longitude = String.valueOf(addresses.get(0).getLongitude());
+                            getJsonWeather(latitude, longitude);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             });
         } else {
-           askPermission();
+            requestLocationPermission();
         }
     }
 
-    private void askPermission() {
-        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},LOCATION_PERMISSION_REQUEST_CODE);
+    private void requestLocationPermission() {
+        ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
     }
 
     @Override
@@ -159,46 +157,41 @@ public class Home extends Fragment {
     }
 
     @SuppressLint("SetTextI18n")
-    public void getJsonWeather(String latitude, String longitude) {
-        String url = "https://api.openweathermap.org/data/2.5/weather?lat="+latitude+"&lon="+longitude+"&appid=" + API_KEY;
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+    private void getJsonWeather(String latitude, String longitude) {
+        String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=" + API_KEY;
+        RequestQueue requestQueue = Volley.newRequestQueue(requireContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
                         JSONArray weatherArray = response.getJSONArray("weather");
                         JSONObject weatherObject = weatherArray.getJSONObject(0);
                         String icon = weatherObject.getString("icon");
-                        if(icon.contains("n"))
-                        {
+                        if (icon.contains("n")) {
                             icon = icon.replace("n", "d");
                         }
                         String urlIcon = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
                         Picasso.get().load(urlIcon).into(imgWeatherIcon);
 
-                        String temp_txt = response.getJSONObject("main").getString("temp") ;
-                        double temp_dob = Double.parseDouble(temp_txt) - 273.15;
-                        temp_dob = Math.round(temp_dob);
-                        temp_txt = temp_dob + "°C";
-                        txtTemp.setText(temp_txt);
+                        double temp = response.getJSONObject("main").getDouble("temp") - 273.15;
+                        String tempTxt = Math.round(temp) + "°C";
+                        txtTemp.setText(tempTxt);
 
                         txtCountry.setText(response.getJSONObject("sys").getString("country"));
-                        txtHumidity.setText(response.getJSONObject("main").getString("humidity")+"%");
-                        txtSpeed.setText(response.getJSONObject("wind").getString("speed")+"m/s");
-                        txtTDS.setText(response.getJSONObject("main").getString("temp_max")+"°C");
+                        txtHumidity.setText(response.getJSONObject("main").getString("humidity") + "%");
+                        txtSpeed.setText(response.getJSONObject("wind").getString("speed") + "m/s");
+                        txtTDS.setText(response.getJSONObject("main").getString("temp_max") + "°C");
 
-                        String sNgay = response.getString("dt");
-                        long lNgay = Long.parseLong(sNgay) * 1000L;
-                        SimpleDateFormat sdf = new SimpleDateFormat("EEEE , dd/MM/yyyy");
-                        Date date = new Date(lNgay);
-                        String currentTime = sdf.format(date);
-                        txtDate.setText(currentTime);
+                        long timestamp = response.getLong("dt") * 1000;
+                        SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd/MM/yyyy", Locale.getDefault());
+                        String formattedDate = sdf.format(new Date(timestamp));
+                        txtDate.setText(formattedDate);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 },
                 error -> {
-                    makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(requireContext(), "Error fetching weather data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
         );
         requestQueue.add(jsonObjectRequest);
@@ -206,10 +199,26 @@ public class Home extends Fragment {
 
     private void loadData() {
         if (db != null) {
-            List<Item> list = db.getAll();
-            adapter.setList(list);
+            List<Item> itemList = db.getAll();
+            adapter.setList(itemList);
             adapter.notifyDataSetChanged();
         }
     }
+    private void refresh_auto() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                onResume();
+                handler.postDelayed(this, 100);
+            }
+        }, 0);
+    }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            start();
+        }
+    }
 }

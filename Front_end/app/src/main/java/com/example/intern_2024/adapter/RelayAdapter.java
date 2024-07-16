@@ -48,8 +48,6 @@ public class RelayAdapter extends RecyclerView.Adapter<RelayAdapter.UserViewHold
         }
         holder.relayIndex.setText(String.valueOf("Relay_" + listRelayItem.getRelay_id()));
         holder.relayName.setText(listRelayItem.getName());
-//        holder.faceOffToggleButton.setChecked(change_to_boolean(listRelayItem.getState()));
-
         holder.change_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,12 +99,5 @@ public class RelayAdapter extends RecyclerView.Adapter<RelayAdapter.UserViewHold
         }
     }
 
-    private boolean change_to_boolean(int state) {
-        if (state == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }
 

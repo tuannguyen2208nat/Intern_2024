@@ -6,34 +6,25 @@ import java.util.Map;
 public class list_relay {
     private int index;
     private int relay_id;
-    private int state;
     private String name;
 
 
     public list_relay() {
     }
 
-    public list_relay(int index, int relay_id,int state) {
+    public list_relay(int index, int relay_id) {
         String setName = "relay_" + index;
         this.index = index;
         this.relay_id = relay_id;
-        this.state = state;
         this.name = setName;
     }
 
-    public list_relay(int index, int relay_id, int state,String name) {
+    public list_relay(int index, int relay_id,String name) {
         this.index = index;
         this.relay_id = relay_id;
-        this.state = state;
         this.name = name;
     }
 
-    public list_relay(int index, int relay_id) {
-        this.index = index;
-        this.relay_id = relay_id;
-        this.state = 0;
-        this.name = name;
-    }
 
 
     public int getIndex() {
@@ -60,19 +51,11 @@ public class list_relay {
         this.name = name;
     }
 
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("index", index);
         hashMap.put("name", name);
-        hashMap.put("state", state);
         hashMap.put("relay_id", relay_id);
         return hashMap;
     }

@@ -62,7 +62,7 @@ public class Profile extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1;
     Button btn_sign_out;
     TextView edit_name,edit_email, edit_password;
-    ImageView edit_avatar,close_button,arrow_left_name,arrow_left_email,arrow_left_password;
+    ImageView edit_avatar,close_button,arrow_left_name,arrow_left_email,arrow_left_password,change_avatar;
     FirebaseUser user;
     private FirebaseDatabase database;
     private DatabaseReference myRef;
@@ -185,7 +185,7 @@ public class Profile extends Fragment {
         window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setCancelable(false);
         dialog.show();
-        ImageView change_avatar=dialog.findViewById(R.id.change_avatar);
+        change_avatar=dialog.findViewById(R.id.change_avatar);
         change_avatar.setImageDrawable(edit_avatar.getDrawable());
         close_button = dialog.findViewById(R.id.close_button);
         close_button.setOnClickListener(new View.OnClickListener() {
@@ -198,7 +198,6 @@ public class Profile extends Fragment {
             @Override
             public void onClick(View v) {
                 onClickRequestPermission();
-                Glide.with(getActivity()).load(mUri).error(edit_avatar.getDrawable()).into(change_avatar);
             }
         });
         Button change_button=dialog.findViewById(R.id.change_button);
@@ -450,6 +449,7 @@ public class Profile extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             mUri = data.getData();
+            Glide.with(getActivity()).load(mUri).error(edit_avatar.getDrawable()).into(change_avatar);
             Toast.makeText(getActivity(), "Image selected successfully", Toast.LENGTH_SHORT).show();
         }
         else {

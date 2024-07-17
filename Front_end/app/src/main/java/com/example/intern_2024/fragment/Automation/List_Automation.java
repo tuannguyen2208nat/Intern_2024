@@ -59,7 +59,6 @@ public class List_Automation extends Fragment {
                     mListRelay = listRelays;
                     mRelayAdapter.updateRelayList(mListRelay);
                     mRelayAdapter.notifyDataSetChanged();
-                   Toast.makeText(getContext(), "Size: " + mListRelay.size(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -25,8 +25,8 @@ import com.google.firebase.auth.FirebaseAuth;
 public class welcome_form_forgot_password extends AppCompatActivity {
     EditText email;
     Button btn_send;
-    TextView sign_in,sign_up,done_sign_in,done_sign_up;
-    LinearLayout form_none_send,form_done_send;
+    TextView sign_in,sign_up;
+    LinearLayout form_done_send;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +38,8 @@ public class welcome_form_forgot_password extends AppCompatActivity {
         btn_send = findViewById(R.id.btn_send);
         sign_in = findViewById(R.id.sign_in);
         sign_up = findViewById(R.id.sign_up);
-        form_none_send = findViewById(R.id.form_none_send);
         form_done_send = findViewById(R.id.form_done_send);
-        done_sign_in = findViewById(R.id.done_sign_in);
-        done_sign_up = findViewById(R.id.done_sign_up);
 
-        form_none_send.setVisibility(View.VISIBLE);
         form_done_send.setVisibility(View.GONE);
 
         sign_in.setOnClickListener(new View.OnClickListener() {
@@ -87,26 +83,11 @@ public class welcome_form_forgot_password extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(welcome_form_forgot_password.this, "Email sent.", Toast.LENGTH_SHORT).show();
-                            form_none_send.setVisibility(View.GONE);
                             form_done_send.setVisibility(View.VISIBLE);
                             startCountdownTimer();
                         }
                     }
                 });
-
-        done_sign_in.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                change_to_login();
-            }
-        });
-        done_sign_up.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                change_to_register();
-            }
-            });
-
     }
 
     private void startCountdownTimer() {

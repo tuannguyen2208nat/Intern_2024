@@ -76,6 +76,7 @@ public class Accessories extends Fragment {
         user = FirebaseAuth.getInstance().getCurrentUser();
         database=FirebaseDatabase.getInstance();
         mListRelay=new ArrayList<>();
+        mqttHelper = new MQTTHelper(getContext());
 
         start();
 
@@ -86,15 +87,15 @@ public class Accessories extends Fragment {
         getFileDatabase();
         mRelayAdapter = new RelayAdapter(mListRelay, new RelayAdapter.IClickListener() {
             @Override
-            public void onClickupdateRelay(list_relay relay) {
+            public void onClickUpdateRelay(list_relay relay) {
                 openDialogUpdateRelay(relay);
             }
 
             @Override
-            public void onClickdeleteRelay(list_relay relay) {deleteRelay(relay);}
+            public void onClickDeleteRelay(list_relay relay) {deleteRelay(relay);}
 
             @Override
-            public void onClickuseRelay(list_relay relay, State state) {
+            public void onClickUseRelay(list_relay relay, State state) {
                 relay_switch(relay,state);
             }
         });
@@ -109,7 +110,6 @@ public class Accessories extends Fragment {
         if (user != null) {
             getlistRelay();
         }
-        startMQTT();
 
     }
 
@@ -129,8 +129,8 @@ public class Accessories extends Fragment {
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                list_relay listRelay = snapshot.getValue(list_relay.class);
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
+                list_relay listRelay = dataSnapshot.getValue(list_relay.class);
                 if (listRelay == null || mListRelay == null || mListRelay.isEmpty()) {
                     return;
                 }
@@ -145,8 +145,8 @@ public class Accessories extends Fragment {
 
 
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                list_relay listRelay = snapshot.getValue(list_relay.class);
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                list_relay listRelay = dataSnapshot.getValue(list_relay.class);
                 if (listRelay == null || mListRelay == null || mListRelay.isEmpty()) {
                     return;
                 }
@@ -443,27 +443,6 @@ public class Accessories extends Fragment {
     }
 
 
-    public void startMQTT() {
-        mqttHelper = new MQTTHelper(getContext());
-        mqttHelper.setCallback(new MqttCallbackExtended() {
-            @Override
-            public void connectComplete(boolean reconnect, String serverURI) {
-
-            }
-            @Override
-            public void connectionLost(Throwable cause) {
-
-            }
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {
-
-            }
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {
-
-            }
-        });
-    }
 
 
     public void sendDataMQTT(String topic, String value){

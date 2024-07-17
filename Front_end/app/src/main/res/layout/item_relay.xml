@@ -1,6 +1,6 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="50dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="10dp"
     app:cardCornerRadius="16dp">
@@ -26,6 +26,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
+                    android:textColor="@color/black"
                     android:textSize="12sp"/>
 
             </LinearLayout>
@@ -54,6 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
+                android:textColor="@color/black"
                 android:textSize="10sp" />
 
         </LinearLayout>
@@ -65,7 +67,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="0.39"
             android:layout_marginLeft="10dp"
             android:gravity="center">
 
@@ -73,6 +75,7 @@
                 android:id="@+id/relay_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:jtbJelly="itself"
                 app:jtbLeftText="Off"
                 app:jtbRightText="On"
                 app:jtbLeftTextSize="10sp"

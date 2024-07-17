@@ -20,11 +20,11 @@ public class RelayAdapter extends RecyclerView.Adapter<RelayAdapter.UserViewHold
     private IClickListener mIClickListener;
 
     public interface IClickListener {
-        void onClickupdateRelay(list_relay relay);
+        void onClickUpdateRelay(list_relay relay);
 
-        void onClickdeleteRelay(list_relay relay);
+        void onClickDeleteRelay(list_relay relay);
 
-        void onClickuseRelay(list_relay relay, State state);
+        void onClickUseRelay(list_relay relay, State state);
     }
 
     public RelayAdapter(List<list_relay> listRelay, IClickListener mIClickListener) {
@@ -51,24 +51,24 @@ public class RelayAdapter extends RecyclerView.Adapter<RelayAdapter.UserViewHold
         holder.change_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mIClickListener.onClickupdateRelay(listRelayItem);
+                mIClickListener.onClickUpdateRelay(listRelayItem);
             }
         });
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                mIClickListener.onClickdeleteRelay(listRelayItem);
+                mIClickListener.onClickDeleteRelay(listRelayItem);
             }
         });
         holder.faceOffToggleButton.setOnStateChangeListener(new JellyToggleButton.OnStateChangeListener() {
             @Override
             public void onStateChange(float process, State state, JellyToggleButton fotb) {
                 if (state.equals(State.LEFT)) {
-                    mIClickListener.onClickuseRelay(listRelayItem, State.LEFT);
+                    mIClickListener.onClickUseRelay(listRelayItem, State.LEFT);
                 }
                 if (state.equals(State.RIGHT)) {
-                    mIClickListener.onClickuseRelay(listRelayItem, State.RIGHT);
+                    mIClickListener.onClickUseRelay(listRelayItem, State.RIGHT);
                 }
             }
         });

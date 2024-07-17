@@ -2,7 +2,6 @@ package com.example.intern_2024.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -58,8 +57,8 @@ import java.util.Locale;
 
 public class Home extends Fragment {
 
-    private DatabaseReference myRef;
-    private FirebaseUser user;
+     DatabaseReference myRef;
+     FirebaseUser user;
     private static final String API_KEY = "37294f583d2e566162db243302715283";
     private RecycleViewAdapter adapter;
     private RecyclerView recyclerView;
@@ -203,15 +202,6 @@ public class Home extends Fragment {
             adapter.setList(itemList);
             adapter.notifyDataSetChanged();
         }
-    }
-    private void refresh_auto() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                onResume();
-                handler.postDelayed(this, 100);
-            }
-        }, 0);
     }
 
     @Override

@@ -15,11 +15,10 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 
 import com.bumptech.glide.Glide;
-import com.example.intern_2024.fragment.Accessories;
+import com.example.intern_2024.fragment.accessories.Accessories;
 import com.example.intern_2024.fragment.Automation;
 import com.example.intern_2024.fragment.Home;
 import com.example.intern_2024.fragment.Profile;

@@ -8,6 +8,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +31,8 @@ import com.example.intern_2024.adapter.RecycleViewAdapter;
 import com.example.intern_2024.adapter.RelayAdapter;
 import com.example.intern_2024.database.MQTTHelper;
 import com.example.intern_2024.database.SQLiteHelper;
+import com.example.intern_2024.fragment.accessories.List_Automation;
+import com.example.intern_2024.fragment.accessories.SharedViewModel;
 import com.example.intern_2024.model.Item;
 import com.example.intern_2024.model.list_auto;
 import com.example.intern_2024.model.list_relay;
@@ -52,6 +58,7 @@ import java.util.List;
 
 public class Automation extends Fragment {
 
+    private SharedViewModel sharedViewModel;
     MQTTHelper mqttHelper;
     String link="tuannguyen2208nat/feeds/status";
     private View view;
@@ -79,6 +86,16 @@ public class Automation extends Fragment {
         mListAuto=new ArrayList<>();
         mqttHelper = new MQTTHelper(getContext());
 
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+
+        // Observe changes to the editTextValue
+        sharedViewModel.getEditTextValue().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         start();
 
         return view;
@@ -90,7 +107,9 @@ public class Automation extends Fragment {
 
         mAutoAdapter = new AutoAdapter(mListAuto, new AutoAdapter.IClickListener() {
             @Override
-            public void onClickEditAuto(list_auto auto) {}
+            public void onClickEditAuto(list_auto auto) {
+                updateDatatoList_Automation();
+            }
 
             @Override
             public void onClickDeleteAuto(list_auto auto) {}
@@ -217,88 +236,12 @@ public class Automation extends Fragment {
     }
 
     private void openDialogAddAuto(){
-        EditText relay_id,set_name_device;
-        Button button_add;
-
-        Dialog dialog = new Dialog(getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.custom_dialog_box_add_relay);
-        Window window=dialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setCancelable(false);
-        dialog.show();
-        close_button=dialog.findViewById(R.id.close_button);
-        close_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();}
-        });
-
-        relay_id=dialog.findViewById(R.id.relay_id);
-        set_name_device=dialog.findViewById(R.id.set_name_device);
-        button_add=dialog.findViewById(R.id.button_add);
-
-        button_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (relay_id.getText().toString().isEmpty() ) {
-                    showAlert("Please enter relay id");
-                    return;
-                }
-
-                int relay_id_int = Integer.parseInt(relay_id.getText().toString());
-                if ( relay_id_int < 1) {
-                    showAlert("Relay id must be greater than 0");
-                    return;
-                }
-                if ( relay_id_int > 32) {
-                    showAlert("Currently there are only 32 relays");
-                    return;
-                }
-                String set_name_device_str = set_name_device.getText().toString().isEmpty() ?
-                        "Relay_" + relay_id_int : set_name_device.getText().toString();
-
-                String uid = user.getUid();
-                String index = "user_inform/" + uid + "/listRelay";
-                myRef = database.getReference(index);
-
-                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        int maxId = 0;
-                        for (DataSnapshot child : snapshot.getChildren()) {
-                            list_relay relay = child.getValue(list_relay.class);
-                            if(relay_id_int==relay.getRelay_id())
-                            {
-                                showAlert("Relay id already exists");
-                                return;
-                            }
-                            if (relay != null && relay.getIndex() > maxId) {
-                                maxId = relay.getIndex();
-                            }
-                        }
-                        int newId = maxId + 1;
-                        list_relay newRelay = new list_relay(newId, relay_id_int,set_name_device_str);
-                        myRef.child(String.valueOf(newId) ).setValue(newRelay, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                befor_addItemAndReload("Add new relay "+ newRelay.getRelay_id()+" .");
-                                Toast.makeText(getContext(), "Add relay successfully", Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        showAlert("Failed to read data: " + error.getMessage());
-                    }
-                });
-
-            }
-        });
-
+        List_Automation fragmentB = new List_Automation();
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.drawerLayout, fragmentB);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
 
@@ -385,5 +328,9 @@ public class Automation extends Fragment {
             mqttHelper.mqttAndroidClient.publish(topic, msg);
         }catch (MqttException e){
         }
+    }
+
+    private void  updateDatatoList_Automation(){
+
     }
 }

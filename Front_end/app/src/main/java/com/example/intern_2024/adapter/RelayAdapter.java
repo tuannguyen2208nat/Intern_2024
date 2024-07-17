@@ -31,6 +31,9 @@ public class RelayAdapter extends RecyclerView.Adapter<RelayAdapter.UserViewHold
         this.listRelay = listRelay;
         this.mIClickListener = mIClickListener;
     }
+    public RelayAdapter(List<list_relay> listRelay) {
+        this.listRelay = listRelay;
+    }
 
     @NonNull
     @Override
@@ -98,6 +101,13 @@ public class RelayAdapter extends RecyclerView.Adapter<RelayAdapter.UserViewHold
             deleteButton = itemView.findViewById(R.id.delete_button);
         }
     }
+
+    public void updateRelayList(List<list_relay> newRelayList) {
+        listRelay.clear();
+        listRelay.addAll(newRelayList);
+        notifyDataSetChanged();
+    }
+
 
 }
 

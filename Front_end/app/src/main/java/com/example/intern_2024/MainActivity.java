@@ -18,8 +18,8 @@ import androidx.fragment.app.FragmentManager;
 
 
 import com.bumptech.glide.Glide;
-import com.example.intern_2024.fragment.accessories.Accessories;
-import com.example.intern_2024.fragment.Automation;
+import com.example.intern_2024.fragment.Accessories;
+import com.example.intern_2024.fragment.Automation.Automation;
 import com.example.intern_2024.fragment.Home;
 import com.example.intern_2024.fragment.Profile;
 import com.example.intern_2024.welcome.welcome_form_login;

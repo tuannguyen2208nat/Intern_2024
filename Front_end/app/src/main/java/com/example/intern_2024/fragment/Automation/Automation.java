@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -63,6 +64,8 @@ public class Automation extends Fragment {
     ImageView close_button;
     RecycleViewAdapter adapter;
     private SQLiteHelper db;
+    Button btn_add;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,6 +73,7 @@ public class Automation extends Fragment {
         view = inflater.inflate(R.layout.fragment_automation, container, false);
         rcvAuto=view.findViewById(R.id.rcv_auto);
         auto_add=view.findViewById(R.id.auto_add);
+        btn_add=view.findViewById(R.id.btn_add);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rcvAuto.setLayoutManager(linearLayoutManager);
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -79,12 +83,11 @@ public class Automation extends Fragment {
         mqttHelper = new MQTTHelper(getContext());
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
-        // Observe changes to the editTextValue
         sharedViewModel.GetListAuto().observe(getViewLifecycleOwner(), new Observer<list_auto>() {
             @Override
             public void onChanged(list_auto s) {
                 if (s != null) {
-//                    addItemAndReload(s.getTime(), s.getDetail());
+                    mListAuto.add(s);
                 }
             }
         });
@@ -96,11 +99,25 @@ public class Automation extends Fragment {
     }
 
     private void start() {
+
+        btn_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Iterating through mListAuto to display relay names
+                for (list_auto test1 : mListAuto) {
+                    List<list_relay> test = test1.getListRelays();
+                    for (list_relay relay : test) {
+                        Toast.makeText(getContext(), relay.getName(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
         getFileDatabase();
 
         if (user != null) {
             getlistRelay();
-            getlistAuto();
+//            getlistAuto();
         }
 
         mAutoAdapter = new AutoAdapter(mListAuto, new AutoAdapter.IClickListener() {

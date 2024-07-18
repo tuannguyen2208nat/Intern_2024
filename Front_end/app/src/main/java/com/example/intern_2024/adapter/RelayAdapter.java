@@ -103,7 +103,6 @@ public class RelayAdapter extends RecyclerView.Adapter<RelayAdapter.UserViewHold
     }
 
     public void updateRelayList(List<list_relay> newRelayList) {
-        listRelay.clear();
         listRelay.addAll(newRelayList);
         notifyDataSetChanged();
     }

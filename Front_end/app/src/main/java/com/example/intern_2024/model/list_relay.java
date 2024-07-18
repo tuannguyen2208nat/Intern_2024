@@ -7,6 +7,7 @@ public class list_relay {
     private int index;
     private int relay_id;
     private String name;
+    private boolean isChecked;
 
 
     public list_relay() {
@@ -49,6 +50,13 @@ public class list_relay {
 
     public void setName(String name) {
         this.name = name;
+    }
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 
 

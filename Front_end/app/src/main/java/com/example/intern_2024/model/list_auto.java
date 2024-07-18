@@ -1,25 +1,28 @@
 package com.example.intern_2024.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class list_auto {
     private int index;
     private String name;
-    private list_relay list_relay;
+    private List<list_relay> listRelays;
 
     public list_auto() {
+        this.listRelays = new ArrayList<>();
     }
 
-    public list_auto(int index, com.example.intern_2024.model.list_relay list_relay) {
+    public list_auto(int index, List<list_relay> listRelays) {
         this.index = index;
-        this.list_relay = list_relay;
+        this.listRelays = listRelays;
     }
 
-    public list_auto(int index, String name, com.example.intern_2024.model.list_relay list_relay) {
+    public list_auto(int index, String name, List<list_relay> listRelays) {
         this.index = index;
         this.name = name;
-        this.list_relay = list_relay;
+        this.listRelays = listRelays;
     }
 
     public int getIndex() {
@@ -38,19 +41,37 @@ public class list_auto {
         this.name = name;
     }
 
-    public com.example.intern_2024.model.list_relay getList_relay() {
-        return list_relay;
+    public List<list_relay> getListRelays() {
+        return listRelays;
     }
 
-    public void setList_relay(com.example.intern_2024.model.list_relay list_relay) {
-        this.list_relay = list_relay;
+    public void setListRelays(List<list_relay> listRelays) {
+        this.listRelays = listRelays;
+    }
+
+    public int getSize() {
+        return listRelays.size();
+    }
+
+    public void addRelay(list_relay relay) {
+        this.listRelays.add(relay);
+    }
+
+    public void removeRelay(list_relay relay) {
+        this.listRelays.remove(relay);
+    }
+
+    public void waybackvalue() {
+        for (list_relay relay : listRelays) {
+            relay.setChecked(false);
+        }
     }
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("index", index);
         hashMap.put("name", name);
-        hashMap.put("list_relay", list_relay);
+        hashMap.put("listRelays", listRelays);
         return hashMap;
     }
 }

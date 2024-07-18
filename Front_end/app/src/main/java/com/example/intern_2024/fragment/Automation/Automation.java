@@ -117,7 +117,7 @@ public class Automation extends Fragment {
 
         if (user != null) {
             getlistRelay();
-//            getlistAuto();
+            getlistAuto();
         }
 
         mAutoAdapter = new AutoAdapter(mListAuto, new AutoAdapter.IClickListener() {

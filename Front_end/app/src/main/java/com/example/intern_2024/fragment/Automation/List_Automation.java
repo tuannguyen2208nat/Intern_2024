@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -32,7 +31,6 @@ public class List_Automation extends Fragment {
     private View view;
     private ImageView backIcon;
     private Button create;
-    private EditText name_auto;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,7 +41,6 @@ public class List_Automation extends Fragment {
         backIcon = view.findViewById(R.id.backIcon);
         create = view.findViewById(R.id.create);
         rcvRelay = view.findViewById(R.id.rcvRelay);
-        name_auto = view.findViewById(R.id.name_auto);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rcvRelay.setLayoutManager(linearLayoutManager);
@@ -51,6 +48,13 @@ public class List_Automation extends Fragment {
         mListRelay = new ArrayList<>();
         addRelay = new ArrayList<>();
         listAuto = new list_auto();
+        mRelayAdapter = new RelayAutoAdapter(mListRelay, new RelayAutoAdapter.IClickListener() {
+            @Override
+            public void onClickSelectRelay(list_relay relay, boolean isChecked) {
+                handleRelaySelection(relay, isChecked);
+            }
+        });
+        rcvRelay.setAdapter(mRelayAdapter);
 
         sharedViewModel.GetListRelay().observe(getViewLifecycleOwner(), new Observer<ArrayList<list_relay>>() {
             @Override
@@ -63,23 +67,9 @@ public class List_Automation extends Fragment {
             }
         });
 
-
-
-        return view;
-    }
-
-    private void start() {
-
-        mRelayAdapter = new RelayAutoAdapter(mListRelay, new RelayAutoAdapter.IClickListener() {
-            @Override
-            public void onClickSelectRelay(list_relay relay, boolean isChecked) {
-                handleRelaySelection(relay, isChecked);
-            }
-        });
-        rcvRelay.setAdapter(mRelayAdapter);
-
         setListeners();
 
+        return view;
     }
 
     private void setListeners() {
@@ -124,9 +114,13 @@ public class List_Automation extends Fragment {
             Toast.makeText(getContext(), "No relays selected", Toast.LENGTH_SHORT).show();
             return;
         }
-        listAuto.setName(name_auto.getText().toString());
-        listAuto.waybackvalue();
-        sharedViewModel.SetListAuto(listAuto);
-        getParentFragmentManager().popBackStack();
+
+        List<list_relay> listRelays = listAuto.getListRelays();
+        for (list_relay relay : listRelays) {
+            Toast.makeText(getContext(), relay.getName(), Toast.LENGTH_SHORT).show();
+        }
+
+        // sharedViewModel.SetListAuto(listAuto);
+        // getParentFragmentManager().popBackStack();
     }
 }

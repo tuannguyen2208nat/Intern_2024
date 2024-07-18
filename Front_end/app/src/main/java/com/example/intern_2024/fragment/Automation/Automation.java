@@ -104,14 +104,18 @@ public class Automation extends Fragment {
             @Override
             public void onClick(View v) {
                 // Iterating through mListAuto to display relay names
+                int i=0;
                 for (list_auto test1 : mListAuto) {
+                    Toast.makeText(getContext(), "Index: " + i, Toast.LENGTH_SHORT).show();
                     List<list_relay> test = test1.getListRelays();
                     for (list_relay relay : test) {
-                        Toast.makeText(getContext(), relay.getName(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Relay Name: " + relay.getName(), Toast.LENGTH_SHORT).show();
                     }
+                    i++;
                 }
             }
         });
+
 
         getFileDatabase();
 
@@ -305,7 +309,15 @@ public class Automation extends Fragment {
             Toast.makeText(getContext(), "Plesae add relay", Toast.LENGTH_SHORT).show();
         }
 
-        sharedViewModel.SetListRelay((ArrayList<list_relay>) mListRelay);
+        ArrayList<list_relay> send = new ArrayList<>(mListRelay);
+
+        // Đặt checked = false cho từng relay trong send
+        for (list_relay relay : send) {
+            relay.setChecked(false);
+        }
+
+        // Gửi danh sách send đã cập nhật qua SharedViewModel
+        sharedViewModel.SetListRelay(send);
 
         List_Automation fragmentB = new List_Automation();
         FragmentManager fragmentManager = getParentFragmentManager();

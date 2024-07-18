@@ -114,13 +114,7 @@ public class List_Automation extends Fragment {
             Toast.makeText(getContext(), "No relays selected", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        List<list_relay> listRelays = listAuto.getListRelays();
-        for (list_relay relay : listRelays) {
-            Toast.makeText(getContext(), relay.getName(), Toast.LENGTH_SHORT).show();
-        }
-
-        // sharedViewModel.SetListAuto(listAuto);
-        // getParentFragmentManager().popBackStack();
+         sharedViewModel.SetListAuto(listAuto);
+         getParentFragmentManager().popBackStack();
     }
 }

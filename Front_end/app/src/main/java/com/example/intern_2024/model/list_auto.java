@@ -61,12 +61,6 @@ public class list_auto {
         this.listRelays.remove(relay);
     }
 
-    public void waybackvalue() {
-        for (list_relay relay : listRelays) {
-            relay.setChecked(false);
-        }
-    }
-
     public Map<String, Object> toMap() {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("index", index);

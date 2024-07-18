@@ -24,8 +24,6 @@ public class AutoAdapter extends RecyclerView.Adapter<AutoAdapter.UserViewHolder
     public interface IClickListener {
         void onClickEditAuto(list_auto auto);
 
-        void onClickDeleteAuto(list_auto auto);
-
         void onClickUseAuto(list_auto auto, State state);
     }
 

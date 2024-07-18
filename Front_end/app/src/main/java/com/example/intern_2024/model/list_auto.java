@@ -19,6 +19,11 @@ public class list_auto {
         this.listRelays = listRelays;
     }
 
+    public list_auto(String name, List<list_relay> listRelays) {
+        this.name = name;
+        this.listRelays = listRelays;
+    }
+
     public list_auto(int index, String name, List<list_relay> listRelays) {
         this.index = index;
         this.name = name;

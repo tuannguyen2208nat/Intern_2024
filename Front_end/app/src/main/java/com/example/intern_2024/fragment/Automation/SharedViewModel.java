@@ -16,16 +16,22 @@ public class SharedViewModel extends ViewModel {
     public void SetListRelay(ArrayList<list_relay> listRelay) {
         relay.setValue(listRelay);
     }
-
     public LiveData<ArrayList<list_relay>> GetListRelay() {
         return relay;
     }
 
-    public void SetListAuto(list_auto listAuto) {
-        auto.setValue(listAuto);
+    public void SetListAuto(list_auto listAuto) { auto.setValue(listAuto);}
+    public LiveData<list_auto> GetListAuto() { return auto;}
+
+    /////Edit/////
+    private final MutableLiveData<ArrayList<list_relay>> edit_relay = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<list_auto> edit_auto = new MutableLiveData<>();
+    public void Edit_SetListRelay(ArrayList<list_relay> listRelay) { edit_relay.setValue(listRelay);}
+    public LiveData<ArrayList<list_relay>> Edit_GetListRelay() {
+        return edit_relay;
     }
 
-    public LiveData<list_auto> GetListAuto() {
-        return auto;
-    }
+    public void Edit_SetListAuto(list_auto listAuto) {auto.setValue(listAuto);}
+    public LiveData<list_auto> Edit_GetListAuto() {return auto;}
+
 }

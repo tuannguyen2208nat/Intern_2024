@@ -1,6 +1,8 @@
 package com.example.intern_2024.fragment.Automation;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,8 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.intern_2024.R;
@@ -61,11 +65,8 @@ public class Automation extends Fragment {
     FirebaseUser user;
     FirebaseDatabase database;
     DatabaseReference myRef;
-    ImageView close_button;
     RecycleViewAdapter adapter;
     private SQLiteHelper db;
-    Button btn_add;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,13 +74,16 @@ public class Automation extends Fragment {
         view = inflater.inflate(R.layout.fragment_automation, container, false);
         rcvAuto=view.findViewById(R.id.rcv_auto);
         auto_add=view.findViewById(R.id.auto_add);
-        btn_add=view.findViewById(R.id.btn_add);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rcvAuto.setLayoutManager(linearLayoutManager);
+
         user = FirebaseAuth.getInstance().getCurrentUser();
         database= FirebaseDatabase.getInstance();
+
         mListAuto=new ArrayList<>();
         mListRelay=new ArrayList<>();
+
         mqttHelper = new MQTTHelper(getContext());
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
@@ -88,6 +92,7 @@ public class Automation extends Fragment {
             public void onChanged(list_auto s) {
                 if (s != null) {
                     mListAuto.add(s);
+                    mAutoAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -100,46 +105,26 @@ public class Automation extends Fragment {
 
     private void start() {
 
-        btn_add.setOnClickListener(new View.OnClickListener() {
+        getFileDatabase();
+
+        mAutoAdapter=new AutoAdapter(mListAuto, new AutoAdapter.IClickListener() {
             @Override
-            public void onClick(View v) {
-                // Iterating through mListAuto to display relay names
-                int i=0;
-                for (list_auto test1 : mListAuto) {
-                    Toast.makeText(getContext(), "Index: " + i, Toast.LENGTH_SHORT).show();
-                    List<list_relay> test = test1.getListRelays();
-                    for (list_relay relay : test) {
-                        Toast.makeText(getContext(), "Relay Name: " + relay.getName(), Toast.LENGTH_SHORT).show();
-                    }
-                    i++;
-                }
+            public void onClickEditAuto(list_auto auto) {
+                openDialogEditAuto(auto);
+            }
+
+            @Override
+            public void onClickUseAuto(list_auto auto, State state) {
+
             }
         });
 
-
-        getFileDatabase();
+        rcvAuto.setAdapter(mAutoAdapter);
 
         if (user != null) {
             getlistRelay();
             getlistAuto();
         }
-
-        mAutoAdapter = new AutoAdapter(mListAuto, new AutoAdapter.IClickListener() {
-            @Override
-            public void onClickEditAuto(list_auto auto) {
-                updateDatatoList_Automation();
-            }
-
-            @Override
-            public void onClickDeleteAuto(list_auto auto) {}
-
-            @Override
-            public void onClickUseAuto(list_auto auto, State state) {
-                auto_switch(auto,state);
-            }
-        });
-
-        rcvAuto.setAdapter(mAutoAdapter);
 
         auto_add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,7 +133,25 @@ public class Automation extends Fragment {
             }
         });
 
+    }
 
+    private void openDialogEditAuto(list_auto list_auto)
+    {
+
+        ArrayList<list_relay> send = new ArrayList<>(mListRelay);
+        for (list_relay relay : send) {
+            relay.setChecked(false);
+        }
+
+        sharedViewModel.Edit_SetListRelay(send);
+        sharedViewModel.Edit_SetListAuto(list_auto);
+
+        Edit_Automation fragmentB = new Edit_Automation();
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.drawerLayout, fragmentB);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     private void getlistAuto() {
@@ -266,9 +269,7 @@ public class Automation extends Fragment {
 
     }
 
-
-
-    public void auto_switch(list_auto list_auto,State state){
+    public void auto_switch(list_auto list_auto,Boolean state){
         String value="";
         String uid = user.getUid();
         String index = "user_inform/" + uid + "/listAuto" ;
@@ -278,7 +279,7 @@ public class Automation extends Fragment {
         String int_fix="";
         String switch_state="";
 
-        if (state.equals(State.LEFT)) {
+        if (state) {
             if(Integer.valueOf(auto_id)<10)
             {
                 int_fix="0"+auto_id;
@@ -289,7 +290,7 @@ public class Automation extends Fragment {
             switch_state="OFF";
 
         }
-        if (state.equals(State.RIGHT)) {
+        else {
             if(Integer.valueOf(auto_id)<10)
             {
                 int_fix="0"+auto_id;
@@ -310,22 +311,19 @@ public class Automation extends Fragment {
         }
 
         ArrayList<list_relay> send = new ArrayList<>(mListRelay);
-
         for (list_relay relay : send) {
             relay.setChecked(false);
         }
 
         sharedViewModel.SetListRelay(send);
 
-        List_Automation fragmentB = new List_Automation();
+        Add_Automation fragmentB = new Add_Automation();
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.drawerLayout, fragmentB);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
-
-
 
 
     private void showAlert(String message) {
@@ -335,6 +333,7 @@ public class Automation extends Fragment {
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
     }
+
     private void addItemAndReload(String time, String detail) {
         Item item = new Item(time, detail);
         long id = db.addItem(item);
@@ -413,5 +412,25 @@ public class Automation extends Fragment {
 
     private void  updateDatatoList_Automation(){
 
+    }
+
+    private void showData(){
+        int i=0;
+        for (list_auto test1 : mListAuto) {
+            Toast.makeText(getContext(), "Index: " + i, Toast.LENGTH_SHORT).show();
+            List<list_relay> test = test1.getListRelays();
+            for (list_relay relay : test) {
+                Toast.makeText(getContext(), "Relay Name: " + relay.getName(), Toast.LENGTH_SHORT).show();
+            }
+            i++;
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            start();
+        }
     }
 }

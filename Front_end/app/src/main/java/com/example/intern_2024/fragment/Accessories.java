@@ -72,8 +72,10 @@ public class Accessories extends Fragment {
         view = inflater.inflate(R.layout.fragment_accessories, container, false);
         rcvRelay=view.findViewById(R.id.rcv_relay);
         relay_add=view.findViewById(R.id.relay_add);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rcvRelay.setLayoutManager(linearLayoutManager);
+
         user = FirebaseAuth.getInstance().getCurrentUser();
         database=FirebaseDatabase.getInstance();
         mListRelay=new ArrayList<>();

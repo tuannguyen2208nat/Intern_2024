@@ -311,12 +311,10 @@ public class Automation extends Fragment {
 
         ArrayList<list_relay> send = new ArrayList<>(mListRelay);
 
-        // Đặt checked = false cho từng relay trong send
         for (list_relay relay : send) {
             relay.setChecked(false);
         }
 
-        // Gửi danh sách send đã cập nhật qua SharedViewModel
         sharedViewModel.SetListRelay(send);
 
         List_Automation fragmentB = new List_Automation();

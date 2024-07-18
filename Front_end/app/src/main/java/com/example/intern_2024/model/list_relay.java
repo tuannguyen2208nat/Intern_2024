@@ -27,7 +27,6 @@ public class list_relay {
     }
 
 
-
     public int getIndex() {
         return index;
     }

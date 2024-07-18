@@ -383,6 +383,7 @@ public class Accessories extends Fragment {
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
     }
+
     private void addItemAndReload(String time, String detail) {
         Item item = new Item(time, detail);
         long id = db.addItem(item);
@@ -443,9 +444,6 @@ public class Accessories extends Fragment {
             });
         }
     }
-
-
-
 
     public void sendDataMQTT(String topic, String value){
         MqttMessage msg = new MqttMessage();

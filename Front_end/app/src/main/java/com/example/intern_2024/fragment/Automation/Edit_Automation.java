@@ -28,7 +28,6 @@ public class Edit_Automation extends Fragment {
     private RecyclerView rcvRelay;
     private RelayAutoAdapter mRelayAdapter;
     private List<list_relay> mListRelay;
-    private SharedViewModel sharedViewModel;
     private ImageView backIcon;
     private Button save;
     private EditText name_auto;
@@ -39,7 +38,6 @@ public class Edit_Automation extends Fragment {
                              Bundle savedInstanceState) {
         view=inflater.inflate(R.layout.edit_automation, container, false);
 
-        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
         backIcon = view.findViewById(R.id.backIcon);
         save = view.findViewById(R.id.save);
@@ -59,33 +57,6 @@ public class Edit_Automation extends Fragment {
         });
         rcvRelay.setAdapter(mRelayAdapter);
 
-        sharedViewModel.Edit_GetListAuto().observe(getViewLifecycleOwner(), new Observer<list_auto>() {
-            @Override
-            public void onChanged(list_auto list_auto) {
-                listAuto = list_auto;
-                name_auto.setText(list_auto.getName());
-
-                // Check if both listAuto and mListRelay are available
-                if (listAuto != null && mListRelay != null && !mListRelay.isEmpty()) {
-                    updateRelays();
-                }
-            }
-        });
-
-        sharedViewModel.Edit_GetListRelay().observe(getViewLifecycleOwner(), new Observer<ArrayList<list_relay>>() {
-            @Override
-            public void onChanged(ArrayList<list_relay> listRelays) {
-                if (listRelays != null && !listRelays.isEmpty()) {
-                    mListRelay = listRelays;
-
-                    // Check if both listAuto and mListRelay are available
-                    if (listAuto != null) {
-                        updateRelays();
-                    }
-                }
-            }
-        });
-
         setListeners();
 
 
@@ -98,7 +69,7 @@ public class Edit_Automation extends Fragment {
         for (list_relay relayA : mListRelay) {
             for (list_relay relayB : listAuto.getListRelays()) {
                 if (relayA.getRelay_id() == relayB.getRelay_id()) {
-                    relayA.setChecked(true);
+//                    relayA.setChecked(true);
                 }
             }
         }

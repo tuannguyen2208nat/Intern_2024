@@ -8,25 +8,26 @@ import java.util.Map;
 public class list_auto {
     private int index;
     private String name;
+    private int mode;
+    private String time;
     private List<list_relay> listRelays;
 
     public list_auto() {
-        this.listRelays = new ArrayList<>();
+
     }
 
-    public list_auto(int index, List<list_relay> listRelays) {
+    public list_auto(int index,int mode,String time , List<list_relay> listRelays) {
         this.index = index;
+        this.mode=mode;
+        this.time=time;
         this.listRelays = listRelays;
     }
 
-    public list_auto(String name, List<list_relay> listRelays) {
-        this.name = name;
-        this.listRelays = listRelays;
-    }
-
-    public list_auto(int index, String name, List<list_relay> listRelays) {
+    public list_auto(int index,int mode, String time,String name, List<list_relay> listRelays) {
         this.index = index;
         this.name = name;
+        this.mode=mode;
+        this.time=time;
         this.listRelays = listRelays;
     }
 
@@ -65,6 +66,14 @@ public class list_auto {
     public void removeRelay(list_relay relay) {
         this.listRelays.remove(relay);
     }
+
+    public int getMode() {return mode;}
+
+    public void setMode(int mode) {this.mode = mode;}
+
+    public String getTime() {return time;}
+
+    public void setTime(String time) { this.time = time; }
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> hashMap = new HashMap<>();

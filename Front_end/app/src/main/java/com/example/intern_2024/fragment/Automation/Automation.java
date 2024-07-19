@@ -1,6 +1,11 @@
 package com.example.intern_2024.fragment.Automation;
 
-import android.app.AlertDialog;
+import static android.content.Context.ALARM_SERVICE;
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.intern_2024.R;
 import com.example.intern_2024.adapter.AutoAdapter;
@@ -21,6 +27,7 @@ import com.example.intern_2024.adapter.RecycleViewAdapter;
 import com.example.intern_2024.database.SQLiteHelper;
 import com.example.intern_2024.model.Item;
 import com.example.intern_2024.model.list_auto;
+import com.example.intern_2024.notification.AlarmReceiver;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,6 +41,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.nightonke.jellytogglebutton.State;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -49,6 +57,9 @@ public class Automation extends Fragment {
     DatabaseReference myRef;
     RecycleViewAdapter adapter;
     private SQLiteHelper db;
+    private AlarmManager alarmManager;
+    PendingIntent pendingIntent;
+    String databaseName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -173,7 +184,7 @@ public class Automation extends Fragment {
     private void openDialogEditAuto(list_auto auto) {
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable("list_auto", auto);
+        bundle.putSerializable("list_auto", (Serializable) auto);
 
         Edit_Automation fragmentB = new Edit_Automation();
         FragmentManager fragmentManager = getParentFragmentManager();
@@ -182,23 +193,6 @@ public class Automation extends Fragment {
         fragmentTransaction.addToBackStack(null);
         fragmentB.setArguments(bundle);
         fragmentTransaction.commit();
-    }
-
-    public void auto_switch(list_auto list_auto,State state){
-        String value="";
-        String uid = user.getUid();
-        String index = "user_inform/" + uid + "/listAuto" ;
-        String auto_name=list_auto.getName();
-        myRef = database.getReference(index);
-        String switch_state="";
-
-        if (state.equals(State.LEFT)) {
-            switch_state="OFF";
-        }
-        if (state.equals(State.RIGHT)) {
-            switch_state="ON";
-        }
-        befor_addItemAndReload("Automation "+auto_name+" "+switch_state+" .");
     }
 
     private void addItemAndReload(String time, String detail) {
@@ -238,7 +232,7 @@ public class Automation extends Fragment {
             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    String databaseName = dataSnapshot.getValue(String.class);
+                     databaseName= dataSnapshot.getValue(String.class);
 
                     if (databaseName != null && !databaseName.isEmpty()) {
                         db = new SQLiteHelper(getContext(), databaseName);
@@ -250,6 +244,54 @@ public class Automation extends Fragment {
                 }
             });
         }
+    }
+
+    public void auto_switch(list_auto list_auto,State state){
+        String value="";
+        String uid = user.getUid();
+        String index = "user_inform/" + uid + "/listAuto" ;
+        String auto_name=list_auto.getName();
+        myRef = database.getReference(index);
+        String switch_state="";
+
+        if (state.equals(State.LEFT)) {
+            switch_state="OFF";
+            cancelAlarm(list_auto);
+        }
+        if (state.equals(State.RIGHT)) {
+            switch_state="ON";
+            setAlarm(list_auto);
+        }
+        befor_addItemAndReload("Automation "+auto_name+" "+switch_state+" .");
+    }
+
+    private void setAlarm(list_auto auto){
+
+        String time=auto.getTime();
+        String[] timeParts = time.split(":");
+        int hour = Integer.parseInt(timeParts[0].trim());
+        int minute = Integer.parseInt(timeParts[1].trim());
+
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+
+        Intent intent = new Intent(getContext(), AlarmReceiver.class);
+        intent.putExtra("id", auto.getIndex());
+
+        alarmManager = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
+        pendingIntent=PendingIntent.getBroadcast(getContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        Toast.makeText(requireContext(), "Alarm set for " + time, Toast.LENGTH_SHORT).show();
+    }
+
+
+
+    private void cancelAlarm(list_auto auto){
+        int Alarmid=auto.getIndex();
+
     }
 
 }

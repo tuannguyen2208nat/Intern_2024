@@ -15,12 +15,8 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.8"
             android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
 
                 <TextView
                     android:paddingLeft="20dp"
@@ -30,8 +26,6 @@
                     android:gravity="center_vertical"
                     android:textColor="@color/black"
                     android:textSize="12sp"/>
-
-            </LinearLayout>
 
         </LinearLayout>
 
@@ -81,7 +75,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.1"
+        android:layout_weight="0.2"
         android:gravity="center">
 
         <ImageView

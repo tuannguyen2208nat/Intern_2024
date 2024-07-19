@@ -61,6 +61,7 @@ public class Edit_Automation extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.edit_automation, container, false);
+
         Bundle bundle = getArguments();
         if (bundle != null) {
             listAuto = (list_auto) bundle.getSerializable("list_auto");
@@ -340,10 +341,6 @@ public class Edit_Automation extends Fragment {
             if(relay.isChecked())
             {
                 send.add(relay);
-            }
-            else
-            {
-                Toast.makeText(getActivity(),relay.getName()+"false", Toast.LENGTH_SHORT).show();
             }
         }
 

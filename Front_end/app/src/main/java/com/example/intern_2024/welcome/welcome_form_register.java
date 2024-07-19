@@ -132,8 +132,7 @@ private void updateData(String displayName){
             });
 }
 
-    public void UploadData()
-    {
+public void UploadData() {
         user = FirebaseAuth.getInstance().getCurrentUser();
         if(user==null)
         {
@@ -160,7 +159,6 @@ private void updateData(String displayName){
         myRef.child(uid).updateChildren(userMap);
         user= FirebaseAuth.getInstance().getCurrentUser();
     }
-
 
 private void change_to_home(){
     Intent intent = new Intent(welcome_form_register.this, welcome_login.class);

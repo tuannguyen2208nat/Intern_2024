@@ -13,9 +13,6 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.intern_2024.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -106,13 +103,11 @@ public class welcome_form_forgot_password extends AppCompatActivity {
         }.start();
     }
 
-
     private boolean isValidEmailFormat(String email) {
         // Regular expression to check the email format xx@abc.xyz
         String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
         return email.matches(emailPattern);
     }
-
 
     private void change_to_login(){
         Intent   intent = new Intent(welcome_form_forgot_password.this, welcome_form_login.class);

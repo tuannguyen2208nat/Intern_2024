@@ -1,6 +1,5 @@
 package com.example.intern_2024.fragment.Automation;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +15,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.intern_2024.R;
 import com.example.intern_2024.adapter.RecycleViewAdapter;
 import com.example.intern_2024.adapter.RelayAutoAdapter;
-import com.example.intern_2024.database.MQTTHelper;
 import com.example.intern_2024.database.SQLiteHelper;
 import com.example.intern_2024.model.Item;
 import com.example.intern_2024.model.list_auto;
@@ -41,9 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Add_Automation extends Fragment {
     RecycleViewAdapter adapter;
@@ -340,11 +334,4 @@ public class Add_Automation extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    private void showAlert(String message) {
-        new AlertDialog.Builder(getActivity())
-                .setTitle("Attention")
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
-    }
 }

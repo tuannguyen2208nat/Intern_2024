@@ -50,7 +50,7 @@ public class RelayAutoAdapter extends RecyclerView.Adapter<RelayAutoAdapter.User
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                listRelayItem.setChecked(isChecked); // Update the state in listRelayItem
+                listRelayItem.setChecked(isChecked);
                 mIClickListener.onClickSelectRelay(listRelayItem, isChecked);
             }
         });

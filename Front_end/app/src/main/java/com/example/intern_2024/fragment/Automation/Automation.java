@@ -14,17 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.intern_2024.R;
 import com.example.intern_2024.adapter.AutoAdapter;
 import com.example.intern_2024.adapter.RecycleViewAdapter;
-import com.example.intern_2024.adapter.RelayAdapter;
-import com.example.intern_2024.database.MQTTHelper;
 import com.example.intern_2024.database.SQLiteHelper;
 import com.example.intern_2024.model.Item;
 import com.example.intern_2024.model.list_auto;
-import com.example.intern_2024.model.list_relay;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,10 +33,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.nightonke.jellytogglebutton.State;
 
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -80,6 +73,8 @@ public class Automation extends Fragment {
 
     private void start() {
 
+        getFileDatabase();
+
         mAutoAdapter = new AutoAdapter(mListAuto, new AutoAdapter.IClickListener() {
             @Override
             public void onClickEditAuto(list_auto auto) {
@@ -88,7 +83,7 @@ public class Automation extends Fragment {
 
             @Override
             public void onClickUseAuto(list_auto auto, State state) {
-
+                auto_switch(auto,state);
             }
         });
 
@@ -105,7 +100,6 @@ public class Automation extends Fragment {
         });
 
     }
-
 
     private void getlistAuto() {
         String uid = user.getUid();
@@ -166,7 +160,6 @@ public class Automation extends Fragment {
 
     }
 
-
     private void openDialogAddAuto() {
 
         Add_Automation fragmentB = new Add_Automation();
@@ -182,8 +175,6 @@ public class Automation extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putSerializable("list_auto", auto);
 
-        // Đặt bundle cho fragment
-
         Edit_Automation fragmentB = new Edit_Automation();
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -191,6 +182,85 @@ public class Automation extends Fragment {
         fragmentTransaction.addToBackStack(null);
         fragmentB.setArguments(bundle);
         fragmentTransaction.commit();
+    }
+
+    public void auto_switch(list_auto list_auto,State state){
+        String value="";
+        String uid = user.getUid();
+        String index = "user_inform/" + uid + "/listAuto" ;
+        String auto_name=list_auto.getName();
+        myRef = database.getReference(index);
+        String switch_state="";
+
+        if (state.equals(State.LEFT)) {
+            switch_state="OFF";
+
+        }
+        if (state.equals(State.RIGHT)) {
+            switch_state="ON";
+        }
+        befor_addItemAndReload("Automation "+auto_name+" "+switch_state+" .");
+    }
+
+    private void addItemAndReload(String time, String detail) {
+        Item item = new Item(time, detail);
+        long id = db.addItem(item);
+        if (id != -1) {
+            loadData();
+        }
+    }
+
+    private void loadData() {
+        adapter = new RecycleViewAdapter();
+        List<Item> list = db.getAll();
+        adapter.setList(list);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void befor_addItemAndReload(String detail) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        int day=calendar.get(Calendar.DAY_OF_MONTH);
+        int month= calendar.get(Calendar.MONTH) + 1;
+        int year= calendar.get(Calendar.YEAR);
+        String shour = String.valueOf(hour);
+        String sminute = String.valueOf(minute);
+        String sday=String.valueOf(day);
+        String smonth=String.valueOf(month);
+        String syear=String.valueOf(year);
+        if(hour<10)
+        {
+            shour="0"+shour;
+        }
+        if(minute<10)
+        {
+            sminute="0"+sminute;
+        }
+        String timePicker = sday + "/"+smonth+"/"+syear+"-"+shour+":"+sminute;
+        addItemAndReload(timePicker, detail);
+    }
+
+    private void getFileDatabase(){
+        if (user != null) {
+            String uid = user.getUid();
+            myRef = FirebaseDatabase.getInstance().getReference("user_inform").child(uid).child("file");
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String databaseName = dataSnapshot.getValue(String.class);
+
+                    if (databaseName != null && !databaseName.isEmpty()) {
+                        db = new SQLiteHelper(getContext(), databaseName);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+        }
     }
 
 }

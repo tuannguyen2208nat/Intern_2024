@@ -1,7 +1,6 @@
 package com.example.intern_2024.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,11 +60,25 @@ public class list_auto implements Serializable {
     }
 
     public void addRelay(list_relay relay) {
+
+        for (list_relay existingRelay : listRelays) {
+            if (existingRelay.getRelay_id() == relay.getRelay_id()) {
+                return;
+            }
+        }
+
         this.listRelays.add(relay);
+
     }
 
     public void removeRelay(list_relay relay) {
-        this.listRelays.remove(relay);
+        for(list_relay r : listRelays)
+        {
+            if(r.getIndex() == relay.getIndex())
+            {
+                listRelays.remove(r);
+            }
+        }
     }
 
     public int getMode() {return mode;}
@@ -80,6 +93,8 @@ public class list_auto implements Serializable {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("index", index);
         hashMap.put("name", name);
+        hashMap.put("mode", mode);
+        hashMap.put("time", time);
         hashMap.put("listRelays", listRelays);
         return hashMap;
     }

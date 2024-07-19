@@ -436,6 +436,7 @@ public class Profile extends Fragment {
             getActivity().requestPermissions(permissions, MY_REQUEST_CODE);
         }
     }
+
     public void openGallery() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -494,6 +495,7 @@ public class Profile extends Fragment {
             });
 
     }
+
     private void addItemAndReload(String time, String detail) {
         Item item = new Item(time, detail);
         long id = db.addItem(item);
@@ -504,7 +506,6 @@ public class Profile extends Fragment {
             adapter.notifyDataSetChanged();
         }
     }
-
 
     private void befor_addItemAndReload(String detail) {
         Calendar calendar = Calendar.getInstance();
@@ -587,8 +588,5 @@ public class Profile extends Fragment {
             Log.e("firebase", "User not logged in");
         }
     }
-
-
-
 
 }

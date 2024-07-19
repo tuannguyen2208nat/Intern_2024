@@ -1,6 +1,5 @@
 package com.example.intern_2024.fragment.Automation;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +15,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.intern_2024.R;
 import com.example.intern_2024.adapter.RecycleViewAdapter;
 import com.example.intern_2024.adapter.RelayAutoAdapter;
-import com.example.intern_2024.database.MQTTHelper;
 import com.example.intern_2024.database.SQLiteHelper;
 import com.example.intern_2024.model.Item;
 import com.example.intern_2024.model.list_auto;
@@ -41,17 +37,15 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class Edit_Automation extends Fragment {
     RecycleViewAdapter adapter;
     private View view;
     private RecyclerView rcvRelay;
     private RelayAutoAdapter mRelayAdapter;
-    private List<list_relay> mListRelay;
-    private List<list_relay> mListRelaySelect;
+    private List<list_relay> mListRelay, addRelay;
     private ImageView backIcon;
     private Button save;
     private EditText name,time;
@@ -70,7 +64,6 @@ public class Edit_Automation extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             listAuto = (list_auto) bundle.getSerializable("list_auto");
-            mListRelaySelect= listAuto.getListRelays();
         }
 
         backIcon = view.findViewById(R.id.backIcon);
@@ -89,6 +82,7 @@ public class Edit_Automation extends Fragment {
         database = FirebaseDatabase.getInstance();
 
         mListRelay = new ArrayList<>();
+        addRelay = new ArrayList<>();
 
         setupRelayAdapter();
 
@@ -131,8 +125,27 @@ public class Edit_Automation extends Fragment {
             getlistRelay();
         }
 
-    }
+        select_mode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedOption = (String) parent.getItemAtPosition(position);
 
+                if (" ".equals(selectedOption)) {
+                    mode = 0;
+                } else if ("On".equals(selectedOption)) {
+                    mode = 1;
+                } else if ("Off".equals(selectedOption)) {
+                    mode = 2;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+
+    }
 
     private void SaveAuto() {
         if (listAuto.getSize() == 0) {
@@ -258,10 +271,30 @@ public class Edit_Automation extends Fragment {
         mRelayAdapter = new RelayAutoAdapter(mListRelay, new RelayAutoAdapter.IClickListener() {
             @Override
             public void onClickSelectRelay(list_relay relay, boolean isChecked) {
-//                handleRelaySelection(relay, isChecked);
+                handleRelaySelection(relay, isChecked);
             }
         });
         rcvRelay.setAdapter(mRelayAdapter);
+    }
+
+    private void handleRelaySelection(list_relay relay, boolean isChecked) {
+        boolean pass = false;
+        for (list_relay item : mListRelay) {
+            if (item.getRelay_id() == relay.getRelay_id()) {
+                pass = true;
+                break;
+            }
+        }
+        if (!pass) {
+            Toast.makeText(getContext(), "Can't see this relay", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (isChecked) {
+            addRelay.add(relay);
+        } else {
+            addRelay.add(relay);
+        }
     }
 
     private void loadData() {
@@ -272,10 +305,6 @@ public class Edit_Automation extends Fragment {
     }
 
     private void UploadData() {
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            return;
-        }
         if (mode != 1 && mode != 2) {
             Toast.makeText(getActivity(),"Please select mode", Toast.LENGTH_SHORT).show();
             return;
@@ -285,47 +314,65 @@ public class Edit_Automation extends Fragment {
             Toast.makeText(getActivity(),"Please add time", Toast.LENGTH_SHORT).show();
             return;
         }
+        if(name.getText().toString().isEmpty())
+        {
+            Toast.makeText(getActivity(),"Please add name", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        for (list_relay relay : mListRelay) {
+            boolean found = false;
+            Iterator<list_relay> iterator = addRelay.iterator();
+            while (iterator.hasNext()) {
+                list_relay relay1 = iterator.next();
+                if (relay.getRelay_id() == relay1.getRelay_id()) {
+                    found = true;
+                    if (!relay.isChecked()) {
+                        iterator.remove();
+                    }
+                    break;
+                }
+            }
+            if (relay.isChecked() && !found) {
+                addRelay.add(relay);
+            }
+        }
+
+        if(addRelay.isEmpty())
+        {
+            Toast.makeText(getActivity(),"Please select relays", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        List<list_relay> send=new ArrayList<>();
+        for(list_relay relay:addRelay)
+        {
+            if(relay.isChecked())
+            {
+                send.add(relay);
+            }
+            else
+            {
+                Toast.makeText(getActivity(),relay.getName()+"false", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        listAuto.setName(name.getText().toString());
+        listAuto.setMode(mode);
+        listAuto.setTime(time.getText().toString());
+        listAuto.setListRelays(send);
+
         String uid = user.getUid();
         String index = "user_inform/" + uid + "/listAuto";
         myRef = database.getReference(index);
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        myRef.child(String.valueOf(listAuto.getIndex())).updateChildren(listAuto.toMap(), new DatabaseReference.CompletionListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int maxId = 0;
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    list_auto auto = child.getValue(list_auto.class);
-                    if (auto != null && auto.getIndex() > maxId) {
-                        maxId = auto.getIndex();
-                    }
-                }
-                int newId = maxId + 1;
-                listAuto.setIndex(newId);
-                listAuto.setMode(mode);
-                listAuto.setTime(time.getText().toString());
-
-                myRef.child(String.valueOf(newId)).setValue(listAuto, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                        befor_addItemAndReload("Add automation  " + listAuto.getName() + " .");
-                        Toast.makeText(getActivity(), "Add automation successfully", Toast.LENGTH_SHORT).show();
-                        getParentFragmentManager().popBackStack();
-                    }
-                });
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle database error
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                befor_addItemAndReload("Update automation  "+name.getText().toString()+" .");
+                getParentFragmentManager().popBackStack();
             }
         });
     }
 
-    private void showAlert(String message) {
-        new AlertDialog.Builder(getActivity())
-                .setTitle("Attention")
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
-    }
 }

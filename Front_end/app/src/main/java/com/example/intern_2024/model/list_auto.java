@@ -1,11 +1,12 @@
 package com.example.intern_2024.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class list_auto {
+public class list_auto implements Serializable {
     private int index;
     private String name;
     private int mode;

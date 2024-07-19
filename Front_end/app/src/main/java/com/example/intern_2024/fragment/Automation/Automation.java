@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.intern_2024.R;
 import com.example.intern_2024.adapter.AutoAdapter;
 import com.example.intern_2024.adapter.RecycleViewAdapter;
+import com.example.intern_2024.adapter.RelayAdapter;
 import com.example.intern_2024.database.MQTTHelper;
 import com.example.intern_2024.database.SQLiteHelper;
 import com.example.intern_2024.model.Item;
@@ -79,6 +80,22 @@ public class Automation extends Fragment {
 
     private void start() {
 
+        mAutoAdapter = new AutoAdapter(mListAuto, new AutoAdapter.IClickListener() {
+            @Override
+            public void onClickEditAuto(list_auto auto) {
+                openDialogEditAuto(auto);
+            }
+
+            @Override
+            public void onClickUseAuto(list_auto auto, State state) {
+
+            }
+        });
+
+        rcvAuto.setAdapter(mAutoAdapter);
+
+        getlistAuto();
+
 
         auto_add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +105,67 @@ public class Automation extends Fragment {
         });
 
     }
+
+
+    private void getlistAuto() {
+        String uid = user.getUid();
+        String index = "user_inform/" + uid + "/listAuto";
+        myRef = database.getReference(index);
+        Query query=myRef.orderByChild("index");
+        query.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
+                list_auto listAuto = dataSnapshot.getValue(list_auto.class);
+                if (listAuto != null ) {
+                    mListAuto.add(listAuto);
+                    mAutoAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
+                list_auto listAuto = dataSnapshot.getValue(list_auto.class);
+                if (listAuto == null || mListAuto == null || mListAuto.isEmpty()) {
+                    return;
+                }
+                for (int i = 0; i < mListAuto.size(); i++) {
+                    if (listAuto.getIndex() == mListAuto.get(i).getIndex()) {
+                        mListAuto.set(i, listAuto);
+                        break;
+                    }
+                }
+                mAutoAdapter.notifyDataSetChanged();
+            }
+
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                list_auto listAuto = dataSnapshot.getValue(list_auto.class);
+                if (listAuto == null || mListAuto == null || mListAuto.isEmpty()) {
+                    return;
+                }
+                for (int i = 0; i < mListAuto.size(); i++) {
+                    if (listAuto.getIndex() == mListAuto.get(i).getIndex()) {
+                        mListAuto.remove(mListAuto.get(i));
+                        break;
+                    }
+                }
+                mAutoAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
 
     private void openDialogAddAuto() {
 
@@ -99,13 +177,19 @@ public class Automation extends Fragment {
         fragmentTransaction.commit();
     }
 
-    private void openDialogEditAuto(list_auto list_auto) {
+    private void openDialogEditAuto(list_auto auto) {
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("list_auto", auto);
+
+        // Đặt bundle cho fragment
 
         Edit_Automation fragmentB = new Edit_Automation();
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.drawerLayout, fragmentB);
         fragmentTransaction.addToBackStack(null);
+        fragmentB.setArguments(bundle);
         fragmentTransaction.commit();
     }
 

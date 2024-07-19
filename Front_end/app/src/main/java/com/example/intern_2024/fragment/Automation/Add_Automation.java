@@ -79,24 +79,28 @@ public class Add_Automation extends Fragment {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance();
+
         mListRelay = new ArrayList<>();
         addRelay = new ArrayList<>();
         listAuto = new list_auto();
 
         setupRelayAdapter();
-        start();
-
-        return view;
-    }
-
-    private void start() {
-        getFileDatabase();
 
         String[] options = { " ","On","Off"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, options);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         select_mode.setAdapter(adapter);
         select_mode.setSelection(0);
+
+        start();
+
+        return view;
+    }
+
+    private void start() {
+
+        getFileDatabase();
+
         backIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

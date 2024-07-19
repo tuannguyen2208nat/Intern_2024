@@ -102,7 +102,9 @@ public class Accessories extends Fragment {
                 relay_switch(relay,state);
             }
         });
+
         rcvRelay.setAdapter(mRelayAdapter);
+
         relay_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -25,4 +25,9 @@
         android:name="com.example.intern_2024.fragment.Automation.Automation"
         android:label="Automation"
         tools:layout="@layout/fragment_automation" />
+    <fragment
+        android:id="@+id/menuSetting"
+        android:name="com.example.intern_2024.fragment.Setting"
+        android:label="Setting"
+        tools:layout="@layout/fragment_automation" />
 </navigation>

@@ -478,21 +478,21 @@ public class Profile extends Fragment {
 
     ///////SQLite///////
     private void getFileDatabase(){
-            String uid = user.getUid();
-            myRef = FirebaseDatabase.getInstance().getReference("user_inform").child(uid).child("file");
-            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    String databaseName = dataSnapshot.getValue(String.class);
-                    if (databaseName != null && !databaseName.isEmpty()) {
-                        db = new SQLiteHelper(getContext(), databaseName);
-                    }
+        String uid = user.getUid();
+        myRef = FirebaseDatabase.getInstance().getReference("user_inform").child(uid).child("file");
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String databaseName = dataSnapshot.getValue(String.class);
+                if (databaseName != null && !databaseName.isEmpty()) {
+                    db = new SQLiteHelper(getContext(), databaseName);
                 }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                }
-            });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
 
     }
 

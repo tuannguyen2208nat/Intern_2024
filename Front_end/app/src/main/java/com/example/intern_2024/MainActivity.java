@@ -22,6 +22,7 @@ import com.example.intern_2024.fragment.Accessories;
 import com.example.intern_2024.fragment.Automation.Automation;
 import com.example.intern_2024.fragment.Home;
 import com.example.intern_2024.fragment.Profile;
+import com.example.intern_2024.fragment.Setting;
 import com.example.intern_2024.welcome.welcome_form_login;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,12 +32,12 @@ public class MainActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     private DatabaseReference myRef;
-    TextView name_user, email_user;
+    TextView textTitle,name_user, email_user;
     View headerView;
     ImageView image_user, back_login;
     FirebaseUser user;
     Uri imageUri;
-    Fragment Home, Accessories, Automation, Profile;
+    Fragment Home, Accessories, Automation, Profile,Setting;
     Fragment active;
     FragmentManager fm;
 
@@ -47,11 +48,14 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.navigationView);
 
+        textTitle = findViewById(R.id.textTitle);
         headerView = navigationView.getHeaderView(0);
         name_user = headerView.findViewById(R.id.name_user);
         email_user = headerView.findViewById(R.id.email_user);
         image_user = headerView.findViewById(R.id.image_user);
         back_login = headerView.findViewById(R.id.back_login);
+
+
 
         navigationView.setItemIconTintList(null);
 
@@ -64,12 +68,15 @@ public class MainActivity extends AppCompatActivity {
         Accessories = new Accessories();
         Automation = new Automation();
         Profile = new Profile();
+        Setting=new Setting();
         active = Home;
 
+        fm.beginTransaction().add(R.id.navHostFragment, Setting, "5").hide(Setting).commit();
         fm.beginTransaction().add(R.id.navHostFragment, Profile, "4").hide(Profile).commit();
         fm.beginTransaction().add(R.id.navHostFragment, Automation, "3").hide(Automation).commit();
         fm.beginTransaction().add(R.id.navHostFragment, Accessories, "2").hide(Accessories).commit();
         fm.beginTransaction().add(R.id.navHostFragment, Home, "1").commit();
+        textTitle.setText("Home");
 
         back_login.setOnClickListener(v -> {
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -106,19 +113,28 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.menuHome:
                     fm.beginTransaction().hide(active).show(Home).commit();
+                    textTitle.setText("Home");
                     active = Home;
                     break;
                 case R.id.menuAccessories:
                     fm.beginTransaction().hide(active).show(Accessories).commit();
+                    textTitle.setText("Accessories");
                     active = Accessories;
                     break;
                 case R.id.menuAutomation:
                     fm.beginTransaction().hide(active).show(Automation).commit();
+                    textTitle.setText("Automation");
                     active = Automation;
                     break;
                 case R.id.menuProfile:
                     fm.beginTransaction().hide(active).show(Profile).commit();
+                    textTitle.setText("Profile");
                     active = Profile;
+                    break;
+                case R.id.menuSetting:
+                    fm.beginTransaction().hide(active).show(Setting).commit();
+                    textTitle.setText("Setting");
+                    active = Setting;
                     break;
                 default:
                     return false;

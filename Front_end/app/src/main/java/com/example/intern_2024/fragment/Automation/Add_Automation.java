@@ -170,7 +170,6 @@ public class Add_Automation extends Fragment {
             Toast.makeText(getContext(), "No relays selected", Toast.LENGTH_SHORT).show();
             return;
         }
-        listAuto.setName(name.getText().toString());
         UploadData();
     }
 
@@ -186,6 +185,11 @@ public class Add_Automation extends Fragment {
         if(time.getText().toString().isEmpty())
         {
             Toast.makeText(getActivity(),"Please add time", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(name.getText().toString().isEmpty())
+        {
+            Toast.makeText(getActivity(),"Please add name", Toast.LENGTH_SHORT).show();
             return;
         }
         String uid = user.getUid();
@@ -204,6 +208,7 @@ public class Add_Automation extends Fragment {
                 int newId = maxId + 1;
                 listAuto.setIndex(newId);
                 listAuto.setMode(mode);
+                listAuto.setName(name.getText().toString());
                 listAuto.setTime(time.getText().toString());
 
                 myRef.child(String.valueOf(newId)).setValue(listAuto, new DatabaseReference.CompletionListener() {

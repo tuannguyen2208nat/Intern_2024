@@ -138,14 +138,21 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1.5"/>
-                            <Spinner
-                                android:id="@+id/mode"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:textStyle="bold"
                                 android:layout_weight="1"
-                                android:background="@drawable/border_black_1dp_background"
-                                android:spinnerMode="dropdown"/>
+                                android:background="@drawable/border_black_1dp_background">
+
+                                <Spinner
+                                    android:id="@+id/mode"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:textStyle="bold"
+                                    android:layout_weight="1"
+                                    android:spinnerMode="dropdown"/>
+
+                            </LinearLayout>
                             <Space
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"

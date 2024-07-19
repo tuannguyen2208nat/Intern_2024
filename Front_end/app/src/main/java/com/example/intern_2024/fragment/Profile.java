@@ -498,13 +498,7 @@ public class Profile extends Fragment {
 
     private void addItemAndReload(String time, String detail) {
         Item item = new Item(time, detail);
-        long id = db.addItem(item);
-        if (id != -1) {
-            adapter = new RecycleViewAdapter();
-            List<Item> list = db.getAll();
-            adapter.setList(list);
-            adapter.notifyDataSetChanged();
-        }
+        db.addItem(item);
     }
 
     private void befor_addItemAndReload(String detail) {

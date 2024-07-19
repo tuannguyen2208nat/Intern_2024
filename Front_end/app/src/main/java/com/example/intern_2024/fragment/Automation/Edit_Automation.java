@@ -261,10 +261,7 @@ public class Edit_Automation extends Fragment {
 
     private void addItemAndReload(String time, String detail) {
         Item item = new Item(time, detail);
-        long id = db.addItem(item);
-        if (id != -1) {
-            loadData();
-        }
+        db.addItem(item);
     }
 
     private void setupRelayAdapter() {
@@ -295,13 +292,6 @@ public class Edit_Automation extends Fragment {
         } else {
             addRelay.add(relay);
         }
-    }
-
-    private void loadData() {
-        adapter = new RecycleViewAdapter();
-        List<Item> list = db.getAll();
-        adapter.setList(list);
-        adapter.notifyDataSetChanged();
     }
 
     private void UploadData() {

@@ -194,7 +194,6 @@ public class Automation extends Fragment {
 
         if (state.equals(State.LEFT)) {
             switch_state="OFF";
-
         }
         if (state.equals(State.RIGHT)) {
             switch_state="ON";
@@ -204,17 +203,7 @@ public class Automation extends Fragment {
 
     private void addItemAndReload(String time, String detail) {
         Item item = new Item(time, detail);
-        long id = db.addItem(item);
-        if (id != -1) {
-            loadData();
-        }
-    }
-
-    private void loadData() {
-        adapter = new RecycleViewAdapter();
-        List<Item> list = db.getAll();
-        adapter.setList(list);
-        adapter.notifyDataSetChanged();
+        db.addItem(item);
     }
 
     private void befor_addItemAndReload(String detail) {

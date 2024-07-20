@@ -3,7 +3,7 @@
 #include "RelayStatus.h"
 
 #define IO_USERNAME "tuannguyen2208nat"
-#define IO_KEY "aio_Tpqz630LWJqmQ5r5g4Kjzeg4BHHh"
+#define IO_KEY "aio_zWeQ92vW2Bgh8wIujfxzVjPAKuqV"
 
 #define WIFI_SSID "ACLAB"
 #define WIFI_PASS "ACLAB2023"
@@ -14,8 +14,8 @@
 #define BAUD_RATE 9600
 
 AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
-
 AdafruitIO_Feed *status = io.feed("status");
+
 void sendModbusCommand(const uint8_t command[], size_t length)
 {
   for (size_t i = 0; i < length; i++)
@@ -30,7 +30,7 @@ void setup()
   Serial.begin(115200);
   Serial2.begin(BAUD_RATE, SERIAL_8N1, TXD, RXD);
 
-  sendModbusCommand(relay_OFF[32], 32);
+  sendModbusCommand(relay_OFF[0], sizeof(relay_OFF[0]));
 
   while (!Serial)
     ;
@@ -47,7 +47,6 @@ void setup()
 
   Serial.println();
   Serial.println(io.statusText());
-
   status->get();
 }
 
@@ -82,14 +81,14 @@ void handleMessage(AdafruitIO_Data *data)
     Serial.println(statusStr);
 
     // Send the Modbus command for the specific relay
-    if (statusStr == "ON" && index < sizeof(relay_ON) / sizeof(relay_ON[0]))
+    if (statusStr == "ON" && index < (sizeof(relay_ON) / sizeof(relay_ON[0])))
     {
-      sendModbusCommand(relay_ON[index], sizeof(relay_ON[index]));
+      sendModbusCommand(relay_ON[index], sizeof(relay_ON[0]));
       Serial.println("Relay " + String(index) + " turned ON");
     }
-    else if (statusStr == "OFF" && index < sizeof(relay_OFF) / sizeof(relay_OFF[0]))
+    else if (statusStr == "OFF" && index < (sizeof(relay_OFF) / sizeof(relay_OFF[0])))
     {
-      sendModbusCommand(relay_OFF[index], sizeof(relay_OFF[index]));
+      sendModbusCommand(relay_OFF[index], sizeof(relay_OFF[0]));
       Serial.println("Relay " + String(index) + " turned OFF");
     }
     else

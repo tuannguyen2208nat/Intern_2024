@@ -291,7 +291,7 @@ public class Automation extends Fragment {
         AlarmManager alarmManager = (AlarmManager)   getContext().getSystemService(Context.ALARM_SERVICE);
 
         boolean contains = alarmList.containsAlarmIndex(auto.getIndex());
-        System.out.println("contains: " + contains);
+
         if(!contains)
         {
             alarmList.addAlarmIndex(auto.getIndex());
@@ -299,7 +299,7 @@ public class Automation extends Fragment {
 
         PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(
                 getContext(),
-                auto.getIndex(), // Unique request code
+                auto.getIndex(),
                 alarmIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
@@ -313,7 +313,7 @@ public class Automation extends Fragment {
         Intent alarmIntent = new Intent(  getContext(), AlarmReceiver.class);
         PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(
                 getContext(),
-                auto.getIndex(), // Unique request code
+                auto.getIndex(),
                 alarmIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
@@ -334,7 +334,7 @@ public class Automation extends Fragment {
             Intent alarmIntent = new Intent(getContext(), AlarmReceiver.class);
             PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(
                     getContext(),
-                    index, // Unique request code
+                    index,
                     alarmIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );

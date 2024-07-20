@@ -10,25 +10,23 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.example.intern_2024.R;
-import com.example.intern_2024.database.MQTTHelper;
+import com.example.intern_2024.database.MQTTWorker;
 import com.example.intern_2024.database.SQLiteHelper;
-
 import com.example.intern_2024.model.Item;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
+public class AlarmReceiver extends BroadcastReceiver {
 
-public class AlarmReceiver extends BroadcastReceiver{
-
-
-
-    MQTTHelper mqttHelper;
-    String link="tuannguyen2208nat/feeds/status";
     private SQLiteHelper db;
-
+    String link = "tuannguyen2208nat/feeds/status";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -36,18 +34,15 @@ public class AlarmReceiver extends BroadcastReceiver{
         int id = intent.getIntExtra("id", 1);
         String name = intent.getStringExtra("name");
         String time = intent.getStringExtra("time");
-        int mode=intent.getIntExtra("mode",0);
-        String databaseName=intent.getStringExtra("databaseName");
+        int mode = intent.getIntExtra("mode", 0);
+        String databaseName = intent.getStringExtra("databaseName");
 
-        String state ;
+        String state;
 
-        if(mode==1)
-        {
-            state="ON";
-        }
-        else
-        {
-            state="OFF";
+        if (mode == 1) {
+            state = "ON";
+        } else {
+            state = "OFF";
         }
 
         db = new SQLiteHelper(context, databaseName);
@@ -56,13 +51,11 @@ public class AlarmReceiver extends BroadcastReceiver{
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Automation successs " + time, NotificationManager.IMPORTANCE_HIGH);
             channel.setDescription("\"" + name + "\" " + state);
             notificationManager.createNotificationChannel(channel);
         }
-
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle("Automation successs " + time)
@@ -73,44 +66,41 @@ public class AlarmReceiver extends BroadcastReceiver{
 
         Calendar calendar = Calendar.getInstance();
         String[] timeParts_on = time.split(":");
-        int hour =Integer.parseInt(timeParts_on[0].trim());
+        int hour = Integer.parseInt(timeParts_on[0].trim());
         int minute = Integer.parseInt(timeParts_on[1].trim());
-        int day=calendar.get(Calendar.DAY_OF_MONTH);
-        int month= calendar.get(Calendar.MONTH) + 1;
-        int year= calendar.get(Calendar.YEAR);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int year = calendar.get(Calendar.YEAR);
         String shour = String.valueOf(hour);
         String sminute = String.valueOf(minute);
-        String sday=String.valueOf(day);
-        String smonth=String.valueOf(month);
-        String syear=String.valueOf(year);
-        if(hour<10)
-        {
-            shour="0"+shour;
+        String sday = String.valueOf(day);
+        String smonth = String.valueOf(month);
+        String syear = String.valueOf(year);
+        if (hour < 10) {
+            shour = "0" + shour;
         }
-        if(minute<10)
-        {
-            sminute="0"+sminute;
+        if (minute < 10) {
+            sminute = "0" + sminute;
         }
-        String timePicker = sday + "/"+smonth+"/"+syear+"-"+shour+":"+sminute;
+        String timePicker = sday + "/" + smonth + "/" + syear + "-" + shour + ":" + sminute;
 
-        String detail ="Automation " +  "\"" + name + "\" starts to " + state;
+        String detail = "Automation " + "\"" + name + "\" starts to " + state;
         notificationManager.notify(getNotificationId(), builder.build());
 
         addItemAndReload(timePicker, detail);
-        mqttHelper = new MQTTHelper(context.getApplicationContext());
 
-//        if (mqttHelper != null) {
-//            try {
-//                mqttHelper.sendData(link, "TEST");
-//            } catch (Exception e) {
-//                Log.e("AlarmReceiver", "Gửi tin nhắn MQTT thất bại", e);
-//            }
-//        } else {
-//            Log.e("AlarmReceiver", "MQTTHelper chưa được khởi tạo");
-//        }
+        Data data = new Data.Builder()
+                .putString(MQTTWorker.EXTRA_LINK, link)
+                .putString(MQTTWorker.EXTRA_MESSAGE, "TEST")
+                .build();
 
+        OneTimeWorkRequest mqttWorkRequest = new OneTimeWorkRequest.Builder(MQTTWorker.class)
+                .setInitialDelay(1, TimeUnit.SECONDS)
+                .setInputData(data)
+                .build();
+
+        WorkManager.getInstance(context).enqueue(mqttWorkRequest);
     }
-
 
     private int getNotificationId() {
         return (int) new Date().getTime();
@@ -118,9 +108,6 @@ public class AlarmReceiver extends BroadcastReceiver{
 
     private void addItemAndReload(String time, String detail) {
         Item item = new Item(time, detail);
-       db.addItem(item);
+        db.addItem(item);
     }
-
-
-
 }

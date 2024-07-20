@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:text="Change name relay"
+            android:text="@string/change_name_relay"
             android:textColor="@color/black"
             android:textSize="30sp"
             android:textStyle="bold"
@@ -50,7 +50,7 @@
                 android:layout_marginTop="20dp"
                 android:background="@drawable/box_form_login"
                 android:drawablePadding="8dp"
-                android:hint="Change name device"
+                android:hint="@string/change_name_device"
                 android:inputType="text"
                 android:maxLength="100"
                 android:padding="8dp"
@@ -65,7 +65,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/button_form_login"
-                android:text="Change"
+                android:text="@string/change"
                 android:textColor="@color/black" />
 
         </LinearLayout>

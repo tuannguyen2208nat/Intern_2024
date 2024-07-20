@@ -1,5 +1,81 @@
-<resources>
+<resources  translatable="false">
+    <!-- Application Name -->
     <string name="app_name">CaCo IOT</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="attention">Attention</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+
+    <!-- MainActivity -->
+    <!-- ================================= -->
+    <!-- XML -->
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+    <!-- Home Fragment -->
+    <!-- ================================= -->
+    <!-- XML -->
+    <string name="temp">Temp</string>
+    <string name="humidity">Humidity</string>
+    <string name="wind_speed">Wind speed</string>
+    <string name="history">History</string>
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <string name="location_permission_denied">Location permission denied</string>
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+    <!-- Accessrories Fragment -->
+    <!-- ================================= -->
+    <!-- XML -->
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <string name="update_name_relay_success">Update relay name successfully</string>
+    <string name="delete_relay_success">Delete relay successfully</string>
+    <string name="please_enter_relay_id">Please enter relay id</string>
+    <string name="relay_id_must_be_greater_than_0"> Relay id must be greater than 0</string>
+    <string name="currently_there_are_only_32_relays">Currently there are only 32 relays</string>
+    <string name="relay_id_already_exists">Relay id already exists</string>
+    <string name="add_relay_success">Add relay successfully</string>
+    <!-- ================================= -->
+    <!-- Custom_dialog_box -->
+    <string name="add_relay">Add relay</string>
+    <string name="relay_id">Relay ID</string>
+    <string name="set_name_device">Set name device</string>
+    <string name="add">Add</string>
+    <string name="change_name_relay">Change name relay</string>
+    <string name="change_name_device">Change name device</string>
+    <string name="change">Change</string>
+    <string name="delete_this_relay">Delete this relay ?</string>
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+
+
+    <!-- ================================= -->
+
+
+    <!-- Settings Fragment Strings -->
+    <!-- ================================= -->
+    <!-- Group all strings related to SettingsFragment -->
+    <!-- ================================= -->
+    <!-- Title -->
+    <string name="settings_title">Settings</string>
+    <!-- Description -->
+    <string name="settings_description">Adjust your preferences</string>
+
+    <!-- Profile Fragment Strings -->
+    <!-- ================================= -->
+    <!-- Group all strings related to ProfileFragment -->
+    <!-- ================================= -->
+    <!-- Title -->
+    <string name="profile_title">Profile</string>
+    <!-- Description -->
+    <string name="profile_description">Manage your profile information</string>
 </resources>

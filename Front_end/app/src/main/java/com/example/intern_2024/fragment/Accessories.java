@@ -204,6 +204,7 @@ public class Accessories extends Fragment {
                     @Override
                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                         befor_addItemAndReload("Update name relay "+relay_id+" .");
+                        Toast.makeText(getContext(), R.string.update_name_relay_success, Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }
                 });
@@ -276,7 +277,7 @@ public class Accessories extends Fragment {
                     @Override
                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                         befor_addItemAndReload("Delete relay "+relay_id+" .");
-                        Toast.makeText(getContext(), "Delete relay successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.delete_relay_success, Toast.LENGTH_SHORT).show();
                     }
                 });
                 dialog.dismiss();
@@ -311,17 +312,17 @@ public class Accessories extends Fragment {
             @Override
             public void onClick(View v) {
                 if (relay_id.getText().toString().isEmpty() ) {
-                    showAlert("Please enter relay id");
+                    showAlert(R.string.please_enter_relay_id);
                     return;
                 }
 
                 int relay_id_int = Integer.parseInt(relay_id.getText().toString());
                 if ( relay_id_int < 1) {
-                    showAlert("Relay id must be greater than 0");
+                    showAlert(R.string.relay_id_must_be_greater_than_0);
                     return;
                 }
                 if ( relay_id_int > 32) {
-                    showAlert("Currently there are only 32 relays");
+                    showAlert(R.string.currently_there_are_only_32_relays);
                     return;
                 }
                 String set_name_device_str = set_name_device.getText().toString().isEmpty() ?
@@ -339,7 +340,7 @@ public class Accessories extends Fragment {
                             list_relay relay = child.getValue(list_relay.class);
                             if(relay_id_int==relay.getRelay_id())
                             {
-                                showAlert("Relay id already exists");
+                                showAlert(R.string.relay_id_already_exists);
                                 return;
                             }
                             if (relay != null && relay.getIndex() > maxId) {
@@ -352,7 +353,7 @@ public class Accessories extends Fragment {
                             @Override
                             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                 befor_addItemAndReload("Add new relay "+ newRelay.getRelay_id()+" .");
-                                Toast.makeText(getContext(), "Add relay successfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), R.string.add_relay_success, Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
                             }
                         });
@@ -360,7 +361,6 @@ public class Accessories extends Fragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        showAlert("Failed to read data: " + error.getMessage());
                     }
                 });
 
@@ -369,10 +369,10 @@ public class Accessories extends Fragment {
 
     }
 
-    private void showAlert(String message) {
+    private void showAlert(int message) {
         new AlertDialog.Builder(getActivity())
-                .setTitle("Attention")
-                .setMessage(message)
+                .setTitle(R.string.attention)
+                .setMessage(getString(message))
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
     }

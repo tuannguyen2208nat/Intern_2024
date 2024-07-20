@@ -87,13 +87,14 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.7"
                         android:layout_gravity="center_vertical">
+
                         <TextView
-                            android:layout_weight="0.5"
-                            android:paddingLeft="5dp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_weight="0.5"
                             android:gravity="left|center_vertical"
-                            android:text="Temp"
+                            android:paddingLeft="5dp"
+                            android:text="@string/temp"
                             android:textSize="17sp"
                             android:textStyle="bold"
                             tools:ignore="NestedWeights,RtlHardcoded,RtlSymmetry" />
@@ -141,7 +142,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="left|center_vertical"
-                            android:text="Humidity"
+                            android:text="@string/humidity"
                             android:textSize="17sp"
                             android:textStyle="bold"
                             tools:ignore="NestedWeights,RtlHardcoded,RtlSymmetry" />
@@ -187,7 +188,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="left|center_vertical"
-                            android:text="Wind speed"
+                            android:text="@string/wind_speed"
                             android:textSize="17sp"
                             android:textStyle="bold"
                             tools:ignore="NestedWeights,RtlHardcoded,RtlSymmetry" />
@@ -283,7 +284,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="History"
+                    android:text="@string/history"
                     android:gravity="center"
                     android:textSize="17sp"
                     android:textStyle="bold"/>

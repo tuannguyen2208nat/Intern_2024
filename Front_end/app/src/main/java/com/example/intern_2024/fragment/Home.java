@@ -150,7 +150,7 @@ public class Home extends Fragment {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLastLocation();
             } else {
-                Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "@string/location_permission_denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -190,7 +190,6 @@ public class Home extends Fragment {
                     }
                 },
                 error -> {
-                    Toast.makeText(requireContext(), "Error fetching weather data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
         );
         requestQueue.add(jsonObjectRequest);

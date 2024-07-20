@@ -271,9 +271,15 @@ public class Automation extends Fragment {
         int minute = Integer.parseInt(timeParts[1].trim());
 
         Calendar calendar = Calendar.getInstance();
+        Calendar now = Calendar.getInstance();
+
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
+
+        if (calendar.before(now)) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+        }
 
         Intent alarmIntent = new Intent(  getContext(), AlarmReceiver.class);
         alarmIntent.putExtra("id", auto.getIndex());

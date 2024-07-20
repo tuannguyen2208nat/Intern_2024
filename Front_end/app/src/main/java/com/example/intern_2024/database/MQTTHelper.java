@@ -18,7 +18,7 @@ public class MQTTHelper {
     private MqttAndroidClient mqttAndroidClient;
 
     private final String username = "tuannguyen2208nat";
-    private final String password = "aio_GOsz05PcEITLimaz9pFzeWYLv84k";
+    private final String password = "aio_mXGz50fbtbaLtPZQOCxy9srBhLw7";
     private final String link = "tuannguyen2208nat/feeds/status";
     private final String clientId = "12345678";
     private final String serverUri = "tcp://io.adafruit.com:1883";

@@ -1,9 +1,7 @@
 package com.example.intern_2024.database;
 
 import android.content.Context;
-import android.os.Build;
 import android.util.Log;
-
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -14,19 +12,16 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
+import java.nio.charset.StandardCharsets;
 
 public class MQTTHelper {
-    public MqttAndroidClient mqttAndroidClient;
+    private MqttAndroidClient mqttAndroidClient;
 
-    private String username = "tuannguyen2208nat";
-    private String password = "aio_CmYo32Wm3opKsyN7aSAitKqOOiry";
-    public final String link = "tuannguyen2208nat/feeds/status";
-    private String clientId = "12345678";
-    private String serverUri = "tcp://io.adafruit.com:1883";
+    private final String username = "tuannguyen2208nat"; // Avoid hardcoding sensitive info
+    private final String password = "aio_tXmh36XzkznRt2CHd0TtVyBn62oS"; // Avoid hardcoding sensitive info
+    private final String link = "tuannguyen2208nat/feeds/status";
+    private final String clientId = "12345678";
+    private final String serverUri = "tcp://io.adafruit.com:1883";
 
     public MQTTHelper(Context context) {
         mqttAndroidClient = new MqttAndroidClient(context, serverUri, clientId);
@@ -115,6 +110,22 @@ public class MQTTHelper {
             }
         } catch (MqttException ex) {
             Log.e("MQTT", "Exception during disconnect", ex);
+        }
+    }
+
+    public void sendData(String topic, String value) {
+        MqttMessage msg = new MqttMessage();
+        msg.setQos(0);
+        msg.setRetained(false);
+
+        byte[] payload = value.getBytes(StandardCharsets.UTF_8);
+        msg.setPayload(payload);
+
+        try {
+            mqttAndroidClient.publish(topic, msg);
+            Log.i("MQTT", "Message published to topic: " + topic);
+        } catch (MqttException e) {
+            Log.e("MQTT", "Failed to publish message", e);
         }
     }
 }

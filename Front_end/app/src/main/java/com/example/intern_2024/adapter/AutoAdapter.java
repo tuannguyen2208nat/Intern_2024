@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -80,7 +81,7 @@ public class AutoAdapter extends RecyclerView.Adapter<AutoAdapter.UserViewHolder
     public class UserViewHolder extends RecyclerView.ViewHolder {
         private TextView auto_name;
         private JellyToggleButton faceOffToggleButton;
-        private ImageView auto_edit;
+        private LinearLayout auto_edit;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);

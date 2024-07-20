@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -42,14 +43,14 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Automation successs "+time , NotificationManager.IMPORTANCE_HIGH);
-            channel.setDescription("\" " + name + " \" "+ state);
+            channel.setDescription("\"" + name + "\" "+ state);
             notificationManager.createNotificationChannel(channel);
         }
 
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle("Automation successs "+time )
-                .setContentText("\" " + name + " \" "+ state)
+                .setContentText("\"" + name + "\" "+ state)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setColor(Color.RED)
                 .setCategory(NotificationCompat.CATEGORY_ALARM);
@@ -57,24 +58,18 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         notificationManager.notify(getNotificationId(), builder.build());
 
-//        mqttHelper=new MQTTHelper(context);
-//        sendDataMQTT(link,"test");
-
-    }
-
-    public void sendDataMQTT(String topic, String value){
-        MqttMessage msg = new MqttMessage();
-        msg.setId(1234);
-        msg.setQos(0);
-        msg.setRetained(false);
-
-        byte[] b = value.getBytes(Charset.forName("UTF-8"));
-        msg.setPayload(b);
-        try {
-            mqttHelper.mqttAndroidClient.publish(topic, msg);
-        }catch (MqttException e){
+        if (mqttHelper == null) {
+            mqttHelper = new MQTTHelper(context);
         }
+
+        try {
+            mqttHelper.sendData(link, "TEST");
+        } catch (Exception e) {
+            Log.e("AlarmReceiver", "Failed to send MQTT message", e);
+        }
+
     }
+
 
 
     private int getNotificationId() {

@@ -44,6 +44,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Calendar;
@@ -242,7 +243,7 @@ public class Accessories extends Fragment {
         }
         value="!RELAY"+int_fix+":"+switch_state+"#";
         befor_addItemAndReload("Relay "+relay_id+" "+switch_state+" .");
-        sendDataMQTT(link,value);
+        mqttHelper.sendData(link, value);
     }
 
     public void deleteRelay(list_relay list_relay){
@@ -433,18 +434,6 @@ public class Accessories extends Fragment {
         }
     }
 
-    public void sendDataMQTT(String topic, String value){
-        MqttMessage msg = new MqttMessage();
-        msg.setId(1234);
-        msg.setQos(0);
-        msg.setRetained(false);
 
-        byte[] b = value.getBytes(Charset.forName("UTF-8"));
-        msg.setPayload(b);
-        try {
-            mqttHelper.mqttAndroidClient.publish(topic, msg);
-        }catch (MqttException e){
-        }
-    }
 
 }

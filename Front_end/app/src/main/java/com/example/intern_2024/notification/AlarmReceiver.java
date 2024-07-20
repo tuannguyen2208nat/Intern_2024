@@ -37,13 +37,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         int mode = intent.getIntExtra("mode", 0);
         String databaseName = intent.getStringExtra("databaseName");
 
-        String state;
-
-        if (mode == 1) {
-            state = "ON";
-        } else {
-            state = "OFF";
-        }
+        String state = (mode == 1) ? "ON" : "OFF";
 
         db = new SQLiteHelper(context, databaseName);
 
@@ -65,11 +59,12 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setCategory(NotificationCompat.CATEGORY_ALARM);
 
         notificationManager.notify(getNotificationId(), builder.build());
-        sendhistory(time,name,state);
+        sendhistory(time, name, state);
 
         Data data = new Data.Builder()
                 .putString(MQTTWorker.EXTRA_LINK, link)
                 .putString(MQTTWorker.EXTRA_MESSAGE, String.valueOf(id))
+                .putString(MQTTWorker.EXTRA_STATE, state)
                 .build();
 
         OneTimeWorkRequest mqttWorkRequest = new OneTimeWorkRequest.Builder(MQTTWorker.class)
@@ -90,7 +85,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     private void sendhistory(String time, String name, String state) {
-
         Calendar calendar = Calendar.getInstance();
         String[] timeParts_on = time.split(":");
         int hour = Integer.parseInt(timeParts_on[0].trim());
@@ -112,7 +106,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         String timePicker = sday + "/" + smonth + "/" + syear + "-" + shour + ":" + sminute;
 
         String detail = "Automation " + "\"" + name + "\" starts to " + state;
-
 
         addItemAndReload(timePicker, detail);
     }

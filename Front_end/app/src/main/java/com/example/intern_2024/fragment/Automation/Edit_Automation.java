@@ -174,32 +174,10 @@ public class Edit_Automation extends Fragment {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
-                list_relay listRelay = dataSnapshot.getValue(list_relay.class);
-                if (listRelay == null || mListRelay.isEmpty()) {
-                    return;
-                }
-                for (int i = 0; i < mListRelay.size(); i++) {
-                    if (listRelay.getIndex() == mListRelay.get(i).getIndex()) {
-                        mListRelay.set(i, listRelay);
-                        mRelayAdapter.notifyDataSetChanged();
-                        break;
-                    }
-                }
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                list_relay listRelay = dataSnapshot.getValue(list_relay.class);
-                if (listRelay == null || mListRelay.isEmpty()) {
-                    return;
-                }
-                for (int i = 0; i < mListRelay.size(); i++) {
-                    if (listRelay.getIndex() == mListRelay.get(i).getIndex()) {
-                        mListRelay.remove(i);
-                        mRelayAdapter.notifyDataSetChanged();
-                        break;
-                    }
-                }
             }
 
             @Override
@@ -208,7 +186,6 @@ public class Edit_Automation extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Handle database error
             }
         });
     }

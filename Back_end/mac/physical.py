@@ -1,33 +1,25 @@
 import time
 import serial.tools.list_ports
 import relaystate
-import sys 
-from Adafruit_IO import Client, MQTTClient, RequestError
-
-# Adafruit IO configuration
-ADAFRUIT_IO_USERNAME = "tuannguyen2208nat"
-ADAFRUIT_IO_KEY = "aio_Tpqz630LWJqmQ5r5g4Kjzeg4BHHh"
-FEED_KEY = "status"
-
-# Initialize Adafruit IO Client
-aio = Client(ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY)
+import sys
+import tkinter as tk
+from tkinter import messagebox
 
 def getPort():
     ports = serial.tools.list_ports.comports()
-    N = len(ports)
     commPort = "None"
-    for i in range(0, N):
-        port = ports[i]
+    for port in ports:
         strPort = str(port)
-        if "USB Serial" in strPort:
-            splitPort = strPort.split(" ")
-            commPort = (splitPort[0])
+        if "FT232R USB UART" in strPort:
+            commPort = strPort.split(" - ")[0]
     return commPort
 
 portName = getPort()
-print(portName)
 if portName != "None":
     ser = serial.Serial(port=portName, baudrate=9600)
+else:
+    print("No USB Serial device found")
+    sys.exit()
 
 relay_ON = relaystate.relay_ON
 relay_OFF = relaystate.relay_OFF
@@ -40,45 +32,41 @@ def setDevice(state, i):
         ser.write(relay_OFF[i])
         print(f"CH{i} OFF")
 
-def connected(client):
-    print('Connected to Adafruit IO! Listening for changes...')
-    client.subscribe(FEED_KEY)
+def submit():
+    try:
+        i = int(channel_entry.get())
+        state_input = state_var.get().lower()
+        
+        if state_input == 'on':
+            state = True
+        elif state_input == 'off':
+            state = False
+        else:
+            messagebox.showerror("Input Error", "Invalid state input. Please enter 'ON' or 'OFF'.")
+            return
+        
+        if 0 <= i < len(relay_ON):
+            setDevice(state, i)
+            status_label.config(text=f"Channel {i} {'ON' if state else 'OFF'}")
+        else:
+            messagebox.showerror("Input Error", "Invalid channel number. Please enter a valid channel number.")
+    
+    except ValueError:
+        messagebox.showerror("Input Error", "Invalid input. Ensure the channel number is an integer.")
 
-def disconnected(client):
-    print('Disconnected from Adafruit IO!')
-    sys.exit(1)
+app = tk.Tk()
+app.title("Relay Control")
 
-def message(client, feed_id, payload):
-    print(f'Received data: {payload}')
-    if payload.startswith("!RELAY"):
-        try:
-            parts = payload[6:].split(":")
-            relay_index = int(parts[0])
-            command = parts[1]
-            if command == "ON#":
-                relay_state = True
-            elif command == "OFF#":
-                relay_state = False
-            else:
-                raise ValueError("Invalid command")
-            setDevice(relay_state, relay_index)
-        except (ValueError, IndexError) as e:
-            print(f"Error parsing payload: {e}")
+tk.Label(app, text="Enter Relay Channel Number:").pack()
+channel_entry = tk.Entry(app)
+channel_entry.pack()
 
-# Set up the MQTT client
-client = MQTTClient(ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY)
+tk.Label(app, text="Enter State (ON/OFF):").pack()
+state_var = tk.StringVar()
+tk.Entry(app, textvariable=state_var).pack()
 
-client.on_connect = connected
-client.on_disconnect = disconnected
-client.on_message = message
+tk.Button(app, text="Submit", command=submit).pack()
+status_label = tk.Label(app, text="")
+status_label.pack()
 
-try:
-    # Connect to Adafruit IO
-    client.connect()
-    client.loop_background()
-except RequestError as e:
-    print(f"Error connecting to Adafruit IO: {e}")
-
-# Keep the script running
-while True:
-    time.sleep(10)
+app.mainloop()

@@ -17,8 +17,8 @@ import java.nio.charset.StandardCharsets;
 public class MQTTHelper {
     private MqttAndroidClient mqttAndroidClient;
 
-    private final String username = "tuannguyen2208nat"; // Avoid hardcoding sensitive info
-    private final String password = "aio_tXmh36XzkznRt2CHd0TtVyBn62oS"; // Avoid hardcoding sensitive info
+    private final String username = "tuannguyen2208nat";
+    private final String password = "aio_zpkq318HnK60VZyDNNl73m1amGSp";
     private final String link = "tuannguyen2208nat/feeds/status";
     private final String clientId = "12345678";
     private final String serverUri = "tcp://io.adafruit.com:1883";
@@ -28,22 +28,19 @@ public class MQTTHelper {
         mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
-                Log.w("MQTT", "Connected to: " + serverURI);
             }
 
             @Override
             public void connectionLost(Throwable cause) {
-                Log.e("MQTT", "Connection lost", cause);
+
             }
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                Log.i("MQTT", "Message arrived. Topic: " + topic + ", Message: " + new String(message.getPayload()));
             }
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
-                Log.i("MQTT", "Delivery complete for message ID: " + token.getMessageId());
             }
         });
         connect();
@@ -53,7 +50,7 @@ public class MQTTHelper {
         mqttAndroidClient.setCallback(callback);
     }
 
-    private void connect() {
+    public void connect() {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);
         mqttConnectOptions.setCleanSession(false);
@@ -64,7 +61,6 @@ public class MQTTHelper {
             mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.i("MQTT", "Connected successfully");
                     DisconnectedBufferOptions disconnectedBufferOptions = new DisconnectedBufferOptions();
                     disconnectedBufferOptions.setBufferEnabled(true);
                     disconnectedBufferOptions.setBufferSize(100);
@@ -76,11 +72,9 @@ public class MQTTHelper {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.e("MQTT", "Failed to connect", exception);
                 }
             });
         } catch (MqttException ex) {
-            Log.e("MQTT", "Exception during connect", ex);
         }
     }
 
@@ -89,16 +83,13 @@ public class MQTTHelper {
             mqttAndroidClient.subscribe(link, 0, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.i("MQTT", "Subscribed to topic: " + link);
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.e("MQTT", "Failed to subscribe", exception);
                 }
             });
         } catch (MqttException ex) {
-            Log.e("MQTT", "Exception during subscribe", ex);
         }
     }
 
@@ -106,10 +97,8 @@ public class MQTTHelper {
         try {
             if (mqttAndroidClient.isConnected()) {
                 mqttAndroidClient.disconnect();
-                Log.i("MQTT", "Disconnected successfully");
             }
         } catch (MqttException ex) {
-            Log.e("MQTT", "Exception during disconnect", ex);
         }
     }
 
@@ -123,9 +112,7 @@ public class MQTTHelper {
 
         try {
             mqttAndroidClient.publish(topic, msg);
-            Log.i("MQTT", "Message published to topic: " + topic);
         } catch (MqttException e) {
-            Log.e("MQTT", "Failed to publish message", e);
         }
     }
 }

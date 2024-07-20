@@ -279,7 +279,8 @@ public class Automation extends Fragment {
         alarmIntent.putExtra("id", auto.getIndex());
         alarmIntent.putExtra("name", auto.getName());
         alarmIntent.putExtra("time", time);
-        alarmIntent.putExtra("state", "ON");
+        alarmIntent.putExtra("mode", auto.getMode());
+        alarmIntent.putExtra("databaseName", databaseName);
 
         AlarmManager alarmManager = (AlarmManager)   getContext().getSystemService(Context.ALARM_SERVICE);
 

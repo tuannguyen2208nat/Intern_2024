@@ -1,10 +1,8 @@
 package com.example.intern_2024.fragment.Automation;
 
-import static android.content.Context.ALARM_SERVICE;
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -27,6 +25,7 @@ import com.example.intern_2024.adapter.RecycleViewAdapter;
 import com.example.intern_2024.database.SQLiteHelper;
 import com.example.intern_2024.model.Item;
 import com.example.intern_2024.model.list_auto;
+import com.example.intern_2024.notification.AlarmList;
 import com.example.intern_2024.notification.AlarmReceiver;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,6 +46,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class Automation extends Fragment {
+    AlarmList alarmList = new AlarmList();
     private View view;
     private RecyclerView rcvAuto;
     private AutoAdapter mAutoAdapter;
@@ -58,7 +58,6 @@ public class Automation extends Fragment {
     RecycleViewAdapter adapter;
     private SQLiteHelper db;
     private AlarmManager alarmManager;
-    PendingIntent pendingIntent;
     String databaseName;
 
     @Override
@@ -265,33 +264,81 @@ public class Automation extends Fragment {
         befor_addItemAndReload("Automation "+auto_name+" "+switch_state+" .");
     }
 
-    private void setAlarm(list_auto auto){
-
-        String time=auto.getTime();
+    public void setAlarm(list_auto auto) {
+        String time = auto.getTime();
         String[] timeParts = time.split(":");
         int hour = Integer.parseInt(timeParts[0].trim());
         int minute = Integer.parseInt(timeParts[1].trim());
-
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
 
-        Intent intent = new Intent(getContext(), AlarmReceiver.class);
-        intent.putExtra("id", auto.getIndex());
+        Intent alarmIntent = new Intent(  getContext(), AlarmReceiver.class);
+        alarmIntent.putExtra("id", auto.getIndex());
+        alarmIntent.putExtra("name", auto.getName());
+        alarmIntent.putExtra("time", time);
+        alarmIntent.putExtra("state", "ON");
 
-        alarmManager = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
-        pendingIntent=PendingIntent.getBroadcast(getContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        Toast.makeText(requireContext(), "Alarm set for " + time, Toast.LENGTH_SHORT).show();
+        AlarmManager alarmManager = (AlarmManager)   getContext().getSystemService(Context.ALARM_SERVICE);
+
+        boolean contains = alarmList.containsAlarmIndex(auto.getIndex());
+        System.out.println("contains: " + contains);
+        if(!contains)
+        {
+            alarmList.addAlarmIndex(auto.getIndex());
+        }
+
+        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(
+                getContext(),
+                auto.getIndex(), // Unique request code
+                alarmIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        if (alarmManager != null) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmPendingIntent);
+        }
     }
 
+    public void cancelAlarm(list_auto auto) {
+        Intent alarmIntent = new Intent(  getContext(), AlarmReceiver.class);
+        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(
+                getContext(),
+                auto.getIndex(), // Unique request code
+                alarmIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
 
+        AlarmManager alarmManager = (AlarmManager)   getContext().getSystemService(Context.ALARM_SERVICE);
+        alarmList.removeAlarmIndex(auto.getIndex());
 
-    private void cancelAlarm(list_auto auto){
-        int Alarmid=auto.getIndex();
-
+        if (alarmManager != null) {
+            alarmManager.cancel(alarmPendingIntent);
+            alarmPendingIntent.cancel();
+        }
     }
 
+    public void cancelAllAlarms() {
+        List<Integer> alarmIndexes = alarmList.getAlarmIndexes();
+
+        for (int index : alarmIndexes) {
+            Intent alarmIntent = new Intent(getContext(), AlarmReceiver.class);
+            PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(
+                    getContext(),
+                    index, // Unique request code
+                    alarmIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+
+            AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+            if (alarmManager != null) {
+                alarmManager.cancel(alarmPendingIntent);
+                alarmPendingIntent.cancel();
+            }
+        }
+
+        alarmList.clear();
+    }
 }

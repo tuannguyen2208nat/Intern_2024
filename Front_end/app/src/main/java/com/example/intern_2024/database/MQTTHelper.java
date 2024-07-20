@@ -22,33 +22,33 @@ import java.util.Properties;
 public class MQTTHelper {
     public MqttAndroidClient mqttAndroidClient;
 
-    private String username ="tuannguyen2208nat" ;
-    private String password ="aio_Tpqz630LWJqmQ5r5g4Kjzeg4BHHh";
+    private String username = "tuannguyen2208nat";
+    private String password = "aio_CmYo32Wm3opKsyN7aSAitKqOOiry";
     public final String link = "tuannguyen2208nat/feeds/status";
-    private String clientId ="12345678";
+    private String clientId = "12345678";
     private String serverUri = "tcp://io.adafruit.com:1883";
 
-    public MQTTHelper(Context context){
+    public MQTTHelper(Context context) {
         mqttAndroidClient = new MqttAndroidClient(context, serverUri, clientId);
         mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override
-            public void connectComplete(boolean b, String s) {
-                Log.w("mqtt", s);
+            public void connectComplete(boolean reconnect, String serverURI) {
+                Log.w("MQTT", "Connected to: " + serverURI);
             }
 
             @Override
-            public void connectionLost(Throwable throwable) {
-
+            public void connectionLost(Throwable cause) {
+                Log.e("MQTT", "Connection lost", cause);
             }
 
             @Override
-            public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-                Log.w("Mqtt", mqttMessage.toString());
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+                Log.i("MQTT", "Message arrived. Topic: " + topic + ", Message: " + new String(message.getPayload()));
             }
 
             @Override
-            public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-
+            public void deliveryComplete(IMqttDeliveryToken token) {
+                Log.i("MQTT", "Delivery complete for message ID: " + token.getMessageId());
             }
         });
         connect();
@@ -58,7 +58,7 @@ public class MQTTHelper {
         mqttAndroidClient.setCallback(callback);
     }
 
-    private void connect(){
+    private void connect() {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);
         mqttConnectOptions.setCleanSession(false);
@@ -66,11 +66,10 @@ public class MQTTHelper {
         mqttConnectOptions.setPassword(password.toCharArray());
 
         try {
-
             mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-
+                    Log.i("MQTT", "Connected successfully");
                     DisconnectedBufferOptions disconnectedBufferOptions = new DisconnectedBufferOptions();
                     disconnectedBufferOptions.setBufferEnabled(true);
                     disconnectedBufferOptions.setBufferSize(100);
@@ -82,13 +81,11 @@ public class MQTTHelper {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-
+                    Log.e("MQTT", "Failed to connect", exception);
                 }
             });
-
-
-        } catch (MqttException ex){
-            ex.printStackTrace();
+        } catch (MqttException ex) {
+            Log.e("MQTT", "Exception during connect", ex);
         }
     }
 
@@ -97,20 +94,27 @@ public class MQTTHelper {
             mqttAndroidClient.subscribe(link, 0, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-
+                    Log.i("MQTT", "Subscribed to topic: " + link);
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-
+                    Log.e("MQTT", "Failed to subscribe", exception);
                 }
             });
-
         } catch (MqttException ex) {
-            System.err.println("Exceptionst subscribing");
-            ex.printStackTrace();
+            Log.e("MQTT", "Exception during subscribe", ex);
         }
     }
 
-
+    public void disconnect() {
+        try {
+            if (mqttAndroidClient.isConnected()) {
+                mqttAndroidClient.disconnect();
+                Log.i("MQTT", "Disconnected successfully");
+            }
+        } catch (MqttException ex) {
+            Log.e("MQTT", "Exception during disconnect", ex);
+        }
+    }
 }

@@ -100,6 +100,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void form_sign_out() {
+        Fragment automationFragment = fm.findFragmentByTag("3");
+        if (automationFragment instanceof Automation) {
+            ((Automation) automationFragment).cancelAllAlarms();
+        }
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(MainActivity.this, welcome_form_login.class);
         startActivity(intent);

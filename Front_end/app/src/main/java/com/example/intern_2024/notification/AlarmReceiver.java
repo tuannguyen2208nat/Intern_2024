@@ -64,6 +64,33 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setColor(Color.RED)
                 .setCategory(NotificationCompat.CATEGORY_ALARM);
 
+        notificationManager.notify(getNotificationId(), builder.build());
+        sendhistory(time,name,state);
+
+        Data data = new Data.Builder()
+                .putString(MQTTWorker.EXTRA_LINK, link)
+                .putString(MQTTWorker.EXTRA_MESSAGE, String.valueOf(id))
+                .build();
+
+        OneTimeWorkRequest mqttWorkRequest = new OneTimeWorkRequest.Builder(MQTTWorker.class)
+                .setInitialDelay(1, TimeUnit.SECONDS)
+                .setInputData(data)
+                .build();
+
+        WorkManager.getInstance(context).enqueue(mqttWorkRequest);
+    }
+
+    private int getNotificationId() {
+        return (int) new Date().getTime();
+    }
+
+    private void addItemAndReload(String time, String detail) {
+        Item item = new Item(time, detail);
+        db.addItem(item);
+    }
+
+    private void sendhistory(String time, String name, String state) {
+
         Calendar calendar = Calendar.getInstance();
         String[] timeParts_on = time.split(":");
         int hour = Integer.parseInt(timeParts_on[0].trim());
@@ -85,29 +112,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         String timePicker = sday + "/" + smonth + "/" + syear + "-" + shour + ":" + sminute;
 
         String detail = "Automation " + "\"" + name + "\" starts to " + state;
-        notificationManager.notify(getNotificationId(), builder.build());
+
 
         addItemAndReload(timePicker, detail);
-
-        Data data = new Data.Builder()
-                .putString(MQTTWorker.EXTRA_LINK, link)
-                .putString(MQTTWorker.EXTRA_MESSAGE, "TEST")
-                .build();
-
-        OneTimeWorkRequest mqttWorkRequest = new OneTimeWorkRequest.Builder(MQTTWorker.class)
-                .setInitialDelay(1, TimeUnit.SECONDS)
-                .setInputData(data)
-                .build();
-
-        WorkManager.getInstance(context).enqueue(mqttWorkRequest);
-    }
-
-    private int getNotificationId() {
-        return (int) new Date().getTime();
-    }
-
-    private void addItemAndReload(String time, String detail) {
-        Item item = new Item(time, detail);
-        db.addItem(item);
     }
 }

@@ -220,25 +220,19 @@ public class Accessories extends Fragment {
         String int_fix="";
         String switch_state="";
 
+        if(Integer.valueOf(relay_id)<10)
+        {
+            int_fix="0"+relay_id;
+        }
+        else {
+            int_fix=relay_id;
+        }
+
         if (state.equals(State.LEFT)) {
-            if(Integer.valueOf(relay_id)<10)
-            {
-                int_fix="0"+relay_id;
-            }
-            else {
-                int_fix=relay_id;
-            }
             switch_state="OFF";
 
         }
         if (state.equals(State.RIGHT)) {
-            if(Integer.valueOf(relay_id)<10)
-            {
-                int_fix="0"+relay_id;
-            }
-            else {
-                int_fix=relay_id;
-            }
             switch_state="ON";
         }
         value="!RELAY"+int_fix+":"+switch_state+"#";

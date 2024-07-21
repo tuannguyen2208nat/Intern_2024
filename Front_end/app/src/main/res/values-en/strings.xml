@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources  translatable="false">
     <!-- Application Name -->
     <string name="app_name">CaCo IOT</string>
     <!-- ================================= -->
@@ -117,6 +116,8 @@
     <string name="create">Create</string>
     <!-- ================================= -->
     <!-- JAVA -->
+    <string name="edit_automation">Edit automation</string>
+    <string name="create_automation">Create Automation</string>
     <string name="can_not_see_this_relay">Can not see this relay</string>
     <string name="no_relays_selected">No relays selected</string>
     <string name="please_select_mode">Please select mode</string>
@@ -161,8 +162,10 @@
     <!-- Custom_dialog_box -->
     <string name="change_avatar">Change avatar</string>
     <string name="change_name">Change name</string>
-    <string name="type_new_name">Type new name</string>
+    <string name="change_email">Change email</string>
     <string name="change_password">Change password</string>
+    <string name="type_new_name">Type new name</string>
+    <string name="new_password">New Password</string>
     <string name="current_password">Current Password</string>
     <string name="confirm_password">Confirm Password</string>
     <!-- ================================= -->
@@ -178,6 +181,9 @@
     <string name="setting">Setting</string>
     <!-- ================================= -->
     <!-- XML -->
+    <string name="language">Language</string>
+    <string name="theme">Theme</string>
+    <string name="about_our_app">About our app</string>
     <!-- ================================= -->
     <!-- JAVA -->
     <!-- ================================= -->

@@ -1,7 +1,8 @@
 package com.example.intern_2024;
 
-
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -11,11 +12,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
 
 import com.bumptech.glide.Glide;
 import com.example.intern_2024.fragment.Accessories;
@@ -28,21 +29,30 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
-    DrawerLayout drawerLayout;
+    private DrawerLayout drawerLayout;
     private DatabaseReference myRef;
-    TextView textTitle,name_user, email_user;
-    View headerView;
-    ImageView image_user, back_login;
-    FirebaseUser user;
-    Uri imageUri;
-    Fragment Home, Accessories, Automation, Profile,Setting;
-    Fragment active;
-    FragmentManager fm;
+    private TextView textTitle, name_user, email_user;
+    private View headerView;
+    private ImageView image_user, back_login;
+    private FirebaseUser user;
+    private Uri imageUri;
+    private Fragment Home, Accessories, Automation, Profile, Setting;
+    private Fragment active;
+    private FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences sharedPreferences = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        boolean isDarkMode = sharedPreferences.getBoolean("Dark_Mode", false);
+        AppCompatDelegate.setDefaultNightMode(isDarkMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+
+        String language = sharedPreferences.getString("App_Language", "en");
+        setLocale(language);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -55,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
         image_user = headerView.findViewById(R.id.image_user);
         back_login = headerView.findViewById(R.id.back_login);
 
-
-
         navigationView.setItemIconTintList(null);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -68,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         Accessories = new Accessories();
         Automation = new Automation();
         Profile = new Profile();
-        Setting=new Setting();
+        Setting = new Setting();
         active = Home;
 
         fm.beginTransaction().add(R.id.navHostFragment, Setting, "5").hide(Setting).commit();
@@ -117,27 +125,27 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.menuHome:
                     fm.beginTransaction().hide(active).show(Home).commit();
-                    textTitle.setText("Home");
+                    textTitle.setText(getString(R.string.home));
                     active = Home;
                     break;
                 case R.id.menuAccessories:
                     fm.beginTransaction().hide(active).show(Accessories).commit();
-                    textTitle.setText("Accessories");
+                    textTitle.setText(getString(R.string.accessories));
                     active = Accessories;
                     break;
                 case R.id.menuAutomation:
                     fm.beginTransaction().hide(active).show(Automation).commit();
-                    textTitle.setText("Automation");
+                    textTitle.setText(getString(R.string.automation));
                     active = Automation;
                     break;
                 case R.id.menuProfile:
                     fm.beginTransaction().hide(active).show(Profile).commit();
-                    textTitle.setText("Profile");
+                    textTitle.setText(getString(R.string.profile));
                     active = Profile;
                     break;
                 case R.id.menuSetting:
                     fm.beginTransaction().hide(active).show(Setting).commit();
-                    textTitle.setText("Setting");
+                    textTitle.setText(getString(R.string.setting));
                     active = Setting;
                     break;
                 default:
@@ -148,4 +156,12 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private void setLocale(String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        android.content.res.Resources resources = getResources();
+        android.content.res.Configuration config = resources.getConfiguration();
+        config.setLocale(locale);
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
+    }
 }

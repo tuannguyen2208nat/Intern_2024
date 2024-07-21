@@ -52,7 +52,7 @@
 
 
     <!-- Home Fragment -->
-    <string name="home">Home</string>
+    <string name="home">Trang chủ</string>
     <!-- ================================= -->
     <!-- XML -->
     <string name="temp">Nhiệt độ</string>
@@ -117,6 +117,8 @@
     <string name="create">Tạo</string>
     <!-- ================================= -->
     <!-- JAVA -->
+    <string name="edit_automation">Chỉnh sửa bộ tự động</string>
+    <string name="create_automation">Tạo bộ tự động</string>
     <string name="can_not_see_this_relay">Không tìm thấy relay này</string>
     <string name="no_relays_selected">Không có relay được chọn</string>
     <string name="please_select_mode">Vui lòng chọn chế độ</string>
@@ -161,8 +163,10 @@
     <!-- Custom_dialog_box -->
     <string name="change_avatar">Đổi avatar</string>
     <string name="change_name">Đổi tên</string>
-    <string name="type_new_name">Nhập email ới</string>
+    <string name="change_email">Đổi email</string>
     <string name="change_password">Đổi mật khẩu</string>
+    <string name="type_new_name">Nhập email mới</string>
+    <string name="new_password">Mật khẩu mới</string>
     <string name="current_password">Mật khẩu hiện tại</string>
     <string name="confirm_password">Xác nhận lại mật khẩu</string>
     <!-- ================================= -->
@@ -177,6 +181,10 @@
     <!-- Profile Fragment -->
     <string name="setting">Cài đặt</string>
     <!-- ================================= -->
+    <!-- XML -->
+    <string name="language">Ngôn ngữ</string>
+    <string name="theme">Theme</string>
+    <string name="about_our_app">Về app của chúng tôi</string>
     <!-- XML -->
     <!-- ================================= -->
     <!-- JAVA -->

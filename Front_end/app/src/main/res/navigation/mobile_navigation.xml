@@ -8,26 +8,26 @@
     <fragment
         android:id="@+id/menuAccessories"
         android:name="com.example.intern_2024.fragment.Accessories"
-        android:label="Accessories"
+        android:label="@string/accessories"
         tools:layout="@layout/fragment_accessories" />
     <fragment
         android:id="@+id/menuHome"
         android:name="com.example.intern_2024.fragment.Home"
-        android:label="Home"
+        android:label="@string/home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/menuProfile"
         android:name="com.example.intern_2024.fragment.Profile"
-        android:label="Profile"
+        android:label="@string/profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/menuAutomation"
         android:name="com.example.intern_2024.fragment.Automation.Automation"
-        android:label="Automation"
+        android:label="@string/automation"
         tools:layout="@layout/fragment_automation" />
     <fragment
         android:id="@+id/menuSetting"
         android:name="com.example.intern_2024.fragment.Setting"
-        android:label="Setting"
+        android:label="@string/setting"
         tools:layout="@layout/fragment_automation" />
 </navigation>

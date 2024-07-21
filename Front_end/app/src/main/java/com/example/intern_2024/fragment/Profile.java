@@ -88,7 +88,6 @@ public class Profile extends Fragment {
         database= FirebaseDatabase.getInstance();
         storage= FirebaseStorage.getInstance();
         storageRef=storage.getReferenceFromUrl("gs://intern-2024-7b2c9.appspot.com");
-
         start();
 
         return view;

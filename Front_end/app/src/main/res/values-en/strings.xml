@@ -1,2 +1,192 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <!-- Application Name -->
+    <string name="app_name">CaCo IOT</string>
+    <!-- ================================= -->
+    <string name="attention">Attention</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+
+
+
+
+
+
+    <!-- Welcome -->
+    <!-- ================================= -->
+    <!-- XML -->
+    <string name="welcome_to_caco_iot">Welcome to CaCo IOT</string>
+    <string name="forgot_password">Forgot password</string>"
+    <string name="type_email">Type email</string>"
+    <string name="send">Send</string>"
+    <string name="check_your_email">Check your email for reset your password</string>"
+    <string name="signin_now">Signin now</string>"
+    <string name="signup_now">Signup now</string>"
+    <string name="welcome">Welcome</string>"
+    <string name="type_password">Type password</string>"
+    <string name="not_yet_registered">Not yet registered ?</string>"
+    <string name="sign_in">Sign in</string>"
+    <string name="register">Register</string>"
+    <string name="you_have_an_account">You have an account ? </string>"
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <string name="please_enter_email">Please enter your email</string>"
+    <string name="email_sent">Email sent.</string>"
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+
+
+
+
+
+    <!-- MainActivity -->
+    <!-- ================================= -->
+    <!-- XML -->
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+    <!-- Home Fragment -->
+    <string name="home">Home</string>
+    <!-- ================================= -->
+    <!-- XML -->
+    <string name="temp">Temp</string>
+    <string name="humidity">Humidity</string>
+    <string name="wind_speed">Wind speed</string>
+    <string name="history">History</string>
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <string name="location_permission_denied">Location permission denied</string>
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Accessories Fragment -->
+    <string name="accessories">Accessories</string>
+    <!-- ================================= -->
+    <!-- XML -->
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <string name="update_name_relay_success">Update relay name successfully</string>
+    <string name="delete_relay_success">Delete relay successfully</string>
+    <string name="please_enter_relay_id">Please enter relay id</string>
+    <string name="relay_id_must_be_greater_than_0"> Relay id must be greater than 0</string>
+    <string name="currently_there_are_only_32_relays">Currently there are only 32 relays</string>
+    <string name="relay_id_already_exists">Relay id already exists</string>
+    <string name="add_relay_success">Add relay successfully</string>
+    <!-- ================================= -->
+    <!-- Custom_dialog_box -->
+    <string name="add_relay">Add relay</string>
+    <string name="relay_id">Relay ID</string>
+    <string name="set_name_device">Set name device</string>
+    <string name="add">Add</string>
+    <string name="change_name_relay">Change name relay</string>
+    <string name="change_name_device">Change name device</string>
+    <string name="change">Change</string>
+    <string name="delete_this_relay">Delete this relay ?</string>
+    <string name="save">Save</string>
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Automation Fragment -->
+    <string name="automation">Automation</string>
+    <!-- ================================= -->
+    <!-- XML -->
+    <string name="name_automation">Name Automation</string>
+    <string name="select_relay">Select relay</string>
+    <string name="mode">Mode</string>
+    <string name="start_time">Start time</string>
+    <string name="create">Create</string>
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <string name="can_not_see_this_relay">Can not see this relay</string>
+    <string name="no_relays_selected">No relays selected</string>
+    <string name="please_select_mode">Please select mode</string>
+    <string name="please_add_time">Please add time </string>
+    <string name="please_add_name">Please add name</string>
+    <string name="add_automation_success">Add automation successfully</string>
+    <string name="update_automation_success">Update automation successfully</string>
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Profile Fragment -->
+    <string name="profile">Profile</string>
+    <!-- ================================= -->
+    <!-- XML -->
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_out">Sign Out</string>
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <string name="permission_denied">Permission denied</string>
+    <string name="update_image_success">Update image successfully</string>
+    <string name="name_can_not_contain_spaces">Name can not contain spaces</string>
+    <string name="name_can_not_be_empty">Name can not be empty</string>
+    <string name="change_name_success">Change name successfully</string>
+    <string name="email_can_not_be_empty">Email can not be empty</string>
+    <string name="invalid_email_format">Invalid email format</string>
+    <string name="change_email_success">Change email successfully</string>
+    <string name="password_be_at_least_8_characters">Password must be at least 8 characters long</string>
+    <string name="password_not_match">Passwords do not match</string>
+    <string name="update_password_success">Update password successfully</string>
+    <string name="update_password_failed">Update password failed</string>
+    <string name="image_selected_successfully">Image selected successfully</string>
+    <string name="no_image_selected">No Image selected</string>
+    <!-- ================================= -->
+    <!-- Custom_dialog_box -->
+    <string name="change_avatar">Change avatar</string>
+    <string name="change_name">Change name</string>
+    <string name="type_new_name">Type new name</string>
+    <string name="change_password">Change password</string>
+    <string name="current_password">Current Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Profile Fragment -->
+    <string name="setting">Setting</string>
+    <!-- ================================= -->
+    <!-- XML -->
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+
+
+
+
+
+</resources>

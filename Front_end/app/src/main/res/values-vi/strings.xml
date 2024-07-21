@@ -1,6 +1,192 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Application Name -->
     <string name="app_name">CaCo IOT</string>
+    <!-- ================================= -->
+    <string name="attention">Chú ý</string>
+    <string name="yes">Có</string>
+    <string name="no">Không</string>
+
+
+
+
+
+
+
+    <!-- Welcome -->
+    <!-- ================================= -->
+    <!-- XML -->
+    <string name="welcome_to_caco_iot">Chào mừng bạn đến với CaCo IOT</string>
+    <string name="forgot_password">Quên mật khẩu</string>"
+    <string name="type_email">Nhập email</string>"
+    <string name="send">Gửi</string>"
+    <string name="check_your_email">Kiểm tra email của bạn</string>"
+    <string name="signin_now">Đăng nhập</string>"
+    <string name="signup_now">Đăng kí</string>"
+    <string name="welcome">Chào mừng bạn</string>"
+    <string name="type_password">Nhập mật khẩu</string>"
+    <string name="not_yet_registered">Chưa đăng kí ? </string>"
+    <string name="sign_in">Đăng nhập</string>"
+    <string name="register">Đăng kí</string>"
+    <string name="you_have_an_account">Bạn đã có tài khoản ? </string>"
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <string name="please_enter_email">Vui lòng nhập email của bạn</string>"
+    <string name="email_sent">Email đã được gửi.</string>"
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+
+
+
+
+
+    <!-- MainActivity -->
+    <!-- ================================= -->
+    <!-- XML -->
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+    <!-- Home Fragment -->
+    <string name="home">Home</string>
+    <!-- ================================= -->
+    <!-- XML -->
+    <string name="temp">Nhiệt độ</string>
+    <string name="humidity">Độ ẩm</string>
+    <string name="wind_speed">Tốc độ gió</string>
+    <string name="history">Nhật kí</string>
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <string name="location_permission_denied">Yêu cầu vị trí bị từ chối</string>
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Accessories Fragment -->
+    <string name="accessories">Thiết bị</string>
+    <!-- ================================= -->
+    <!-- XML -->
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <string name="update_name_relay_success">Cập nhật tên relay thành công</string>
+    <string name="delete_relay_success">Xoá relay thành công</string>
+    <string name="please_enter_relay_id">Vui lòng nhập relay id</string>
+    <string name="relay_id_must_be_greater_than_0"> Relay id phải lớn hơn 0</string>
+    <string name="currently_there_are_only_32_relays">Hiện tại chỉ có 32 relay</string>
+    <string name="relay_id_already_exists">Relay này đã tồn tại </string>
+    <string name="add_relay_success">Thêm relay thành công</string>
+    <!-- ================================= -->
+    <!-- Custom_dialog_box -->
+    <string name="add_relay">Thêm relay</string>
+    <string name="relay_id">Relay ID</string>
+    <string name="set_name_device">Thiết lập tên thiết bị</string>
+    <string name="add">Thêm</string>
+    <string name="change_name_relay">Đổi tên relay</string>
+    <string name="change_name_device">Đổi tên thiết bị</string>
+    <string name="change">Thay đổi</string>
+    <string name="delete_this_relay">Xoá relay này ?</string>
+    <string name="save">Lưu</string>
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Automation Fragment -->
+    <string name="automation">Tự động</string>
+    <!-- ================================= -->
+    <!-- XML -->
+    <string name="name_automation">Tên bộ tự động</string>
+    <string name="select_relay">Chọn relay</string>
+    <string name="mode">Chế độ</string>
+    <string name="start_time">Thời gian bắt đầu</string>
+    <string name="create">Tạo</string>
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <string name="can_not_see_this_relay">Không tìm thấy relay này</string>
+    <string name="no_relays_selected">Không có relay được chọn</string>
+    <string name="please_select_mode">Vui lòng chọn chế độ</string>
+    <string name="please_add_time">Vui lòng thêm thời gian</string>
+    <string name="please_add_name">Vui lòng nhập tên</string>
+    <string name="add_automation_success">Thêm bộ tự động thành công</string>
+    <string name="update_automation_success">Cập nhật bộ tự động thành công</string>
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Profile Fragment -->
+    <string name="profile">Tài khoản</string>
+    <!-- ================================= -->
+    <!-- XML -->
+    <string name="name">Tên</string>
+    <string name="email">Email</string>
+    <string name="password">Mật khẩu</string>
+    <string name="sign_out">Đăng xuất</string>
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <string name="permission_denied">Yêu cầu bị từ chối</string>
+    <string name="update_image_success">Cập nhật hình thành công</string>
+    <string name="name_can_not_contain_spaces">Tên không được có khoảng trống</string>
+    <string name="name_can_not_be_empty">Tên không được để trống</string>
+    <string name="change_name_success">Đổi tên thành công</string>
+    <string name="email_can_not_be_empty">Email không được để trống</string>
+    <string name="invalid_email_format">Email sai định dạng</string>
+    <string name="change_email_success">Đổi email thành công</string>
+    <string name="password_be_at_least_8_characters">Mật khẩu có ít nhất 8 ký tự</string>
+    <string name="password_not_match">Mật khẩu không giống nhau</string>
+    <string name="update_password_success">Cập nhật mật khẩu thành công</string>
+    <string name="update_password_failed">Cập nhật mật khẩu thất bại</string>
+    <string name="image_selected_successfully">Tải hình thành công</string>
+    <string name="no_image_selected">Không có hình nào được chọn</string>
+    <!-- ================================= -->
+    <!-- Custom_dialog_box -->
+    <string name="change_avatar">Đổi avatar</string>
+    <string name="change_name">Đổi tên</string>
+    <string name="type_new_name">Nhập email ới</string>
+    <string name="change_password">Đổi mật khẩu</string>
+    <string name="current_password">Mật khẩu hiện tại</string>
+    <string name="confirm_password">Xác nhận lại mật khẩu</string>
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- Profile Fragment -->
+    <string name="setting">Cài đặt</string>
+    <!-- ================================= -->
+    <!-- XML -->
+    <!-- ================================= -->
+    <!-- JAVA -->
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+
+
+
 
 
 </resources>

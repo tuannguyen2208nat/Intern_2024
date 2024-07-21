@@ -1,10 +1,14 @@
 <resources  translatable="false">
     <!-- Application Name -->
     <string name="app_name">CaCo IOT</string>
-
+    <!-- ================================= -->
     <string name="attention">Attention</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+
+
+
+
 
 
 
@@ -30,6 +34,11 @@
     <string name="email_sent">Email sent.</string>"
     <!-- ================================= -->
     <!-- ================================= -->
+
+
+
+
+
 
 
     <!-- MainActivity -->
@@ -172,6 +181,10 @@
     <!-- JAVA -->
     <!-- ================================= -->
     <!-- ================================= -->
+
+
+
+
 
 
 

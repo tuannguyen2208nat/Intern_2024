@@ -58,7 +58,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
-                        android:text="Name Automation"
+                        android:text="@string/name_automation"
                         android:textStyle="bold"
                         android:textSize="16sp"
                         android:textColor="@color/black"
@@ -85,7 +85,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Select relay"
+                        android:text="@string/select_relay"
                         android:textSize="20sp"
                         android:textStyle="bold"/>
 
@@ -124,7 +124,7 @@
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:text="Mode"
+                                android:text="@string/mode"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:gravity="center"/>
@@ -146,11 +146,13 @@
 
                                 <Spinner
                                     android:id="@+id/mode"
-                                    android:layout_width="match_parent"
+                                    android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:textStyle="bold"
                                     android:layout_weight="1"
-                                    android:spinnerMode="dropdown"/>
+                                    android:spinnerMode="dropdown"
+                                    android:entries="@array/mode"
+                                    tools:ignore="NestedWeights" />
 
                             </LinearLayout>
                             <Space
@@ -169,11 +171,12 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_weight="1" >
+                            android:layout_weight="1"
+                            tools:ignore="NestedWeights">
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:text="Start time"
+                                android:text="@string/start_time"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:gravity="center"/>
@@ -188,7 +191,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="20sp"
-                                android:inputType="time"/>
+                                android:inputType="time"
+                                android:textColor="@color/black"/>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -207,7 +211,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:background="@drawable/button_form_login"
-                        android:text="Create"/>
+                        android:textColor="@color/black"
+                        android:text="@string/create"/>
 
                 </LinearLayout>
 

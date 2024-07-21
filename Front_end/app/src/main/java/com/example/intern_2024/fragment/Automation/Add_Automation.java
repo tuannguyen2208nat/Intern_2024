@@ -80,12 +80,6 @@ public class Add_Automation extends Fragment {
 
         setupRelayAdapter();
 
-        String[] options = { " ","On","Off"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, options);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        select_mode.setAdapter(adapter);
-        select_mode.setSelection(0);
-
         start();
 
         return view;
@@ -153,7 +147,7 @@ public class Add_Automation extends Fragment {
             }
         }
         if (!pass) {
-            Toast.makeText(getContext(), "Can't see this relay", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.can_not_see_this_relay, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -167,7 +161,7 @@ public class Add_Automation extends Fragment {
 
     private void CreateAuto() {
         if (listAuto.getSize() == 0) {
-            Toast.makeText(getContext(), "No relays selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.no_relays_selected, Toast.LENGTH_SHORT).show();
             return;
         }
         UploadData();
@@ -179,17 +173,17 @@ public class Add_Automation extends Fragment {
             return;
         }
         if (mode != 1 && mode != 2) {
-            Toast.makeText(getActivity(),"Please select mode", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),R.string.please_select_mode, Toast.LENGTH_SHORT).show();
             return;
         }
         if(time.getText().toString().isEmpty())
         {
-            Toast.makeText(getActivity(),"Please add time", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),R.string.please_add_time, Toast.LENGTH_SHORT).show();
             return;
         }
         if(name.getText().toString().isEmpty())
         {
-            Toast.makeText(getActivity(),"Please add name", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),R.string.please_add_name, Toast.LENGTH_SHORT).show();
             return;
         }
         String uid = user.getUid();
@@ -215,7 +209,7 @@ public class Add_Automation extends Fragment {
                     @Override
                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                         befor_addItemAndReload("Add automation  " + listAuto.getName() + " .");
-                        Toast.makeText(getActivity(), "Add automation successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.add_automation_success, Toast.LENGTH_SHORT).show();
                         getParentFragmentManager().popBackStack();
                     }
                 });

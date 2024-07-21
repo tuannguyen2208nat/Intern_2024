@@ -85,7 +85,7 @@
                             android:layout_height="match_parent"
                             android:textSize="18sp"
                             android:textStyle="bold"
-                            android:text="Name"
+                            android:text="@string/name"
                             android:gravity="center_vertical"
                             android:textColor="@color/black" />
 
@@ -142,7 +142,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="Email"
+                            android:text="@string/email"
                             android:textSize="18sp"
                             android:textStyle="bold"
                             android:gravity="center_vertical"
@@ -199,7 +199,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="Password"
+                            android:text="@string/password"
                             android:textSize="18sp"
                             android:textStyle="bold"
                             android:gravity="center_vertical"
@@ -269,7 +269,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/button_form_sign_out"
-                        android:text="Sign Out"
+                        android:text="@string/sign_out"
                         android:textColor="@color/black"/>
                 </LinearLayout>
                 <LinearLayout

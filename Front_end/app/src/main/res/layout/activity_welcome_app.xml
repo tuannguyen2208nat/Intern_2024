@@ -76,7 +76,7 @@
                         android:id="@+id/text_hello"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="Welcome to CaCo IOT"
+                        android:text="@string/welcome_to_caco_iot"
                         android:textColor="@color/black"
                         android:textSize="25sp"
                         android:textStyle="bold"

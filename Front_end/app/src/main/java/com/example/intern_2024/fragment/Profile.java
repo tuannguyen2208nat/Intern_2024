@@ -14,7 +14,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.intern_2024.MainActivity;
 import com.example.intern_2024.R;
-import com.example.intern_2024.adapter.RecycleViewAdapter;
 import com.example.intern_2024.asset.ImageLoadTask;
 import com.example.intern_2024.database.SQLiteHelper;
 import com.example.intern_2024.model.Item;
@@ -52,7 +50,6 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Profile extends Fragment {
@@ -69,7 +66,6 @@ public class Profile extends Fragment {
     StorageReference storageRef ;
     FirebaseStorage storage;
     Uri mUri;
-    RecycleViewAdapter adapter;
     private SQLiteHelper db;
     private String URL;
 
@@ -171,7 +167,7 @@ public class Profile extends Fragment {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openGallery();
             } else {
-                Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.permission_denied, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -221,7 +217,7 @@ public class Profile extends Fragment {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     user=FirebaseAuth.getInstance().getCurrentUser();
-                                    Toast.makeText(getActivity(), "Update image succes", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), R.string.update_image_success, Toast.LENGTH_SHORT).show();
                                     befor_addItemAndReload("Update image .");
                                     Glide.with(getActivity()).load(mUri).error(edit_avatar.getDrawable()).into(edit_avatar);
                                     refresh_activity();
@@ -257,11 +253,11 @@ public class Profile extends Fragment {
             public void onClick(View v) {
 
                 if (text_name.getText().toString().contains(" ")) {
-                    Toast.makeText(getContext(), "Name cannot contain spaces", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.name_can_not_contain_spaces, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (text_name.getText().toString().isEmpty()) {
-                    Toast.makeText(getContext(), "Name cannot be empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.name_can_not_be_empty, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -282,7 +278,7 @@ public class Profile extends Fragment {
                                     user=FirebaseAuth.getInstance().getCurrentUser();
                                     edit_name.setText(text_name.getText());
                                     befor_addItemAndReload("Change name .");
-                                    Toast.makeText(getActivity(), "Change name success", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), R.string.change_name_success, Toast.LENGTH_SHORT).show();
                                     updateData();
                                     refresh_activity();
                                     dialog.dismiss();
@@ -318,11 +314,11 @@ public class Profile extends Fragment {
             public void onClick(View v) {
                 if(text_email.getText().toString().isEmpty())
                 {
-                    Toast.makeText(getContext(), "Email cannot be empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.email_can_not_be_empty, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (!isValidEmailFormat(text_email.getText().toString())) {
-                    Toast.makeText(getContext(), "Invalid email format", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.invalid_email_format, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 user = FirebaseAuth.getInstance().getCurrentUser();
@@ -339,7 +335,7 @@ public class Profile extends Fragment {
                                     befor_addItemAndReload("Change email .");
                                     refresh_activity();
                                     edit_email.setText(text_email.getText());
-                                    Toast.makeText(getActivity(), "Change name success", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), R.string.change_email_success, Toast.LENGTH_SHORT).show();
                                     updateData();
                                     dialog.dismiss();
                                 }
@@ -384,12 +380,12 @@ public class Profile extends Fragment {
                                 String password1Str = password_1.getText().toString();
                                 String password2Str = password_2.getText().toString();
                                 if (password1Str.length() < 8 || password2Str.length() < 8) {
-                                    Toast.makeText(getActivity(), "Password must be at least 8 characters long", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), R.string.password_be_at_least_8_characters, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
 
                                 if (!password1Str.equals(password2Str)) {
-                                    Toast.makeText(getActivity(), "Passwords do not match", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), R.string.password_not_match, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                                 user.updatePassword(password1Str)
@@ -397,12 +393,12 @@ public class Profile extends Fragment {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    Toast.makeText(getActivity(), "Update password success", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getActivity(), R.string.update_password_success, Toast.LENGTH_SHORT).show();
                                                     dialog.dismiss();
                                                     refresh_activity();
                                                     befor_addItemAndReload("Change password .");
                                                 } else {
-                                                    Toast.makeText(getActivity(), "Update password failed", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getActivity(), R.string.update_password_failed, Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         });
@@ -451,10 +447,10 @@ public class Profile extends Fragment {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             mUri = data.getData();
             Glide.with(getActivity()).load(mUri).error(edit_avatar.getDrawable()).into(change_avatar);
-            Toast.makeText(getActivity(), "Image selected successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.image_selected_successfully, Toast.LENGTH_SHORT).show();
         }
         else {
-            Toast.makeText(getActivity(), "No Image selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.no_image_selected, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -578,8 +574,6 @@ public class Profile extends Fragment {
                     }
                 }
             });
-        } else {
-            Log.e("firebase", "User not logged in");
         }
     }
 

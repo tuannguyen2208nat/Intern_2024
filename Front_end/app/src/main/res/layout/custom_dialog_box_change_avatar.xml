@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:text="Change avatar"
+            android:text="@string/change_avatar"
             android:textColor="@color/black"
             android:textSize="30sp"
             android:textStyle="bold"
@@ -64,7 +64,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/button_form_login"
-                android:text="Change"
+                android:text="@string/change"
                 android:textColor="@color/black" />
 
         </LinearLayout>

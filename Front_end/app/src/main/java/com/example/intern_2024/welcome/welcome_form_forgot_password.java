@@ -1,5 +1,6 @@
 package com.example.intern_2024.welcome;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -64,11 +65,11 @@ public class welcome_form_forgot_password extends AppCompatActivity {
 
     private void send_done(){
         if (email.getText().toString().isEmpty()) {
-            Toast.makeText(welcome_form_forgot_password.this, "Please enter your email", Toast.LENGTH_SHORT).show();
+            Toast.makeText(welcome_form_forgot_password.this, R.string.please_enter_email, Toast.LENGTH_SHORT).show();
             return;
         }
         if (!isValidEmailFormat(email.getText().toString())) {
-            Toast.makeText(welcome_form_forgot_password.this, "Invalid email format", Toast.LENGTH_SHORT).show();
+            Toast.makeText(welcome_form_forgot_password.this, R.string.invalid_email_format, Toast.LENGTH_SHORT).show();
             return;
         }
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -79,7 +80,7 @@ public class welcome_form_forgot_password extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(welcome_form_forgot_password.this, "Email sent.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(welcome_form_forgot_password.this, R.string.email_sent, Toast.LENGTH_SHORT).show();
                             form_done_send.setVisibility(View.VISIBLE);
                             startCountdownTimer();
                         }
@@ -90,15 +91,16 @@ public class welcome_form_forgot_password extends AppCompatActivity {
     private void startCountdownTimer() {
         btn_send.setEnabled(false);
         new CountDownTimer(60000, 1000) {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onTick(long millisUntilFinished) {
-                btn_send.setText("Send (" + millisUntilFinished / 1000 + "s)");
+                btn_send.setText(getString(R.string.send) + " (" + millisUntilFinished / 1000 + "s)");
             }
 
             @Override
             public void onFinish() {
                 btn_send.setEnabled(true);
-                btn_send.setText("Send");
+                btn_send.setText(getString(R.string.send));
             }
         }.start();
     }

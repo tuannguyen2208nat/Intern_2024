@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Welcome"
+            android:text="@string/welcome"
             android:textColor="@color/black"
             android:textSize="39sp"
             android:textStyle="bold" />
@@ -50,7 +50,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Email"
+                android:text="@string/email"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -62,7 +62,7 @@
                 android:layout_weight="3"
                 android:inputType="textEmailAddress"
                 android:textSize="20sp"
-                android:hint="Type email"
+                android:hint="@string/type_email"
                 android:textColor="@color/black"
                 android:maxLength="32"/>
         </LinearLayout>
@@ -78,7 +78,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Password"
+                android:text="@string/password"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -90,7 +90,7 @@
                 android:layout_weight="3"
                 android:inputType="textPassword"
                 android:textSize="20sp"
-                android:hint="Type password"
+                android:hint="@string/type_password"
                 android:textColor="@color/black"
                 android:maxLength="32"/>
         </LinearLayout>
@@ -111,7 +111,7 @@
                     android:id="@+id/forgot_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Forgot password"
+                    android:text="@string/forgot_password"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     android:textColor="@color/black" />
@@ -134,7 +134,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Not yet registered ? "
+                    android:text="@string/not_yet_registered"
                     android:textSize="15sp"
                     android:layout_gravity="end"
                     android:textColor="@color/black"/>
@@ -148,7 +148,7 @@
                         android:id="@+id/sign_up"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Signup now"
+                        android:text="@string/signup_now"
                         android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"/>
@@ -182,7 +182,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:background="@drawable/button_form_login"
-            android:text="Sign in" />
+            android:text="@string/sign_in"/>
 
         <Space
             android:layout_width="0dp"

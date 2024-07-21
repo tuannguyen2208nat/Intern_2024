@@ -87,11 +87,6 @@ public class Edit_Automation extends Fragment {
 
         setupRelayAdapter();
 
-        String[] options = { " ","On","Off"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, options);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        select_mode.setAdapter(adapter);
-        select_mode.setSelection(0);
         if(listAuto.getMode()==1){
             select_mode.setSelection(1);
         }else if(listAuto.getMode()==2){
@@ -150,7 +145,7 @@ public class Edit_Automation extends Fragment {
 
     private void SaveAuto() {
         if (listAuto.getSize() == 0) {
-            Toast.makeText(getContext(), "No relays selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.no_relays_selected, Toast.LENGTH_SHORT).show();
             return;
         }
         UploadData();
@@ -253,18 +248,6 @@ public class Edit_Automation extends Fragment {
     }
 
     private void handleRelaySelection(list_relay relay, boolean isChecked) {
-        boolean pass = false;
-        for (list_relay item : mListRelay) {
-            if (item.getRelay_id() == relay.getRelay_id()) {
-                pass = true;
-                break;
-            }
-        }
-        if (!pass) {
-            Toast.makeText(getContext(), "Can't see this relay", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         if (isChecked) {
             addRelay.add(relay);
         } else {
@@ -274,17 +257,17 @@ public class Edit_Automation extends Fragment {
 
     private void UploadData() {
         if (mode != 1 && mode != 2) {
-            Toast.makeText(getActivity(),"Please select mode", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),R.string.please_select_mode, Toast.LENGTH_SHORT).show();
             return;
         }
         if(time.getText().toString().isEmpty())
         {
-            Toast.makeText(getActivity(),"Please add time", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),R.string.please_add_time, Toast.LENGTH_SHORT).show();
             return;
         }
         if(name.getText().toString().isEmpty())
         {
-            Toast.makeText(getActivity(),"Please add name", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),R.string.please_add_name, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -308,7 +291,7 @@ public class Edit_Automation extends Fragment {
 
         if(addRelay.isEmpty())
         {
-            Toast.makeText(getActivity(),"Please select relays", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(),R.string.no_relays_selected, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -333,7 +316,8 @@ public class Edit_Automation extends Fragment {
         myRef.child(String.valueOf(listAuto.getIndex())).updateChildren(listAuto.toMap(), new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                befor_addItemAndReload("Update automation  "+name.getText().toString()+" .");
+                befor_addItemAndReload("Update automation"+name.getText().toString()+" .");
+                Toast.makeText(getActivity(),R.string.update_automation_success,Toast.LENGTH_SHORT).show();
                 getParentFragmentManager().popBackStack();
             }
         });

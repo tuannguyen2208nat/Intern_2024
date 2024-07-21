@@ -16,11 +16,11 @@
 AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 AdafruitIO_Feed *status = io.feed("status");
 
-void sendModbusCommand(const uint8_t command[], size_t length)
+void sendModbusCommand(const uint8_t command[1], size_t length)
 {
   for (size_t i = 0; i < length; i++)
   {
-    Serial2.write(command[i]);
+    Serial2.write(command[1]);
   }
 }
 
@@ -30,7 +30,7 @@ void setup()
   Serial.begin(115200);
   Serial2.begin(BAUD_RATE, SERIAL_8N1, TXD, RXD);
 
-  sendModbusCommand(relay_OFF[0], sizeof(relay_OFF[0]));
+  // sendModbusCommand(relay_OFF[0], sizeof(relay_OFF[0]));
 
   while (!Serial)
     ;
@@ -84,12 +84,12 @@ void handleMessage(AdafruitIO_Data *data)
     if (statusStr == "ON" && index < (sizeof(relay_ON) / sizeof(relay_ON[0])))
     {
       sendModbusCommand(relay_ON[index], sizeof(relay_ON[0]));
-      Serial.println("Relay " + String(index) + " turned ON");
+      // Serial.println("Relay " + String(index) + " turned ON");
     }
     else if (statusStr == "OFF" && index < (sizeof(relay_OFF) / sizeof(relay_OFF[0])))
     {
       sendModbusCommand(relay_OFF[index], sizeof(relay_OFF[0]));
-      Serial.println("Relay " + String(index) + " turned OFF");
+      // Serial.println("Relay " + String(index) + " turned OFF");
     }
     else
     {

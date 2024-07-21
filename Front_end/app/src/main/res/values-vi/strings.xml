@@ -6,6 +6,7 @@
     <string name="attention">Chú ý</string>
     <string name="yes">Có</string>
     <string name="no">Không</string>
+    <string name="security">Bảo mật</string>
 
 
 
@@ -118,6 +119,7 @@
     <!-- ================================= -->
     <!-- JAVA -->
     <string name="edit_automation">Chỉnh sửa bộ tự động</string>
+    <string name="add_automation">Thêm bộ tự động</string>
     <string name="create_automation">Tạo bộ tự động</string>
     <string name="can_not_see_this_relay">Không tìm thấy relay này</string>
     <string name="no_relays_selected">Không có relay được chọn</string>
@@ -184,10 +186,24 @@
     <!-- XML -->
     <string name="language">Ngôn ngữ</string>
     <string name="theme">Theme</string>
-    <string name="about_our_app">Về app của chúng tôi</string>
+    <string name="about_my_app">Thông tin về app</string>
+    <string name="about_my_app_setting">&gt;&gt;&gt; Thông tin về app &lt;&lt;&lt;</string>
     <!-- XML -->
     <!-- ================================= -->
     <!-- JAVA -->
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- About my app -->
+    <string name="about_my_app_header">Chào các bạn đến với CaCo IOT</string>
+    <string name="about_my_app_body">Đây là app IOT dùng để bật tắt 32 relay mobus.App này có các tính năng cơ bản và cần thiết của một app IOT, người dùng có thể thêm relay,đổi tên relay , đặt hẹn giờ bộ tự động để có thể bật tắt nhiều relay cùng lúc . App này được tôi thực hiện trong giai đoạn thực tập HK233.Nếu có thắc mắc hoặc cần đóng góp ý kiến thì có thể liên hệ cho tôi qua email cá nhân : "tuan.nguyen2208nat@hcmut.edu.vn".</string>
+    <string name="thank_you">Xin chân thành cảm ơn</string>
     <!-- ================================= -->
     <!-- ================================= -->
 

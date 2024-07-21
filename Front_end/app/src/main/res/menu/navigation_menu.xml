@@ -13,6 +13,9 @@
         android:title="@string/automation"
         android:icon="@drawable/nav_automation"
         />
+    <item android:title="@string/security">
+        <menu>
+            <group android:checkableBehavior="single">
     <item
         android:id="@+id/menuProfile"
         android:title="@string/profile"
@@ -21,4 +24,8 @@
         android:id="@+id/menuSetting"
         android:title="@string/setting"
         android:icon="@drawable/nav_setting"/>
+            </group>
+        </menu>
+    </item>
+
 </menu>

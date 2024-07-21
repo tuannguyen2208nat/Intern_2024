@@ -1,15 +1,11 @@
-<resources  translatable="false">
+<resources translatable="false">
     <!-- Application Name -->
     <string name="app_name">CaCo IOT</string>
     <!-- ================================= -->
     <string name="attention">Attention</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-
-
-
-
-
+    <string name="security">Security</string>
 
 
     <!-- Welcome -->
@@ -36,11 +32,6 @@
     <!-- ================================= -->
 
 
-
-
-
-
-
     <!-- MainActivity -->
     <!-- ================================= -->
     <!-- XML -->
@@ -63,11 +54,6 @@
     <string name="location_permission_denied">Location permission denied</string>
     <!-- ================================= -->
     <!-- ================================= -->
-
-
-
-
-
 
 
     <!-- ================================= -->
@@ -99,11 +85,6 @@
     <!-- ================================= -->
 
 
-
-
-
-
-
     <!-- ================================= -->
     <!-- Automation Fragment -->
     <string name="automation">Automation</string>
@@ -117,6 +98,7 @@
     <!-- ================================= -->
     <!-- JAVA -->
     <string name="edit_automation">Edit automation</string>
+    <string name="add_automation">Add automation</string>
     <string name="create_automation">Create Automation</string>
     <string name="can_not_see_this_relay">Can not see this relay</string>
     <string name="no_relays_selected">No relays selected</string>
@@ -127,10 +109,6 @@
     <string name="update_automation_success">Update automation successfully</string>
     <!-- ================================= -->
     <!-- ================================= -->
-
-
-
-
 
 
     <!-- ================================= -->
@@ -172,10 +150,6 @@
     <!-- ================================= -->
 
 
-
-
-
-
     <!-- ================================= -->
     <!-- Profile Fragment -->
     <string name="setting">Setting</string>
@@ -183,9 +157,24 @@
     <!-- XML -->
     <string name="language">Language</string>
     <string name="theme">Theme</string>
-    <string name="about_our_app">About our app</string>
+    <string name="about_my_app">About my app</string>
+    <string name="about_my_app_setting">&gt;&gt;&gt; About my app &lt;&lt;&lt;</string>
     <!-- ================================= -->
     <!-- JAVA -->
+    <!-- ================================= -->
+    <!-- ================================= -->
+
+
+
+
+
+
+
+    <!-- ================================= -->
+    <!-- About my app -->
+    <string name="about_my_app_header">Hello everyone, welcome to CaCo IOT</string>
+    <string name="about_my_app_body">This is an IOT app used to control 32 Modbus relays. This app has the basic and necessary features of an IOT app. Users can add relays, rename relays, and set timers for automatic control to turn multiple relays on or off simultaneously. I developed this app during my HK233 internship. If you have any questions or suggestions, you can contact me : "tuan.nguyen2208nat@hcmut.edu.vn".</string>
+    <string name="thank_you"> Thank you very much.</string>
     <!-- ================================= -->
     <!-- ================================= -->
 

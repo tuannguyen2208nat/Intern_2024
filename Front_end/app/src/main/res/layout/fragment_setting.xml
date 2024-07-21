@@ -161,6 +161,27 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/save_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/button_form_login"
+                    android:text="@string/save" />
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.2"/>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -169,7 +190,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.7"
                 android:orientation="horizontal">
 
                 <TextView
@@ -178,12 +199,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="18sp"
-                    android:text="@string/about_our_app"
+                    android:text="@string/about_my_app_setting"
                     android:color="@color/black"
                     android:textStyle="bold"/>
 
-
             </LinearLayout>
+
 
         </LinearLayout>
 

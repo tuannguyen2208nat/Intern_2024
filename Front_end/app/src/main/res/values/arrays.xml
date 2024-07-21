@@ -7,13 +7,11 @@
     </string-array>
 
     <string-array name="languages">
-        <item> </item>
         <item>English</item>
         <item>Tiếng Việt</item>
     </string-array>
 
     <string-array name="theme">
-        <item> </item>
         <item>Light mode</item>
         <item>Dark mode</item>
     </string-array>

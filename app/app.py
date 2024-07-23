@@ -7,11 +7,17 @@ from tkinter import scrolledtext
 def getPort():
     ports = serial.tools.list_ports.comports()
     commPort = "None"
+    
     for port in ports:
         strPort = str(port)
-        if "FT232R USB UART" in strPort:
-            commPort = strPort.split(" - ")[0]
+        if "FT232R USB UART" in strPort or "USB Serial" in strPort:
+            print("Found USB Serial Device: " + strPort)
+            splitPort = strPort.split(" ")
+            commPort = splitPort[0]
+            break
+    
     return commPort
+
 
 portName = getPort()
 if portName != "None":

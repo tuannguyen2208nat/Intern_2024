@@ -175,10 +175,10 @@ public class Home extends Fragment {
                         String tempTxt = Math.round(temp) + "°C";
                         txtTemp.setText(tempTxt);
 
-                        txtCountry.setText(response.getJSONObject("sys").getString("country"));
+                        txtCountry.setText("TPHCM");
                         txtHumidity.setText(response.getJSONObject("main").getString("humidity") + "%");
                         txtSpeed.setText(response.getJSONObject("wind").getString("speed") + "m/s");
-                        txtTDS.setText(response.getJSONObject("main").getString("temp_max") + "°C");
+                        txtTDS.setText("300ppm");
 
                         long timestamp = response.getLong("dt") * 1000;
                         SimpleDateFormat sdf = new SimpleDateFormat("EEEE, dd/MM/yyyy", Locale.getDefault());
